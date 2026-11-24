@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [main]
+    branches: [main, 'feature/**']
   pull_request:
 permissions:
   contents: read
@@ -32,8 +32,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm build
-      - run: pnpm db:migrate
+      - run: pnpm db:setup
       - name: Start the app and check it reaches Postgres
         run: |
           pnpm start > server.log 2>&1 &
           curl --fail --silent --show-error --retry 15 --retry-delay 1 --retry-all-errors http://localhost:3000/api/health || { cat server.log; exit 1; }
+          curl --fail --silent --show-error http://localhost:3000/ | grep -q GL-0142 || { cat server.log; exit 1; }

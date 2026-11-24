@@ -1,22 +1,26 @@
 # Guardians of the Grid
 
+Challenge brief: [docs/challenge.md](docs/challenge.md)
+
 TanStack Start, PostgreSQL and Drizzle.
 
 ## Run locally
 
-Needs Node 22+, pnpm and Docker.
+Needs Node 22.18+, pnpm and Docker.
 
 ```bash
 cp .env.example .env
 pnpm install
 pnpm db:up
-pnpm db:migrate
+pnpm db:setup
 pnpm dev
 ```
 
 Open http://localhost:3000. `/api/health` returns 200 when Postgres answers and 503 when it does not.
 
 After changing `src/db/schema.ts`, run `pnpm db:generate` and `pnpm db:migrate`, then commit the `drizzle` folder.
+
+`/status` shows the database connection. `pnpm db:seed` adds the sample glitches and never overwrites existing rows.
 
 ## CI
 
