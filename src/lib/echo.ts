@@ -14,7 +14,7 @@ export type Echo = {
   status: GlitchStatus
   /** The status this echo gave the glitch, or null if it left it alone. */
   newStatus: GlitchStatus | null
-  reporter: Pick<Guardian, 'codename' | 'role'>
+  reporter: Guardian
   glitch: Pick<Glitch, 'glitchId' | 'status'>
 }
 

@@ -1,8 +1,23 @@
 import { sql } from 'drizzle-orm'
-import { index, integer, pgSequence, pgTable, primaryKey, serial, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
+import {
+  type AnyPgColumn,
+  customType,
+  index,
+  integer,
+  pgSequence,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core'
 // Relative import: drizzle-kit loads this file and doesn't resolve the `#/` alias.
 import { GLITCH_STATUSES } from '../lib/glitch.ts'
 import { GUARDIAN_ROLES } from '../lib/guardian.ts'
+import { IMAGE_TYPES, REACTIONS } from '../lib/message.ts'
+
+const bytea = customType<{ data: Buffer }>({ dataType: () => 'bytea' })
 
 // Throwaway table that proves migrations and writes work.
 export const pings = pgTable('pings', {
@@ -57,7 +72,9 @@ export const messages = pgTable(
     senderId: text('sender_id').notNull().references(() => guardians.guardianId),
     /** Null for messages to everyone. */
     recipientId: text('recipient_id').references(() => guardians.guardianId),
+    /** Empty when the message is only an image. */
     body: text('body').notNull(),
+    replyToId: integer('reply_to_id').references((): AnyPgColumn => messages.messageId),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [index('messages_participants').on(table.recipientId, table.senderId, table.messageId)],
@@ -73,4 +90,21 @@ export const conversationReads = pgTable(
     lastReadMessageId: integer('last_read_message_id').notNull(),
   },
   (table) => [primaryKey({ columns: [table.guardianId, table.conversationId] })],
+)
+
+/** Kept apart from messages, so listing a conversation never loads the bytes. */
+export const messageImages = pgTable('message_images', {
+  messageId: integer('message_id').primaryKey().references(() => messages.messageId),
+  type: text('type', { enum: IMAGE_TYPES }).notNull(),
+  data: bytea('data').notNull(),
+})
+
+export const messageReactions = pgTable(
+  'message_reactions',
+  {
+    messageId: integer('message_id').notNull().references(() => messages.messageId),
+    guardianId: text('guardian_id').notNull().references(() => guardians.guardianId),
+    emoji: text('emoji', { enum: REACTIONS }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.messageId, table.guardianId, table.emoji] })],
 )

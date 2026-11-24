@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
+import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import type { Echo } from '#/lib/echo.ts'
@@ -110,7 +111,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
             {echo.glitch.glitchId}
           </Link>
           <span>
-            <span className="text-fg">{echo.reporter.codename}</span>
+            <GuardianLink {...echo.reporter} />
             <span className="ml-1.5">{echo.reporter.role}</span>
           </span>
           {echo.newStatus && <span>Status changed</span>}

@@ -1,8 +1,24 @@
-import { and, desc, eq, gt, isNull, ne, or, sql } from 'drizzle-orm'
+import { and, desc, eq, gt, inArray, isNull, ne, or, sql } from 'drizzle-orm'
+import { alias } from 'drizzle-orm/pg-core'
 import { db } from '#/db/index.ts'
-import { conversationReads, guardians, messages } from '#/db/schema.ts'
-import { EVERYONE, type Conversation, type Message } from '#/lib/message.ts'
+import {
+  conversationReads,
+  guardians,
+  messageImages,
+  messageReactions,
+  messages,
+} from '#/db/schema.ts'
+import {
+  EVERYONE,
+  REACTIONS,
+  type Conversation,
+  type Message,
+  type MessageQuote,
+  type Reaction,
+  type ReactionEmoji,
+} from '#/lib/message.ts'
 import { findGuardian, listGuardians } from '#/server/guardians.server.ts'
+import { detectImageType } from '#/server/imageType.server.ts'
 
 const PAGE_SIZE = 100
 
@@ -26,6 +42,18 @@ export async function requireConversation(guardianId: string, conversationId: st
   }
 }
 
+/** Only when the guardian is a participant, or it was sent to everyone. */
+function visibleTo(guardianId: string) {
+  return or(
+    isNull(messages.recipientId),
+    eq(messages.recipientId, guardianId),
+    eq(messages.senderId, guardianId),
+  )
+}
+
+const quoted = alias(messages, 'quoted')
+const quotedSender = alias(guardians, 'quoted_sender')
+
 /** The latest messages, oldest first. */
 export async function listMessages(guardianId: string, conversationId: string): Promise<Message[]> {
   const rows = await db
@@ -34,19 +62,127 @@ export async function listMessages(guardianId: string, conversationId: string): 
       senderId: messages.senderId,
       senderCodename: guardians.codename,
       body: messages.body,
+      hasImage: sql<boolean>`${messageImages.messageId} is not null`,
       createdAt: messages.createdAt,
+      replyTo: {
+        messageId: quoted.messageId,
+        senderCodename: quotedSender.codename,
+        body: quoted.body,
+      },
     })
     .from(messages)
     .innerJoin(guardians, eq(guardians.guardianId, messages.senderId))
+    .leftJoin(messageImages, eq(messageImages.messageId, messages.messageId))
+    .leftJoin(quoted, eq(quoted.messageId, messages.replyToId))
+    .leftJoin(quotedSender, eq(quotedSender.guardianId, quoted.senderId))
     .where(inConversation(guardianId, conversationId))
     .orderBy(desc(messages.messageId))
     .limit(PAGE_SIZE)
-  return rows.reverse().map((row) => ({ ...row, createdAt: row.createdAt.toISOString() }))
+
+  const reactions = await listReactions(
+    guardianId,
+    rows.map((row) => row.messageId),
+  )
+  return rows.reverse().map(({ replyTo, createdAt, ...row }) => ({
+    ...row,
+    createdAt: createdAt.toISOString(),
+    replyTo: replyTo as MessageQuote | null,
+    reactions: reactions.get(row.messageId) ?? [],
+  }))
 }
 
-export async function createMessage(senderId: string, conversationId: string, body: string) {
-  const recipientId = conversationId === EVERYONE ? null : conversationId
-  await db.insert(messages).values({ senderId, recipientId, body })
+async function listReactions(guardianId: string, messageIds: number[]) {
+  const byMessage = new Map<number, Reaction[]>()
+  if (messageIds.length === 0) return byMessage
+
+  const rows = await db
+    .select({
+      messageId: messageReactions.messageId,
+      emoji: messageReactions.emoji,
+      guardianId: messageReactions.guardianId,
+      codename: guardians.codename,
+    })
+    .from(messageReactions)
+    .innerJoin(guardians, eq(guardians.guardianId, messageReactions.guardianId))
+    .where(inArray(messageReactions.messageId, messageIds))
+    .orderBy(guardians.codename)
+
+  for (const emoji of REACTIONS) {
+    for (const row of rows.filter((candidate) => candidate.emoji === emoji)) {
+      const reactions = byMessage.get(row.messageId) ?? []
+      byMessage.set(row.messageId, reactions)
+      let reaction = reactions.find((candidate) => candidate.emoji === emoji)
+      if (!reaction) reactions.push((reaction = { emoji, codenames: [], isMine: false }))
+      reaction.codenames.push(row.codename)
+      if (row.guardianId === guardianId) reaction.isMine = true
+    }
+  }
+  return byMessage
+}
+
+type NewMessage = {
+  senderId: string
+  conversationId: string
+  body: string
+  replyToId?: number
+  image?: Buffer
+}
+
+export async function createMessage(message: NewMessage) {
+  const { senderId, conversationId, body, replyToId, image } = message
+  const type = image && detectImageType(image)
+  if (image && !type) throw new Error('Use a JPEG, PNG, WebP or GIF image')
+
+  if (replyToId !== undefined) {
+    // Within the same conversation, so a reply never quotes a message its readers cannot see.
+    const [target] = await db
+      .select({ messageId: messages.messageId })
+      .from(messages)
+      .where(and(eq(messages.messageId, replyToId), inConversation(senderId, conversationId)))
+    if (!target) throw new Error('The message you reply to does not exist')
+  }
+
+  await db.transaction(async (tx) => {
+    const recipientId = conversationId === EVERYONE ? null : conversationId
+    const [{ messageId }] = await tx
+      .insert(messages)
+      .values({ senderId, recipientId, body, replyToId })
+      .returning({ messageId: messages.messageId })
+    if (image && type) await tx.insert(messageImages).values({ messageId, type, data: image })
+  })
+}
+
+export async function toggleReaction(guardianId: string, messageId: number, emoji: ReactionEmoji) {
+  const [message] = await db
+    .select({ messageId: messages.messageId })
+    .from(messages)
+    .where(and(eq(messages.messageId, messageId), visibleTo(guardianId)))
+  if (!message) throw new Error('That message does not exist')
+
+  const removed = await db
+    .delete(messageReactions)
+    .where(
+      and(
+        eq(messageReactions.messageId, messageId),
+        eq(messageReactions.guardianId, guardianId),
+        eq(messageReactions.emoji, emoji),
+      ),
+    )
+    .returning({ messageId: messageReactions.messageId })
+  if (removed.length > 0) return
+  await db
+    .insert(messageReactions)
+    .values({ messageId, guardianId, emoji })
+    .onConflictDoNothing()
+}
+
+export async function findImage(guardianId: string, messageId: number) {
+  const [image] = await db
+    .select({ type: messageImages.type, data: messageImages.data })
+    .from(messageImages)
+    .innerJoin(messages, eq(messages.messageId, messageImages.messageId))
+    .where(and(eq(messageImages.messageId, messageId), visibleTo(guardianId)))
+  return image
 }
 
 /** Never moves backwards, so an older tab cannot make messages unread again. */

@@ -1,6 +1,11 @@
 import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { conversationSchema, markReadSchema, sendMessageSchema } from '#/lib/message.ts'
+import {
+  conversationSchema,
+  markReadSchema,
+  sendMessageSchema,
+  toggleReactionSchema,
+} from '#/lib/message.ts'
 import { validate } from '#/lib/validate.ts'
 import { guardianMiddleware } from '#/middleware/auth.ts'
 import * as messages from '#/server/messages.server.ts'
@@ -31,12 +36,20 @@ export const getConversation = createServerFn({ method: 'GET' })
 
 export const sendMessage = createServerFn({ method: 'POST' })
   .middleware([guardianMiddleware])
-  .validator(validate(sendMessageSchema))
+  .validator((form: FormData) => validate(sendMessageSchema)(form))
   .handler(async ({ data, context }) => {
-    const { guardianId } = context.guardian
-    await messages.requireConversation(guardianId, data.conversationId)
-    await messages.createMessage(guardianId, data.conversationId, data.body)
+    const senderId = context.guardian.guardianId
+    await messages.requireConversation(senderId, data.conversationId)
+    const image = data.image && Buffer.from(await data.image.arrayBuffer())
+    await messages.createMessage({ ...data, senderId, image })
   })
+
+export const toggleReaction = createServerFn({ method: 'POST' })
+  .middleware([guardianMiddleware])
+  .validator(validate(toggleReactionSchema))
+  .handler(({ data, context }) =>
+    messages.toggleReaction(context.guardian.guardianId, data.messageId, data.emoji),
+  )
 
 export const markRead = createServerFn({ method: 'POST' })
   .middleware([guardianMiddleware])

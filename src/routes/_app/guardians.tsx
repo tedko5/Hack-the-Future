@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import type { GuardianRole } from '#/lib/guardian.ts'
 import { listGuardians, setGuardianRole } from '#/lib/guardians.functions.ts'
 
@@ -37,7 +38,9 @@ function GuardiansPage() {
             const nextRole = guardian.role === 'commander' ? 'defender' : 'commander'
             return (
               <tr key={guardian.guardianId}>
-                <td className="px-5 py-4">{guardian.codename}</td>
+                <td className="px-5 py-4">
+                  <GuardianLink {...guardian} />
+                </td>
                 <td className="px-5 py-4">{guardian.role}</td>
                 <td className="px-5 py-4">
                   {guardian.guardianId !== me.guardianId && (

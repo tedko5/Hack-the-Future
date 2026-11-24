@@ -4,6 +4,7 @@ import { EchoList } from '#/components/echoes/EchoList.tsx'
 import { ReportEchoDialog } from '#/components/echoes/ReportEchoDialog.tsx'
 import { AssignDefender, TakeOrRelease } from '#/components/glitches/GlitchAssignment.tsx'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
+import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { formatDateTime } from '#/lib/formatDate.ts'
 import { canChangeStatus } from '#/lib/glitch.ts'
 import { getGlitch } from '#/lib/glitches.functions.ts'
@@ -37,7 +38,11 @@ function GlitchPage() {
         <p className="leading-snug break-words">{glitch.description}</p>
         <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[.9rem] text-muted">
           <GlitchStatusLabel status={glitch.status} />
-          <span>{glitch.assignedCodename ?? 'Unassigned'}</span>
+          {glitch.assignedGuardianId && glitch.assignedCodename ? (
+            <GuardianLink guardianId={glitch.assignedGuardianId} codename={glitch.assignedCodename} />
+          ) : (
+            <span>Unassigned</span>
+          )}
           <time dateTime={glitch.timestamp}>{formatDateTime(glitch.timestamp)}</time>
         </p>
         {/* Keyed so an error on one glitch is not shown on the next. */}

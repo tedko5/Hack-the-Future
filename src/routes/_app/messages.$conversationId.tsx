@@ -1,8 +1,9 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { ConversationList } from '#/components/messages/ConversationList.tsx'
 import { MessageForm } from '#/components/messages/MessageForm.tsx'
 import { MessageThread } from '#/components/messages/MessageThread.tsx'
+import type { Message } from '#/lib/message.ts'
 import { getConversation, markRead } from '#/lib/messages.functions.ts'
 
 export const Route = createFileRoute('/_app/messages/$conversationId')({
@@ -38,10 +39,38 @@ function MessagesPage() {
         <h2 id="conversation-title" className="font-display text-[1.6rem] font-bold">
           {title}
         </h2>
-        <MessageThread key={conversationId} messages={messages} guardianId={guardian.guardianId} />
-        {/* Keyed so a draft never moves to another conversation. */}
-        <MessageForm key={`form-${conversationId}`} conversationId={conversationId} title={title} />
+        {/* Keyed so a draft or reply never moves to another conversation. */}
+        <Chat
+          key={conversationId}
+          conversationId={conversationId}
+          title={title}
+          messages={messages}
+          guardianId={guardian.guardianId}
+        />
       </div>
     </section>
+  )
+}
+
+type ChatProps = {
+  conversationId: string
+  title: string
+  messages: Message[]
+  guardianId: string
+}
+
+function Chat({ conversationId, title, messages, guardianId }: ChatProps) {
+  const [replyTo, setReplyTo] = useState<Message | null>(null)
+
+  return (
+    <>
+      <MessageThread messages={messages} guardianId={guardianId} onReply={setReplyTo} />
+      <MessageForm
+        conversationId={conversationId}
+        title={title}
+        replyTo={replyTo}
+        onReplyDone={() => setReplyTo(null)}
+      />
+    </>
   )
 }

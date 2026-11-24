@@ -24,7 +24,11 @@ const selectEchoes = () =>
       timestamp: echoes.timestamp,
       status: sql<GlitchStatus>`coalesce(${echoes.status}, ${glitches.status})`,
       newStatus: echoes.newStatus,
-      reporter: { codename: guardians.codename, role: guardians.role },
+      reporter: {
+        guardianId: guardians.guardianId,
+        codename: guardians.codename,
+        role: guardians.role,
+      },
       glitch: { glitchId: glitches.glitchId, status: glitches.status },
     })
     .from(echoes)
