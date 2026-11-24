@@ -16,7 +16,14 @@ export const en = {
     showMore: 'Show more',
     showLess: 'Show less',
     shown: (shown: number, total: number) => `${shown} of ${total}`,
+    /** Goes after the number. */
+    echoes: (count: number): string => (count === 1 ? 'echo' : 'echoes'),
     loading: 'Consulting the ley lines…',
+  },
+  page: {
+    error: 'Something went wrong',
+    retry: 'Try again',
+    notFound: 'This page does not exist',
   },
   status: {
     LEAKED: 'Leaked',
@@ -122,6 +129,7 @@ export const en = {
     manual: 'Manual intervention required.',
     failed: 'The hack failed and cannot be tried again. Assign a defender.',
     fixed: 'Fixed by a hack.',
+    reopened: 'This glitch was hacked before and cannot be hacked again. Assign a defender.',
     /** Added to the glitch as an echo, in the language of the commander. */
     echoes: {
       SUCCESS: 'Hacked into the glitch and rewove the desynced threads. Magic flows again.',
@@ -255,7 +263,6 @@ export const en = {
     badgesTitle: 'Badges to earn',
     you: '(you)',
     fixed: 'fixed',
-    echoes: (count: number): string => (count === 1 ? 'echo' : 'echoes'),
     badges: {
       'first-whisper': { label: 'First Whisper', description: 'Reported an echo' },
       'keen-ear': { label: 'Keen Ear', description: 'Reported 10 echoes' },
@@ -282,7 +289,7 @@ export const en = {
     noneFixed: 'No fixed glitches yet.',
     top: 'Most valued guardians',
     noActivity: 'No activity yet.',
-    topEntry: (fixes: number, echoes: number) => `${fixes} fixed, ${echoes} echoes`,
+    topEntry: (fixes: number, echoes: number) => `${fixes} fixed, ${echoes} ${echoes === 1 ? 'echo' : 'echoes'}`,
     columns: {
       glitch: 'Glitch',
       description: 'Description',

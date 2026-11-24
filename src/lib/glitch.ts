@@ -52,7 +52,6 @@ export const glitchStatusSchema = z.enum(GLITCH_STATUSES, 'Invalid status')
 /** For every server function that only needs to know which glitch. */
 export const glitchRefSchema = z.object({ glitchId: glitchIdSchema })
 
-
 export const assignGlitchSchema = z.object({
   glitchId: glitchIdSchema,
   /** null unassigns */

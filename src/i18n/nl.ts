@@ -19,7 +19,13 @@ export const nl: Dictionary = {
     showMore: 'Meer tonen',
     showLess: 'Minder tonen',
     shown: (shown, total) => `${shown} van ${total}`,
+    echoes: (count) => (count === 1 ? 'echo' : "echo's"),
     loading: 'De leylijnen raadplegen…',
+  },
+  page: {
+    error: 'Er ging iets mis',
+    retry: 'Opnieuw proberen',
+    notFound: 'Deze pagina bestaat niet',
   },
   status: {
     LEAKED: 'Gelekt',
@@ -126,6 +132,7 @@ export const nl: Dictionary = {
     manual: 'Manuele tussenkomst nodig.',
     failed: 'De hack is mislukt en kan niet opnieuw geprobeerd worden. Wijs een defender toe.',
     fixed: 'Hersteld met een hack.',
+    reopened: 'Deze glitch werd al eens gehackt en kan niet opnieuw gehackt worden. Wijs een defender toe.',
     echoes: {
       SUCCESS: 'De glitch gehackt en de ontregelde draden herweven. De magie stroomt weer.',
       FAILED: 'Hackpoging afgeweerd door de desync. Manuele tussenkomst nodig.',
@@ -259,7 +266,6 @@ export const nl: Dictionary = {
     badgesTitle: 'Badges om te verdienen',
     you: '(jij)',
     fixed: 'hersteld',
-    echoes: (count) => (count === 1 ? 'echo' : "echo's"),
     badges: {
       'first-whisper': { label: 'Eerste gefluister', description: 'Een echo gemeld' },
       'keen-ear': { label: 'Scherp gehoor', description: "10 echo's gemeld" },

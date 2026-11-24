@@ -10,12 +10,12 @@ import { Shape } from '#/components/ui/Shape.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
 import { getDashboard } from '#/lib/dashboard.functions.ts'
 import { desyncStateFor } from '#/lib/desync.ts'
-import { GLITCH_STATUSES, type GlitchStatus } from '#/lib/glitch.ts'
+import { GLITCH_STATUSES, canHack, type GlitchStatus } from '#/lib/glitch.ts'
 import { magicLevel } from '#/lib/magic.ts'
 import { locate } from '#/lib/map.ts'
 
 export const Route = createFileRoute('/_app/map')({
-  validateSearch: z.object({ glitch: z.string().optional() }),
+  validateSearch: z.object({ glitch: z.string().optional().catch(undefined) }),
   loader: () => getDashboard(),
   component: MapPage,
 })
@@ -103,7 +103,7 @@ function MapPage() {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="flex min-w-0 flex-col gap-3">
-          <div className="map-frame tech-frame overflow-hidden rounded-xl border-2 border-edge bg-well">
+          <div className="tech-frame overflow-hidden rounded-xl border-2 border-edge bg-well">
             <AchronaMap
               glitches={visible}
               selectedId={selected?.glitchId}
@@ -138,7 +138,7 @@ function MapPage() {
 
               <div className="flex flex-col gap-2">
                 <h4 className="text-sm font-bold text-soft">
-                  {selected.echoes.length} {t.leaderboard.echoes(selected.echoes.length)}
+                  {selected.echoes.length} {t.common.echoes(selected.echoes.length)}
                 </h4>
                 <ul className="flex flex-col gap-2">
                   {selected.echoes.slice(0, RECENT_ECHOES).map((echo) => (
@@ -253,25 +253,24 @@ function EchoRow({ onHack, children }: { onHack?: () => void; children: ReactNod
 /** What is left to do with hacking on this glitch. */
 function HackStatus({ glitch, onOpen }: { glitch: MapGlitch; onOpen: () => void }) {
   const t = useT()
-  if (glitch.hackResult === 'FAILED') {
+  if (glitch.status === 'FIXED') {
+    return glitch.hackResult === 'SUCCESS' ? (
+      <p className="flex items-center gap-2 text-sm text-(--status-fixed)">
+        <Sparkles size={16} aria-hidden="true" /> {t.hack.fixed}
+      </p>
+    ) : null
+  }
+  if (!canHack(glitch)) {
     return (
       <p className="flex items-start gap-2.5 rounded-xl border-2 border-(--status-leaked) bg-well px-4 py-3 text-sm">
         <ShieldAlert size={18} className="mt-0.5 shrink-0 text-(--status-leaked)" aria-hidden="true" />
         <span>
           <b className="text-(--status-leaked)">{t.hack.manual}</b>{' '}
-          <span className="text-muted">{t.hack.failed}</span>
+          <span className="text-muted">{glitch.hackResult === 'FAILED' ? t.hack.failed : t.hack.reopened}</span>
         </span>
       </p>
     )
   }
-  if (glitch.hackResult === 'SUCCESS') {
-    return (
-      <p className="flex items-center gap-2 text-sm text-(--status-fixed)">
-        <Sparkles size={16} aria-hidden="true" /> {t.hack.fixed}
-      </p>
-    )
-  }
-  if (glitch.status === 'FIXED') return null
   return (
     <div className="flex flex-col gap-2">
       <button

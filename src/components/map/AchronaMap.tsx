@@ -174,7 +174,7 @@ function GlitchMarker({ glitch, isSelected, onSelect, onEchoSelect }: MarkerProp
   const dots = [...glitch.echoes].reverse().slice(0, MAX_ECHO_DOTS)
   const spread = Math.max(dots.length, 6)
   const size = isSelected ? 30 : 24
-  const echoCount = `${glitch.echoes.length} ${t.leaderboard.echoes(glitch.echoes.length)}`
+  const echoCount = `${glitch.echoes.length} ${t.common.echoes(glitch.echoes.length)}`
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {

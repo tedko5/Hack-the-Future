@@ -60,6 +60,13 @@ export async function listGlitchEchoes(glitchId: string): Promise<Echo[]> {
 /** A glitch that still has the text of the echo that opened it follows along. */
 export async function editEcho(editor: Guardian, echoId: number, description: string) {
   await db.transaction(async (tx) => {
+    const [found] = await tx
+      .select({ glitchId: echoes.glitchId })
+      .from(echoes)
+      .where(eq(echoes.echoId, echoId))
+    if (!found) throw new Error('That echo does not exist')
+    // The glitch first, like everywhere else, so this never deadlocks with a removal.
+    await lockGlitch(tx, found.glitchId)
     const [echo] = await tx.select().from(echoes).where(eq(echoes.echoId, echoId)).for('update')
     if (!echo) throw new Error('That echo does not exist')
     if (!canEditEcho(editor, echo.reportingGuardianId)) {
@@ -84,6 +91,14 @@ export async function editEcho(editor: Guardian, echoId: number, description: st
   })
 }
 
+async function lockGlitch(tx: Transaction, glitchId: string) {
+  await tx
+    .select({ glitchId: glitches.glitchId })
+    .from(glitches)
+    .where(eq(glitches.glitchId, glitchId))
+    .for('update')
+}
+
 /** Never the last one: a glitch always has an echo, so then the glitch itself has to go. */
 export async function removeEcho(echoId: number) {
   await db.transaction(async (tx) => {
@@ -93,11 +108,7 @@ export async function removeEcho(echoId: number) {
       .where(eq(echoes.echoId, echoId))
     if (!echo) throw new Error('That echo does not exist')
     // Locked, so two commanders cannot remove the last two at the same time.
-    await tx
-      .select({ glitchId: glitches.glitchId })
-      .from(glitches)
-      .where(eq(glitches.glitchId, echo.glitchId))
-      .for('update')
+    await lockGlitch(tx, echo.glitchId)
     const [{ total }] = await tx
       .select({ total: count() })
       .from(echoes)

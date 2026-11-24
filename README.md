@@ -78,7 +78,7 @@ A channel runs after the change is saved and not awaited, and its errors are onl
 
 Clerk handles accounts and sessions. The `guardians` table holds the codename and role, and everyone starts as `defender`. Every server function uses a middleware from `src/middleware/auth.ts`, because anyone can call them directly.
 
-Make the first commander in the database, then use the Guardians page:
+Make the first commander in the database, then use the Guardians section at the bottom of mission control:
 
 ```sql
 UPDATE guardians SET role = 'commander' WHERE codename = 'YourCodename';

@@ -1,9 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { ImageAttachment } from '#/components/images/Attachment.tsx'
 import { ImageButton } from '#/components/images/ImageButton.tsx'
 import { useImageAttachment } from '#/components/images/useImageAttachment.ts'
+import { Dialog } from '#/components/ui/Dialog.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
 import { ECHO_MAX_LENGTH } from '#/lib/echo.ts'
 import { reportEcho } from '#/lib/echoes.functions.ts'
@@ -24,7 +25,6 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
   const t = useT()
   const format = useFormat()
   const router = useRouter()
-  const dialog = useRef<HTMLDialogElement>(null)
   const [description, setDescription] = useState('')
   const [status, setStatus] = useState<GlitchStatus | typeof KEEP_STATUS>(KEEP_STATUS)
   const attachment = useImageAttachment()
@@ -47,16 +47,10 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
   const error = report.error ?? attachment.error
   const isBusy = report.isPending || attachment.isPreparing
 
-  useEffect(() => {
-    dialog.current?.showModal()
-  }, [])
-
   return (
-    <dialog
-      ref={dialog}
+    <Dialog
+      title={glitch ? t.echoes.updateTitle(glitch.glitchId) : t.echoes.report}
       onClose={onClose}
-      aria-labelledby="report-echo-title"
-      className="m-auto w-full max-w-lg rounded-[18px] border-2 border-edge bg-panel p-6 text-fg backdrop:bg-black/60"
     >
       <form
         className="flex flex-col gap-4"
@@ -65,9 +59,6 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
           report.mutate()
         }}
       >
-        <h2 id="report-echo-title" className="font-display text-[1.6rem] font-bold">
-          {glitch ? t.echoes.updateTitle(glitch.glitchId) : t.echoes.report}
-        </h2>
         <label className="flex flex-col gap-2 text-muted">
           {t.echoes.question}
           <textarea
@@ -122,6 +113,6 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
           </button>
         </div>
       </form>
-    </dialog>
+    </Dialog>
   )
 }

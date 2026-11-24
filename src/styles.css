@@ -539,13 +539,11 @@ select:focus {
   .map-selected { animation: map-spin 12s linear infinite; will-change: rotate; }
   .map-flash { animation: map-flash 1.6s ease-out 2 both; will-change: scale, opacity; }
   .hack-line { animation: hack-line 0.25s ease-out both; }
-  .hack-caret { animation: caret 0.8s steps(1) infinite; }
 }
 @keyframes map-pulse { from { scale: 0.8; opacity: 0.9 } to { scale: 2.6; opacity: 0 } }
 @keyframes map-flash { from { scale: 1; opacity: 1 } to { scale: 5; opacity: 0 } }
 @keyframes map-spin { to { rotate: 360deg } }
 @keyframes hack-line { from { opacity: 0; transform: translateX(-6px) } to { opacity: 1; transform: none } }
-@keyframes caret { 50% { opacity: 0 } }
 
 /* The terminal's own prompt line: no field border or halo. */
 .hack-console input.hack-input,

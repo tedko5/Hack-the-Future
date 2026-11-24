@@ -20,7 +20,7 @@ export function Dialog({ title, onClose, children }: Props) {
       ref={dialog}
       onClose={onClose}
       aria-labelledby={titleId}
-      className="m-auto w-full max-w-lg rounded-[18px] border-2 border-edge bg-panel p-6 text-fg backdrop:bg-black/60"
+      className="m-auto w-[calc(100%-2rem)] max-w-lg rounded-[18px] border-2 border-edge bg-panel p-6 text-fg backdrop:bg-black/60"
     >
       <h2 id={titleId} className="mb-4 font-display text-[1.6rem] font-bold">
         {title}

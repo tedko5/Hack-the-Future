@@ -3,6 +3,7 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { LanguageToggle } from '#/components/layout/LanguageToggle.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
+import { CODENAME_MAX_LENGTH, CODENAME_MIN_LENGTH } from '#/lib/guardian.ts'
 import { registerGuardian, requireNewcomer } from '#/lib/guardians.functions.ts'
 
 export const Route = createFileRoute('/welcome')({
@@ -38,8 +39,8 @@ function WelcomePage() {
             value={codename}
             onChange={(event) => setCodename(event.target.value)}
             required
-            minLength={3}
-            maxLength={24}
+            minLength={CODENAME_MIN_LENGTH}
+            maxLength={CODENAME_MAX_LENGTH}
             autoFocus
           />
         </label>

@@ -29,7 +29,7 @@ const toGlitch = (row: GlitchRow): Glitch => ({ ...row, timestamp: row.timestamp
 
 /** Newest first. */
 export async function listGlitches(): Promise<Glitch[]> {
-  return (await selectGlitches().orderBy(desc(glitches.timestamp))).map(toGlitch)
+  return (await selectGlitches().orderBy(desc(glitches.timestamp), desc(glitches.glitchId))).map(toGlitch)
 }
 
 export async function findGlitch(glitchId: string): Promise<Glitch | undefined> {

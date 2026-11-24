@@ -65,7 +65,9 @@ function GlitchPage() {
           <TakeOrRelease key={glitch.glitchId} glitch={glitch} guardian={guardian} />
         )}
       </section>
+      {/* Keyed so a search on one glitch does not carry over to the next. */}
       <EchoList
+        key={glitch.glitchId}
         echoes={glitch.echoes}
         storageKey="glitch-echoes"
         reportLabel={t.echoes.addUpdate}

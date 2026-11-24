@@ -47,7 +47,7 @@ function LeaderboardPage() {
               <span className="text-sm text-muted tabular-nums">
                 <b className="text-fg">{entry.fixes}</b> {t.leaderboard.fixed}
                 <span className="ml-3">
-                  <b className="text-fg">{entry.echoes}</b> {t.leaderboard.echoes(entry.echoes)}
+                  <b className="text-fg">{entry.echoes}</b> {t.common.echoes(entry.echoes)}
                 </span>
               </span>
               <span className="w-full pl-12">

@@ -1,6 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
 import { createRouter, type ParsedLocation } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
+import { PageError, PageNotFound } from '#/components/ui/PageMessage.tsx'
 import { routeTree } from './routeTree.gen'
 
 export function getRouter() {
@@ -9,6 +10,8 @@ export function getRouter() {
     routeTree,
     context: { queryClient },
     scrollRestoration: onlyAfterNavigating(),
+    defaultErrorComponent: PageError,
+    defaultNotFoundComponent: PageNotFound,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
   })

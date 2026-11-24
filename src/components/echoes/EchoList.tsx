@@ -13,7 +13,6 @@ import { isToday } from '#/lib/formatDate.ts'
 import { matchesSearch } from '#/lib/search.ts'
 import { useStoredFlag } from '#/lib/useStoredFlag.ts'
 
-
 /** Grid shared by day markers and echoes: time | ley line | content. */
 const ROW = 'relative grid grid-cols-[3rem_1.5rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[3.5rem_1.5rem_minmax(0,1fr)] sm:gap-x-4'
 

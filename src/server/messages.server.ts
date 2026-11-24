@@ -22,7 +22,6 @@ import { findGuardian, listGuardians } from '#/server/guardians.server.ts'
 import type { StoredImage } from '#/server/images.server.ts'
 import { withNotifications } from '#/server/notifications/notify.server.ts'
 
-
 /**
  * The messages of one conversation as `guardianId` may see them. Every read goes through
  * this, so a private conversation always has the reader as one of its two participants.

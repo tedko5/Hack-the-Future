@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
-import { useEffect, useRef } from 'react'
+import { Dialog } from '#/components/ui/Dialog.tsx'
 import { useT } from '#/i18n/index.ts'
 import { getGlitches } from '#/lib/glitches.functions.ts'
 import { EVERYONE } from '#/lib/message.ts'
@@ -66,23 +66,10 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
     ['p', t.shortcuts.council],
     ['?', t.shortcuts.help],
   ]
-  const dialog = useRef<HTMLDialogElement>(null)
-
-  useEffect(() => {
-    dialog.current?.showModal()
-  }, [])
 
   return (
-    <dialog
-      ref={dialog}
-      onClose={onClose}
-      aria-labelledby="shortcuts-title"
-      className="m-auto w-full max-w-md rounded-[18px] border-2 border-edge bg-panel p-6 text-fg backdrop:bg-black/60"
-    >
-      <h2 id="shortcuts-title" className="font-display text-[1.6rem] font-bold">
-        {t.shortcuts.title}
-      </h2>
-      <dl className="mt-4 grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2.5">
+    <Dialog title={t.shortcuts.title} onClose={onClose}>
+      <dl className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2.5">
         {help.map(([key, description]) => (
           <div key={key} className="contents">
             <dt>
@@ -101,6 +88,6 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
       >
         {t.common.close}
       </button>
-    </dialog>
+    </Dialog>
   )
 }

@@ -11,17 +11,19 @@ export type Guardian = {
   role: GuardianRole
 }
 
-const codenameMessage = 'Use 3 to 24 letters, digits, spaces, - or _'
-
 export const CODENAME_MIN_LENGTH = 3
 export const CODENAME_MAX_LENGTH = 24
+
+const codenameMessage = `Use ${CODENAME_MIN_LENGTH} to ${CODENAME_MAX_LENGTH} letters, digits, spaces, - or _`
 
 /** For choosing a codename, and for changing it later. */
 export const codenameSchema = z.object({
   codename: z
     .string(codenameMessage)
     .trim()
-    .regex(/^[A-Za-z0-9 _-]{3,24}$/, codenameMessage),
+    .min(CODENAME_MIN_LENGTH, codenameMessage)
+    .max(CODENAME_MAX_LENGTH, codenameMessage)
+    .regex(/^[A-Za-z0-9 _-]+$/, codenameMessage),
 })
 
 export const setGuardianRoleSchema = z.object({
