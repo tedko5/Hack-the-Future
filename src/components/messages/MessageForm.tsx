@@ -7,8 +7,8 @@ import { Attachment, ImageAttachment } from '#/components/images/Attachment.tsx'
 import { ImageButton } from '#/components/images/ImageButton.tsx'
 import { useImageAttachment } from '#/components/images/useImageAttachment.ts'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { MESSAGE_MAX_LENGTH, type Message } from '#/lib/message.ts'
-import { sendMessage } from '#/lib/messages.functions.ts'
+import { MESSAGE_MAX_LENGTH, type Message } from '#/lib/schemas/message.ts'
+import { sendMessage } from '#/lib/functions/messages.functions.ts'
 
 type Props = {
   conversationId: string

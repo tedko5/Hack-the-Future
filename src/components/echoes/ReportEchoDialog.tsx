@@ -6,9 +6,9 @@ import { ImageButton } from '#/components/images/ImageButton.tsx'
 import { useImageAttachment } from '#/components/images/useImageAttachment.ts'
 import { Dialog } from '#/components/ui/Dialog.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { ECHO_MAX_LENGTH } from '#/lib/echo.ts'
-import { reportEcho } from '#/lib/echoes.functions.ts'
-import { GLITCH_STATUSES, type Glitch, type GlitchStatus } from '#/lib/glitch.ts'
+import { ECHO_MAX_LENGTH } from '#/lib/schemas/echo.ts'
+import { reportEcho } from '#/lib/functions/echoes.functions.ts'
+import { GLITCH_STATUSES, type Glitch, type GlitchStatus } from '#/lib/schemas/glitch.ts'
 
 const KEEP_STATUS = ''
 

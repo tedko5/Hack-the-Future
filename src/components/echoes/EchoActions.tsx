@@ -4,8 +4,8 @@ import { ConfirmDialog } from '#/components/ui/ConfirmDialog.tsx'
 import { EditRemoveButtons } from '#/components/ui/EditRemoveButtons.tsx'
 import { EditTextDialog } from '#/components/ui/EditTextDialog.tsx'
 import { useT } from '#/i18n/index.ts'
-import { ECHO_MAX_LENGTH, canEditEcho, type Echo } from '#/lib/echo.ts'
-import { editEcho, removeEcho } from '#/lib/echoes.functions.ts'
+import { ECHO_MAX_LENGTH, canEditEcho, type Echo } from '#/lib/schemas/echo.ts'
+import { editEcho, removeEcho } from '#/lib/functions/echoes.functions.ts'
 
 const appRoute = getRouteApi('/_app')
 

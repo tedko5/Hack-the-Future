@@ -8,11 +8,11 @@ import { AchronaMap, type MapGlitch } from '#/components/map/AchronaMap.tsx'
 import { HackTerminal } from '#/components/map/HackTerminal.tsx'
 import { Shape } from '#/components/ui/Shape.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { getDashboard } from '#/lib/dashboard.functions.ts'
-import { desyncStateFor } from '#/lib/desync.ts'
-import { GLITCH_STATUSES, canHack, type GlitchStatus } from '#/lib/glitch.ts'
-import { magicLevel } from '#/lib/magic.ts'
-import { placeGlitches } from '#/lib/map.ts'
+import { getDashboard } from '#/lib/functions/dashboard.functions.ts'
+import { desyncStateFor } from '#/lib/achrona/desync.ts'
+import { GLITCH_STATUSES, canHack, type GlitchStatus } from '#/lib/schemas/glitch.ts'
+import { magicLevel } from '#/lib/achrona/magic.ts'
+import { placeGlitches } from '#/lib/achrona/map.ts'
 
 export const Route = createFileRoute('/_app/map')({
   validateSearch: z.object({ glitch: z.string().optional().catch(undefined) }),

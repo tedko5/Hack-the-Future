@@ -7,9 +7,9 @@ import { MessageForm } from '#/components/messages/MessageForm.tsx'
 import { MessageThread } from '#/components/messages/MessageThread.tsx'
 import { SearchInput } from '#/components/ui/SearchInput.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { MAX_MESSAGES, MESSAGE_PAGE_SIZE, SEARCH_MAX_LENGTH, type Message } from '#/lib/message.ts'
-import { getConversation, markRead, searchMessages } from '#/lib/messages.functions.ts'
-import { useDebounced } from '#/lib/useDebounced.ts'
+import { MAX_MESSAGES, MESSAGE_PAGE_SIZE, SEARCH_MAX_LENGTH, type Message } from '#/lib/schemas/message.ts'
+import { getConversation, markRead, searchMessages } from '#/lib/functions/messages.functions.ts'
+import { useDebounced } from '#/lib/hooks/useDebounced.ts'
 
 export const Route = createFileRoute('/_app/messages/$conversationId')({
   // How many messages are shown. Left out, it is one page.

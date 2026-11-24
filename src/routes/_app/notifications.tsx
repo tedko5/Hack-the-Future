@@ -5,8 +5,8 @@ import { NotificationIcon } from '#/components/notifications/NotificationIcon.ts
 import { NotificationLink } from '#/components/notifications/NotificationLink.tsx'
 import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { describeNotification, type Notification } from '#/lib/notification.ts'
-import { getNotifications, markAllNotificationsRead } from '#/lib/notifications.functions.ts'
+import { describeNotification, type Notification } from '#/lib/schemas/notification.ts'
+import { getNotifications, markAllNotificationsRead } from '#/lib/functions/notifications.functions.ts'
 
 export const Route = createFileRoute('/_app/notifications')({
   loader: () => getNotifications(),

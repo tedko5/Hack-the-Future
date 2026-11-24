@@ -1,7 +1,7 @@
 import { ImagePlus } from 'lucide-react'
 import { useRef } from 'react'
 import { useT } from '#/i18n/index.ts'
-import { IMAGE_TYPES } from '#/lib/image.ts'
+import { IMAGE_TYPES } from '#/lib/schemas/image.ts'
 
 type Props = {
   disabled: boolean

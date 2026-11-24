@@ -1,4 +1,4 @@
-import { GLITCH_STATUSES, type Glitch } from './glitch.ts'
+import { GLITCH_STATUSES, type Glitch } from '#/lib/schemas/glitch.ts'
 
 export type GlitchSort = 'newest' | 'oldest' | 'urgent' | 'assignee'
 

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { Dictionary } from '../i18n/en.ts'
+import type { Dictionary } from '../../i18n/en.ts'
 import type { GlitchStatus } from './glitch.ts'
 import { EVERYONE } from './message.ts'
 

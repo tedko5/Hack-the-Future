@@ -1,5 +1,5 @@
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
-import type { GlitchStatus } from '#/lib/glitch.ts'
+import type { GlitchStatus } from '#/lib/schemas/glitch.ts'
 
 /**
  * Each status has its own shape as well as its own colour, so it never relies on colour alone.

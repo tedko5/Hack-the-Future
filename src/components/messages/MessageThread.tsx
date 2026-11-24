@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { MessageItem } from '#/components/messages/MessageItem.tsx'
 import { useT } from '#/i18n/index.ts'
-import type { Message } from '#/lib/message.ts'
+import type { Message } from '#/lib/schemas/message.ts'
 
 type Props = {
   messages: Message[]

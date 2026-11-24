@@ -6,7 +6,7 @@ import { LanguageToggle } from '#/components/layout/LanguageToggle.tsx'
 import { ThemeToggle } from '#/components/layout/ThemeToggle.tsx'
 import { NotificationsLink } from '#/components/notifications/NotificationsLink.tsx'
 import { useT } from '#/i18n/index.ts'
-import type { Guardian } from '#/lib/guardian.ts'
+import type { Guardian } from '#/lib/schemas/guardian.ts'
 
 type Props = {
   guardian: Guardian

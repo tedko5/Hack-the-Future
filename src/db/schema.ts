@@ -13,11 +13,11 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/pg-core'
 // Relative import: drizzle-kit loads this file and doesn't resolve the `#/` alias.
-import { GLITCH_STATUSES, HACK_RESULTS } from '../lib/glitch.ts'
-import { GUARDIAN_ROLES } from '../lib/guardian.ts'
-import { IMAGE_TYPES } from '../lib/image.ts'
-import { REACTIONS } from '../lib/message.ts'
-import { NOTIFICATION_TYPES } from '../lib/notification.ts'
+import { GLITCH_STATUSES, HACK_RESULTS } from '../lib/schemas/glitch.ts'
+import { GUARDIAN_ROLES } from '../lib/schemas/guardian.ts'
+import { IMAGE_TYPES } from '../lib/schemas/image.ts'
+import { REACTIONS } from '../lib/schemas/message.ts'
+import { NOTIFICATION_TYPES } from '../lib/schemas/notification.ts'
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => 'bytea' })
 

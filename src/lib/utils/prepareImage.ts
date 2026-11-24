@@ -1,4 +1,4 @@
-import { IMAGE_MAX_BYTES } from './image.ts'
+import { IMAGE_MAX_BYTES } from '#/lib/schemas/image.ts'
 
 const MAX_SIDE = 1600
 

@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { Link, useRouter, type LinkProps } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import { pathOf, type Notification } from '#/lib/notification.ts'
-import { markNotificationRead } from '#/lib/notifications.functions.ts'
+import { pathOf, type Notification } from '#/lib/schemas/notification.ts'
+import { markNotificationRead } from '#/lib/functions/notifications.functions.ts'
 
 type Props = {
   notification: Notification

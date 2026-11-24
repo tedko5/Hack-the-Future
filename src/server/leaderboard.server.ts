@@ -1,7 +1,7 @@
 import { and, count, desc, eq } from 'drizzle-orm'
 import { db } from '#/db/index.ts'
 import { echoes, glitches } from '#/db/schema.ts'
-import type { LeaderboardEntry } from '#/lib/leaderboard.ts'
+import type { LeaderboardEntry } from '#/lib/schemas/leaderboard.ts'
 import { getAvatars } from '#/server/avatars.server.ts'
 import { listGuardians } from '#/server/guardians.server.ts'
 

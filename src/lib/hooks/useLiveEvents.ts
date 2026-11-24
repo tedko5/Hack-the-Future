@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { LiveEvent } from '#/lib/liveEvents.ts'
+import type { LiveEvent } from '#/lib/schemas/liveEvents.ts'
 
 /** Calls onEvent for every change, e.g. `useLiveEvents(() => router.invalidate())`. */
 export function useLiveEvents(onEvent: (event: LiveEvent) => void) {

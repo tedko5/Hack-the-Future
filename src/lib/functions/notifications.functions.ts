@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
-import { notificationRefSchema } from '#/lib/notification.ts'
-import { validate } from '#/lib/validate.ts'
+import { notificationRefSchema } from '#/lib/schemas/notification.ts'
+import { validate } from './validate.ts'
 import { guardianMiddleware } from '#/middleware/auth.ts'
 import { countAllUnread } from '#/server/messages.server.ts'
 import * as notifications from '#/server/notifications/notifications.server.ts'

@@ -1,6 +1,6 @@
 import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
-import { addPing, getHealth } from '#/lib/health.functions.ts'
+import { addPing, getHealth } from '#/lib/functions/health.functions.ts'
 
 const healthQuery = queryOptions({
   queryKey: ['health'],

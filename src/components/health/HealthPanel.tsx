@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { DesyncWell } from '#/components/health/DesyncWell.tsx'
 import { ShapePath, type ShapeKind } from '#/components/ui/Shape.tsx'
 import { useT } from '#/i18n/index.ts'
-import { desyncStateFor, type DesyncState } from '#/lib/desync.ts'
+import { desyncStateFor, type DesyncState } from '#/lib/achrona/desync.ts'
 
 const STATE_SHAPE: Record<DesyncState, ShapeKind> = {
   stable: 'circle',

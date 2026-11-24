@@ -1,4 +1,4 @@
-import type { Glitch } from './glitch.ts'
+import type { Glitch } from '#/lib/schemas/glitch.ts'
 
 export type DistrictId =
   | 'crystal-spire'

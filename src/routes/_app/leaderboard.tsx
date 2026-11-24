@@ -4,8 +4,8 @@ import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { BadgeList } from '#/components/leaderboard/BadgeList.tsx'
 import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useT } from '#/i18n/index.ts'
-import { BADGES } from '#/lib/leaderboard.ts'
-import { getLeaderboard } from '#/lib/leaderboard.functions.ts'
+import { BADGES } from '#/lib/schemas/leaderboard.ts'
+import { getLeaderboard } from '#/lib/functions/leaderboard.functions.ts'
 
 export const Route = createFileRoute('/_app/leaderboard')({
   loader: () => getLeaderboard(),

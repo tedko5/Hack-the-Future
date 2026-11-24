@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
-import { echoRefSchema, editEchoSchema, reportEchoSchema } from '#/lib/echo.ts'
-import { validate } from '#/lib/validate.ts'
+import { echoRefSchema, editEchoSchema, reportEchoSchema } from '#/lib/schemas/echo.ts'
+import { validate } from './validate.ts'
 import { commanderMiddleware, guardianMiddleware } from '#/middleware/auth.ts'
 import * as echoes from '#/server/echoes.server.ts'
 import { readImage } from '#/server/images.server.ts'

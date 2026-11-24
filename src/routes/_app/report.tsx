@@ -2,10 +2,10 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { FileDown } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { dictionaries, useFormat, useT } from '#/i18n/index.ts'
-import { desyncStateFor } from '#/lib/desync.ts'
-import { GLITCH_STATUSES, type Glitch } from '#/lib/glitch.ts'
-import { sortGlitches } from '#/lib/glitchSort.ts'
-import { getReport } from '#/lib/report.functions.ts'
+import { desyncStateFor } from '#/lib/achrona/desync.ts'
+import { GLITCH_STATUSES, type Glitch } from '#/lib/schemas/glitch.ts'
+import { sortGlitches } from '#/lib/utils/glitchSort.ts'
+import { getReport } from '#/lib/functions/report.functions.ts'
 
 const TOP_GUARDIANS = 5
 

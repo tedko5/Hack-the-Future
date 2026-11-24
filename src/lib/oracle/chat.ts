@@ -1,6 +1,6 @@
 import type { Language } from '#/i18n/language.ts'
-import { KNOWLEDGE } from '#/lib/knowledge.ts'
-import { KNOWLEDGE_NL } from '#/lib/knowledge.nl.ts'
+import { KNOWLEDGE } from './knowledge.ts'
+import { KNOWLEDGE_NL } from './knowledge.nl.ts'
 
 type Entry = { question: string; answer: string; tokens: Set<string> }
 

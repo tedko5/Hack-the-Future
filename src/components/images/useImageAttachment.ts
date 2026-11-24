@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useState, type ClipboardEvent } from 'react'
-import { prepareImage } from '#/lib/prepareImage.ts'
+import { prepareImage } from '#/lib/utils/prepareImage.ts'
 
 /** One image to send along with a form, picked or pasted. */
 export function useImageAttachment() {

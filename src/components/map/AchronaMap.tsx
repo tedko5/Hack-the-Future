@@ -2,9 +2,9 @@ import { Fragment, useEffect, useRef, type KeyboardEvent } from 'react'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { ShapePath } from '#/components/ui/Shape.tsx'
 import { useT } from '#/i18n/index.ts'
-import type { Echo } from '#/lib/echo.ts'
-import type { Glitch } from '#/lib/glitch.ts'
-import { MAP_HEIGHT, MAP_WIDTH, type GlitchLocation } from '#/lib/map.ts'
+import type { Echo } from '#/lib/schemas/echo.ts'
+import type { Glitch } from '#/lib/schemas/glitch.ts'
+import { MAP_HEIGHT, MAP_WIDTH, type GlitchLocation } from '#/lib/achrona/map.ts'
 import { MapArt } from './MapArt.tsx'
 
 /** Most echoes drawn around one glitch; the rest are counted in its tooltip. */

@@ -1,7 +1,7 @@
 import { redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { codenameSchema, setGuardianRoleSchema } from '#/lib/guardian.ts'
-import { validate } from '#/lib/validate.ts'
+import { codenameSchema, setGuardianRoleSchema } from '#/lib/schemas/guardian.ts'
+import { validate } from './validate.ts'
 import { commanderMiddleware, guardianMiddleware, userMiddleware } from '#/middleware/auth.ts'
 import * as guardians from '#/server/guardians.server.ts'
 

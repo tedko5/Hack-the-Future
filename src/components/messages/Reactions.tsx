@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { useT } from '#/i18n/index.ts'
-import { REACTIONS, type Reaction, type ReactionEmoji } from '#/lib/message.ts'
-import { toggleReaction } from '#/lib/messages.functions.ts'
+import { REACTIONS, type Reaction, type ReactionEmoji } from '#/lib/schemas/message.ts'
+import { toggleReaction } from '#/lib/functions/messages.functions.ts'
 
 export function useToggleReaction(messageId: number) {
   const router = useRouter()

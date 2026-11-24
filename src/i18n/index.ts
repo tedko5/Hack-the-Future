@@ -1,5 +1,5 @@
 import { rootRouteId, useRouteContext } from '@tanstack/react-router'
-import { formatDateTime, formatDay, formatTime } from '#/lib/formatDate.ts'
+import { formatDateTime, formatDay, formatTime } from '#/lib/utils/formatDate.ts'
 import { en, type Dictionary } from './en.ts'
 import { translateError } from './errors.ts'
 import type { Language } from './language.ts'

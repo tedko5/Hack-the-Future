@@ -12,8 +12,8 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { RiftBackground } from '#/components/layout/RiftBackground.tsx'
 import { clerkLocalizations } from '#/i18n/clerk.ts'
 import { getLanguage } from '#/i18n/currentLanguage.ts'
-import { clerkAppearance } from '#/lib/clerk-appearance.ts'
-import { THEME_INIT_SCRIPT, useThemeVersion } from '#/lib/theme.ts'
+import { clerkAppearance } from '#/lib/ui/clerk-appearance.ts'
+import { THEME_INIT_SCRIPT, useThemeVersion } from '#/lib/ui/theme.ts'
 
 import type { QueryClient } from '@tanstack/react-query'
 import { useMemo, type ReactNode } from 'react'
@@ -26,8 +26,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { title: 'Achrona Mission Control' },
+      // Tints the browser bar on phones in the dark theme's night colour.
+      { name: 'theme-color', content: '#15172a' },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [
+      { rel: 'stylesheet', href: appCss },
+      { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+      // iPhones want a PNG for the home screen.
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+    ],
     // Applies a saved light theme before the page paints.
     scripts: [{ children: THEME_INIT_SCRIPT }],
   }),

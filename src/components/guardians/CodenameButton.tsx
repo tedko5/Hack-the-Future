@@ -4,8 +4,8 @@ import { Pencil } from 'lucide-react'
 import { useState } from 'react'
 import { Dialog, DialogActions } from '#/components/ui/Dialog.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { CODENAME_MAX_LENGTH, CODENAME_MIN_LENGTH } from '#/lib/guardian.ts'
-import { changeCodename } from '#/lib/guardians.functions.ts'
+import { CODENAME_MAX_LENGTH, CODENAME_MIN_LENGTH } from '#/lib/schemas/guardian.ts'
+import { changeCodename } from '#/lib/functions/guardians.functions.ts'
 
 /** Your own codename. Opens a dialog to change it. */
 export function CodenameButton({ codename }: { codename: string }) {

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { cogPath, cornerCogs, pitchRadius } from '#/lib/cog.ts'
+import { cogPath, cornerCogs, pitchRadius } from '#/lib/ui/cog.ts'
 
 /**
  * Fixed backdrop: grain plus corner art in the top-left and bottom-right corners.

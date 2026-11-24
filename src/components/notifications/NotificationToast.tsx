@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { NotificationIcon } from '#/components/notifications/NotificationIcon.tsx'
 import { NotificationLink } from '#/components/notifications/NotificationLink.tsx'
 import { useT } from '#/i18n/index.ts'
-import { describeNotification, pathOf, type Notification } from '#/lib/notification.ts'
+import { describeNotification, pathOf, type Notification } from '#/lib/schemas/notification.ts'
 
 const VISIBLE_MS = 6000
 

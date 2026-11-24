@@ -1,4 +1,4 @@
-import type { GlitchStatus } from './glitch.ts'
+import type { GlitchStatus } from '#/lib/schemas/glitch.ts'
 
 /** Share of the remaining magic that one glitch drains, by status. */
 const DRAIN: Record<GlitchStatus, number> = {

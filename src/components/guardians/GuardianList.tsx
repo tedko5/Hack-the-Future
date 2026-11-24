@@ -6,9 +6,9 @@ import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
 import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import type { Guardian, GuardianRole } from '#/lib/guardian.ts'
-import { setGuardianRole } from '#/lib/guardians.functions.ts'
-import { matchesSearch } from '#/lib/search.ts'
+import type { Guardian, GuardianRole } from '#/lib/schemas/guardian.ts'
+import { setGuardianRole } from '#/lib/functions/guardians.functions.ts'
+import { matchesSearch } from '#/lib/utils/search.ts'
 
 type Props = {
   guardians: Guardian[]
