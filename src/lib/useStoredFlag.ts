@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 
-/** A boolean kept in this browser. Off during server rendering, and when storage is blocked. */
-export function useStoredFlag(key: string) {
-  const [value, setValue] = useState(false)
+/** A boolean kept in this browser. The default applies until it is first changed. */
+export function useStoredFlag(key: string, defaultValue = false) {
+  const [value, setValue] = useState(defaultValue)
 
   // Read after mount, so the first render matches the server's.
   useEffect(() => {
     try {
-      setValue(localStorage.getItem(key) === 'true')
+      const stored = localStorage.getItem(key)
+      if (stored !== null) setValue(stored === 'true')
     } catch {
       // Storage is blocked: keep the default.
     }

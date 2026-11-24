@@ -32,7 +32,7 @@ export function EchoList({
   reportLabel = 'Report echo',
   canFilterToday = false,
 }: Props) {
-  const [wantsToday, setWantsToday] = useStoredFlag(`today-only:${storageKey}`)
+  const [wantsToday, setWantsToday] = useStoredFlag(`today-only:${storageKey}`, true)
   const isTodayOnly = canFilterToday && wantsToday
   const echoes = isTodayOnly ? allEchoes.filter((echo) => isToday(echo.timestamp)) : allEchoes
   const [query, setQuery] = useState('')
@@ -52,20 +52,10 @@ export function EchoList({
       : isTodayOnly
         ? 'No whispers yet today.'
         : 'No echoes reported yet.'
-  const reportButton = (
-    <button
-      type="button"
-      onClick={onReport}
-      className="min-h-12 w-full cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110 sm:w-auto"
-    >
-      {reportLabel}
-    </button>
-  )
-
-  return (
-    <CollapsibleSection title={isTodayOnly ? 'Whispers of today' : 'Echoes'} count={echoes.length} storageKey={storageKey} action={reportButton}>
+  const actions = (
+    <div className="flex w-full items-center gap-5 sm:w-auto">
       {canFilterToday && (
-        <label className="mb-2 flex min-h-11 w-fit cursor-pointer items-center gap-2.5 text-sm text-muted hover:text-fg">
+        <label className="flex min-h-11 w-fit cursor-pointer items-center gap-2.5 text-sm text-muted hover:text-fg">
           <input
             type="checkbox"
             className="size-4.5 cursor-pointer accent-violet"
@@ -75,6 +65,23 @@ export function EchoList({
           Only today
         </label>
       )}
+      <button
+        type="button"
+        onClick={onReport}
+        className="min-h-12 flex-1 cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110 sm:flex-none"
+      >
+        {reportLabel}
+      </button>
+    </div>
+  )
+
+  return (
+    <CollapsibleSection
+      title={isTodayOnly ? 'Whispers of today' : 'Echoes'}
+      count={echoes.length}
+      storageKey={storageKey}
+      action={actions}
+    >
       {echoes.length > 0 && (
         <div className="mb-4">
           <SearchInput label="Search echoes" value={query} onChange={setQuery} />
