@@ -10,6 +10,7 @@ export async function loadDashboard(guardian: Guardian): Promise<Dashboard> {
   return {
     guardian,
     magic: magicLevel(glitches.map((glitch) => glitch.status)),
+    glitches,
     echoes,
   }
 }

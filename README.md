@@ -43,7 +43,7 @@ To add a server function:
 2. Put its query in `src/server/<entities>.server.ts`.
 3. Add it to `src/lib/<entities>.functions.ts` with `guardianMiddleware` or `commanderMiddleware` and `validate(schema)`. Take the user from `context.guardian`, never from the input.
 
-Changes to glitches and echoes reach open pages live: call `useLiveEvents(() => router.invalidate())` in a page.
+Changes to glitches and echoes reach every open page under `routes/_app` live, through `useLiveEvents` in `routes/_app.tsx`.
 
 ## Login
 

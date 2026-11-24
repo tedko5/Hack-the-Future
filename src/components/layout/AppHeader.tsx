@@ -1,4 +1,4 @@
-import { useClerk } from '@clerk/tanstack-react-start'
+import { UserButton, useClerk } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import type { Guardian } from '#/lib/guardian.ts'
 
@@ -28,6 +28,8 @@ export function AppHeader({ guardian }: { guardian: Guardian }) {
         <button type="button" className={`${linkClass} cursor-pointer`} onClick={() => signOut()}>
           Log out
         </button>
+        {/* Opens Clerk's account settings. */}
+        <UserButton />
       </div>
     </header>
   )

@@ -4,13 +4,19 @@ import { useEffect, useRef, useState } from 'react'
 import { ECHO_MAX_LENGTH } from '#/lib/echo.ts'
 import { reportEcho } from '#/lib/echoes.functions.ts'
 
+type Props = {
+  /** Adds an update to this glitch. Without it, the echo opens a new glitch. */
+  glitchId?: string
+  onClose: () => void
+}
+
 /** Mount it to open it. Escape, Cancel and a successful report call onClose. */
-export function ReportEchoDialog({ onClose }: { onClose: () => void }) {
+export function ReportEchoDialog({ glitchId, onClose }: Props) {
   const router = useRouter()
   const dialog = useRef<HTMLDialogElement>(null)
   const [description, setDescription] = useState('')
   const report = useMutation({
-    mutationFn: () => reportEcho({ data: { description } }),
+    mutationFn: () => reportEcho({ data: { description, glitchId } }),
     onSuccess: () => {
       onClose()
       return router.invalidate()
@@ -36,7 +42,7 @@ export function ReportEchoDialog({ onClose }: { onClose: () => void }) {
         }}
       >
         <h2 id="report-echo-title" className="font-display text-[1.6rem] font-bold">
-          Report echo
+          {glitchId ? `Update ${glitchId}` : 'Report echo'}
         </h2>
         <label className="flex flex-col gap-2 text-muted">
           What did you notice?

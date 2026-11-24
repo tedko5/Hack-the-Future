@@ -1,16 +1,9 @@
+import { Link } from '@tanstack/react-router'
+import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import type { Echo } from '#/lib/echo.ts'
-import type { GlitchStatus } from '#/lib/glitch.ts'
+import { TIME_ZONE } from '#/lib/formatDate.ts'
 
-const STATUS: Record<GlitchStatus, { label: string; shape: ShapeKind; color: string }> = {
-  LEAKED: { label: 'Leaked', shape: 'square', color: '#ff6af3' },
-  ASSESSING: { label: 'Assessing', shape: 'diamond', color: '#b892ff' },
-  CONTAINING: { label: 'Containing', shape: 'triangle', color: '#e8954f' },
-  FIXED: { label: 'Fixed', shape: 'circle', color: '#4df3ff' },
-}
-
-// Pinned to Achrona's (Antwerp's) time zone so server and browser group days the same way.
-const TIME_ZONE = 'Europe/Brussels'
 const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE })
 const dayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TIME_ZONE })
 
@@ -19,10 +12,11 @@ const ROW = 'relative grid grid-cols-[3rem_1.5rem_minmax(0,1fr)] gap-x-3 sm:grid
 
 type Props = {
   echoes: Echo[]
-  onReport?: () => void
+  onReport: () => void
+  reportLabel?: string
 }
 
-export function EchoList({ echoes, onReport }: Props) {
+export function EchoList({ echoes, onReport, reportLabel = 'Report echo' }: Props) {
   return (
     <section aria-labelledby="echoes-title" className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -35,7 +29,7 @@ export function EchoList({ echoes, onReport }: Props) {
           onClick={onReport}
           className="min-h-12 w-full cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110 sm:w-auto"
         >
-          Report echo
+          {reportLabel}
         </button>
       </div>
 
@@ -93,7 +87,7 @@ function DayMarker({ day }: { day: string }) {
 }
 
 function EchoEntry({ echo }: { echo: Echo }) {
-  const status = STATUS[echo.glitch.status]
+  const status = STATUS_STYLES[echo.glitch.status]
 
   return (
     <li className={ROW}>
@@ -110,7 +104,13 @@ function EchoEntry({ echo }: { echo: Echo }) {
           <span className="font-medium" style={{ color: status.color }}>
             {status.label}
           </span>
-          <span className="tabular-nums">{echo.glitch.glitchId}</span>
+          <Link
+            to="/glitches/$glitchId"
+            params={{ glitchId: echo.glitch.glitchId }}
+            className="tabular-nums hover:text-cyan"
+          >
+            {echo.glitch.glitchId}
+          </Link>
           <span>
             <span className="text-fg">{echo.reporter.codename}</span>
             <span className="ml-1.5">{echo.reporter.role}</span>

@@ -18,6 +18,7 @@ import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
 import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
+import { Route as AppGlitchesGlitchIdRouteImport } from './routes/_app/glitches.$glitchId'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -63,6 +64,11 @@ const SignUpSplatRoute = SignUpSplatRouteImport.update({
   path: '/sign-up/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppGlitchesGlitchIdRoute = AppGlitchesGlitchIdRouteImport.update({
+  id: '/glitches/$glitchId',
+  path: '/glitches/$glitchId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/api/health': typeof ApiHealthRoute
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
+  '/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
 }
 export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
   '/': typeof AppIndexRoute
+  '/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/api/health'
     | '/sign-in/$'
     | '/sign-up/$'
+    | '/glitches/$glitchId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/welcome'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/sign-in/$'
     | '/sign-up/$'
     | '/'
+    | '/glitches/$glitchId'
   id:
     | '__root__'
     | '/_app'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/sign-in/$'
     | '/sign-up/$'
     | '/_app/'
+    | '/_app/glitches/$glitchId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -204,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignUpSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/glitches/$glitchId': {
+      id: '/_app/glitches/$glitchId'
+      path: '/glitches/$glitchId'
+      fullPath: '/glitches/$glitchId'
+      preLoaderRoute: typeof AppGlitchesGlitchIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -211,12 +230,14 @@ interface AppRouteChildren {
   AppGuardiansRoute: typeof AppGuardiansRoute
   AppStatusRoute: typeof AppStatusRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppGlitchesGlitchIdRoute: typeof AppGlitchesGlitchIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppGuardiansRoute: AppGuardiansRoute,
   AppStatusRoute: AppStatusRoute,
   AppIndexRoute: AppIndexRoute,
+  AppGlitchesGlitchIdRoute: AppGlitchesGlitchIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
