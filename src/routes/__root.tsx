@@ -35,7 +35,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootLayout() {
   return (
-    <div className="relative min-h-screen overflow-x-hidden">
+    // Clip rather than hidden: that would keep the tab bar from sticking.
+    <div className="relative min-h-screen overflow-x-clip">
       <div className="print:hidden">
         <RiftBackground />
       </div>

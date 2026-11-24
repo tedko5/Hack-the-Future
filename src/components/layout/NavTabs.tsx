@@ -6,7 +6,7 @@ import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
 import { useT } from '#/i18n/index.ts'
 import { EVERYONE } from '#/lib/message.ts'
 
-/** A bar at the bottom of the screen on phones, a row under the header on larger screens. */
+/** A bar at the bottom of the screen on phones. On larger screens, a row under the header that stays in view. */
 export function NavTabs({ unreadMessages }: { unreadMessages: number }) {
   const t = useT()
   const { pathname } = useLocation()
@@ -15,7 +15,7 @@ export function NavTabs({ unreadMessages }: { unreadMessages: number }) {
   return (
     <nav
       aria-label={t.nav.label}
-      className="fixed inset-x-0 bottom-0 z-30 flex border-t-2 border-edge bg-panel md:static md:gap-2 md:self-center md:rounded-xl md:border-0 md:p-1.5 print:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 flex border-t-2 border-edge bg-panel md:sticky md:inset-x-auto md:top-3 md:bottom-auto md:gap-2 md:self-center md:rounded-xl md:border-0 md:p-1.5 md:shadow-lg print:hidden"
     >
       <Tab
         link={linkOptions({ to: '/' })}
