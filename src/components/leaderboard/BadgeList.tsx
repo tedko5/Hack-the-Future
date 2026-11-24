@@ -11,7 +11,13 @@ const ICONS: Record<Badge['id'], LucideIcon> = {
   'swift-hand': Zap,
 }
 
-export function BadgeList({ badges }: { badges: Badge[] }) {
+type Props = {
+  badges: Badge[]
+  /** Icons only on phones, so a row of badges fits on one line. The name stays for hover and screen readers. */
+  compact?: boolean
+}
+
+export function BadgeList({ badges, compact = false }: Props) {
   const t = useT()
   if (badges.length === 0) return null
   return (
@@ -23,10 +29,12 @@ export function BadgeList({ badges }: { badges: Badge[] }) {
           <li
             key={id}
             title={description}
-            className="flex items-center gap-1.5 rounded-full border border-edge bg-row px-2.5 py-1 text-xs"
+            className={`flex items-center gap-1.5 rounded-full border border-edge bg-row py-1 text-xs ${
+              compact ? 'px-1.5 sm:px-2.5' : 'px-2.5'
+            }`}
           >
-            <Icon size={14} aria-hidden="true" className="text-copper" />
-            {label}
+            <Icon size={14} aria-hidden="true" className="shrink-0 text-copper" />
+            <span className={compact ? 'sr-only sm:not-sr-only' : undefined}>{label}</span>
           </li>
         )
       })}

@@ -29,29 +29,31 @@ function LeaderboardPage() {
         </h2>
         <ol className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
           {visible.map((entry) => (
+            // Rank, avatar, name and stats on one row; the badges line up under the name.
             <li
               key={entry.guardianId}
-              className={`flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 ${entry.guardianId === me.guardianId ? 'bg-row' : ''}`}
+              className={`grid grid-cols-[1.75rem_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-3 py-3 sm:grid-cols-[2rem_auto_minmax(0,1fr)_auto] sm:gap-x-4 sm:px-4 ${entry.guardianId === me.guardianId ? 'bg-row' : ''}`}
             >
-              <span className="w-8 font-display text-xl font-bold text-copper tabular-nums">
-                {entry.rank}
-              </span>
+              <span className="font-display text-xl font-bold text-copper tabular-nums">{entry.rank}</span>
               <Avatar codename={entry.codename} imageUrl={entry.imageUrl} />
-              <span className="min-w-32 flex-1">
-                <span className="block">
+              <span className="min-w-0">
+                <span className="block truncate">
                   <GuardianLink guardianId={entry.guardianId} codename={entry.codename} />
                   {entry.guardianId === me.guardianId && <span className="text-muted"> {t.leaderboard.you}</span>}
                 </span>
-                <span className="text-[.85rem] text-muted">{entry.role}</span>
+                <span className="block text-[.85rem] text-muted">{entry.role}</span>
               </span>
-              <span className="text-sm text-muted tabular-nums">
-                <b className="text-fg">{entry.fixes}</b> {t.leaderboard.fixed}
-                <span className="ml-3">
+              {/* Stacked on phones, side by side from sm up. */}
+              <span className="flex flex-col items-end text-sm leading-tight text-muted tabular-nums sm:flex-row sm:gap-3">
+                <span>
+                  <b className="text-fg">{entry.fixes}</b> {t.leaderboard.fixed}
+                </span>
+                <span>
                   <b className="text-fg">{entry.echoes}</b> {t.common.echoes(entry.echoes)}
                 </span>
               </span>
-              <span className="w-full pl-12">
-                <BadgeList badges={BADGES.filter((badge) => badge.isEarned(entry))} />
+              <span className="col-span-2 col-start-3 empty:hidden">
+                <BadgeList badges={BADGES.filter((badge) => badge.isEarned(entry))} compact />
               </span>
             </li>
           ))}
