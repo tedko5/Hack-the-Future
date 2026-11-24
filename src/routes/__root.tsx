@@ -9,9 +9,10 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { RiftBackground } from '#/components/layout/RiftBackground.tsx'
 import { clerkAppearance } from '#/lib/clerk-appearance.ts'
+import { THEME_INIT_SCRIPT, useThemeVersion } from '#/lib/theme.ts'
 
 import type { QueryClient } from '@tanstack/react-query'
-import type { ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -22,6 +23,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: 'Achrona Mission Control' },
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
+    // Applies a saved light theme before the page paints.
+    scripts: [{ children: THEME_INIT_SCRIPT }],
   }),
   shellComponent: RootDocument,
   component: RootLayout,
@@ -41,14 +44,19 @@ function RootLayout() {
 }
 
 function RootDocument({ children }: { children: ReactNode }) {
+  // A new object per theme change makes Clerk re-read the theme's colour variables.
+  const themeVersion = useThemeVersion()
+  const appearance = useMemo(() => ({ ...clerkAppearance }), [themeVersion])
+
   return (
-    <html lang="en">
+    // The init script may set data-theme before React hydrates.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body className="bg-app font-sans antialiased">
         <ClerkProvider
-          appearance={clerkAppearance}
+          appearance={appearance}
           signInUrl="/sign-in"
           signUpUrl="/sign-up"
           signInFallbackRedirectUrl="/"

@@ -75,7 +75,7 @@ export function EchoList({
       <button
         type="button"
         onClick={onReport}
-        className="min-h-12 flex-1 cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110 sm:flex-none"
+        className="min-h-12 flex-1 cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-on-copper hover:brightness-110 sm:flex-none"
       >
         {reportLabel}
       </button>
@@ -101,7 +101,7 @@ export function EchoList({
           />
         </div>
       )}
-      <div className="rounded-xl border-2 border-edge bg-well px-3 py-4 sm:px-6 sm:py-5">
+      <div className="tech-frame rounded-xl border-2 border-edge bg-well px-3 py-4 sm:px-6 sm:py-5">
         {found.length === 0 ? (
           <p className="text-muted">
             {emptyMessage}
@@ -138,7 +138,7 @@ function groupByDay(echoes: Echo[]) {
 
 /** The ley line itself: one segment per row, so the rows join into one unbroken line. */
 function LeyLine() {
-  return <span aria-hidden="true" className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-[#4a3a9e]" />
+  return <span aria-hidden="true" className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-ley" />
 }
 
 function DayMarker({ day }: { day: string }) {
@@ -148,10 +148,10 @@ function DayMarker({ day }: { day: string }) {
       <span className="relative flex justify-center pt-1">
         <LeyLine />
         <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="relative">
-          <rect x="2" y="2" width="10" height="10" transform="rotate(45 7 7)" fill="#141527" stroke="#7d6ad6" strokeWidth="1.5" />
+          <rect x="2" y="2" width="10" height="10" transform="rotate(45 7 7)" className="fill-well stroke-edge-hover" strokeWidth="1.5" />
         </svg>
       </span>
-      <h3 className="pb-3 font-display text-lg font-bold text-[#b9c0e6]">{day}</h3>
+      <h3 className="pb-3 font-display text-lg font-bold text-soft">{day}</h3>
     </div>
   )
 }
@@ -210,31 +210,31 @@ function EchoEntry({ echo }: { echo: Echo }) {
 
 /** Carved rune where an echo joins the ley line: the status shape, outlined with a solid core. */
 function Rune({ kind, color }: { kind: ShapeKind; color: string }) {
-  const outer = { fill: '#141527', stroke: color, strokeWidth: 1.75, strokeLinejoin: 'round' as const }
+  const outer = { className: 'fill-well', stroke: 'currentColor', strokeWidth: 1.75, strokeLinejoin: 'round' as const }
   return (
-    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" className="relative mt-px">
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" className="relative mt-px" style={{ color }}>
       {kind === 'circle' && (
         <>
           <circle cx="11" cy="11" r="9" {...outer} />
-          <circle cx="11" cy="11" r="4" fill={color} />
+          <circle cx="11" cy="11" r="4" fill="currentColor" />
         </>
       )}
       {kind === 'diamond' && (
         <>
           <polygon points="11,1.5 20.5,11 11,20.5 1.5,11" {...outer} />
-          <polygon points="11,6.5 15.5,11 11,15.5 6.5,11" fill={color} />
+          <polygon points="11,6.5 15.5,11 11,15.5 6.5,11" fill="currentColor" />
         </>
       )}
       {kind === 'square' && (
         <>
           <rect x="2.5" y="2.5" width="17" height="17" rx="2" {...outer} />
-          <rect x="7.5" y="7.5" width="7" height="7" rx="1" fill={color} />
+          <rect x="7.5" y="7.5" width="7" height="7" rx="1" fill="currentColor" />
         </>
       )}
       {kind === 'triangle' && (
         <>
           <polygon points="11,2 20.5,19 1.5,19" {...outer} />
-          <polygon points="11,9 14.5,15.5 7.5,15.5" fill={color} />
+          <polygon points="11,9 14.5,15.5 7.5,15.5" fill="currentColor" />
         </>
       )}
     </svg>

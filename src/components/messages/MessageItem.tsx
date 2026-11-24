@@ -27,8 +27,8 @@ export function MessageItem({ message, isMine, onReply }: Props) {
       className={`flex max-w-[85%] flex-col gap-1 ${isMine ? 'items-end self-end' : 'items-start self-start'}`}
     >
       <div className={`flex max-w-full items-center gap-1 ${isMine ? 'flex-row-reverse' : ''}`}>
-        <div className={`min-w-0 rounded-xl px-3.5 py-2 ${isMine ? 'bg-edge' : 'bg-panel'}`}>
-          <p className="flex flex-wrap items-baseline gap-x-3 text-[.8rem] text-[#c9cff0]">
+        <div className={`min-w-0 rounded-xl px-3.5 py-2 ${isMine ? 'bg-bubble' : 'bg-panel'}`}>
+          <p className="flex flex-wrap items-baseline gap-x-3 text-[.8rem] text-soft">
             <b>
               {isMine ? (
                 'You'
@@ -41,7 +41,7 @@ export function MessageItem({ message, isMine, onReply }: Props) {
           {replyTo && (
             <button
               type="button"
-              className="mt-1 block w-full cursor-pointer truncate rounded-md border-l-4 border-violet bg-black/20 px-2 py-1 text-left text-[.85rem] text-[#c9cff0]"
+              className="mt-1 block w-full cursor-pointer truncate rounded-md border-l-4 border-violet bg-black/10 px-2 py-1 text-left text-[.85rem] text-soft"
               onClick={() =>
                 document
                   .getElementById(elementId(replyTo.messageId))

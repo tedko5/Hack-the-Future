@@ -84,7 +84,7 @@ export function MessageForm({ conversationId, title, replyTo, onCancelReply, onS
         <button
           type="submit"
           aria-label="Send message"
-          className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-copper text-[#1a0f08] hover:brightness-110 disabled:cursor-default disabled:opacity-50"
+          className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-copper text-on-copper hover:brightness-110 disabled:cursor-default disabled:opacity-50"
           disabled={!canSend}
         >
           <SendHorizontal size={20} />

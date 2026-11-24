@@ -1,6 +1,7 @@
 import { UserButton, useClerk } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { LogOut } from 'lucide-react'
+import { ThemeToggle } from '#/components/layout/ThemeToggle.tsx'
 import type { Guardian } from '#/lib/guardian.ts'
 
 export function AppHeader({ guardian }: { guardian: Guardian }) {
@@ -16,16 +17,18 @@ export function AppHeader({ guardian }: { guardian: Guardian }) {
           <b className="block text-[0.95rem]">{guardian.codename}</b>
           <span className="text-[0.8rem] text-muted">Guardian</span>
         </div>
-        <span className="rounded-lg bg-copper px-3 py-2 text-sm font-bold text-app">
+        <span className="rounded-lg bg-copper px-3 py-2 text-sm font-bold text-on-copper">
           {guardian.role}
         </span>
+        <ThemeToggle />
         <button
           type="button"
-          className="flex min-h-11 cursor-pointer items-center gap-2 px-2 text-sm text-muted hover:text-cyan"
+          title="Log out"
+          className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 px-2 text-sm text-muted hover:text-cyan"
           onClick={() => signOut()}
         >
           <LogOut size={18} aria-hidden="true" />
-          Log out
+          <span className="sr-only sm:not-sr-only">Log out</span>
         </button>
         {/* Opens Clerk's account settings. */}
         <UserButton />

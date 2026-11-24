@@ -14,7 +14,7 @@ export function Avatar({ codename, imageUrl }: Props) {
     return (
       <span
         aria-hidden="true"
-        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-edge text-sm font-bold text-fg"
+        className="flex size-8 shrink-0 items-center justify-center rounded-full bg-bubble text-sm font-bold text-fg"
       >
         {codename.charAt(0).toUpperCase()}
       </span>

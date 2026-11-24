@@ -27,7 +27,7 @@ export function ConversationList({ conversations }: { conversations: Conversatio
               {conversationId === EVERYONE ? (
                 <span
                   aria-hidden="true"
-                  className="flex size-8 shrink-0 items-center justify-center rounded-full bg-edge text-fg"
+                  className="flex size-8 shrink-0 items-center justify-center rounded-full bg-bubble text-fg"
                 >
                   <Users size={16} />
                 </span>

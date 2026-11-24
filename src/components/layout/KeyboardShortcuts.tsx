@@ -93,7 +93,7 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
       </dl>
       <button
         type="button"
-        className="mt-5 min-h-12 w-full cursor-pointer rounded-xl bg-copper font-bold text-[#1a0f08] hover:brightness-110"
+        className="mt-5 min-h-12 w-full cursor-pointer rounded-xl bg-copper font-bold text-on-copper hover:brightness-110"
         onClick={onClose}
       >
         Close

@@ -23,7 +23,7 @@ function LeaderboardPage() {
         <h2 id="leaderboard-title" className="font-display text-[1.6rem] font-bold">
           Leaderboard
         </h2>
-        <ol className="divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
+        <ol className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
           {entries.map((entry) => (
             <li
               key={entry.guardianId}

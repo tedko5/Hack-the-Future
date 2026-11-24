@@ -46,7 +46,7 @@ function NotificationsPage() {
           Nothing yet. All quiet in Achrona.
         </p>
       ) : (
-        <ul className="divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
+        <ul className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
           {notifications.map((notification) => (
             <li key={notification.notificationId}>
               <NotificationRow notification={notification} />

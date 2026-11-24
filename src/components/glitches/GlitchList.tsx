@@ -57,7 +57,7 @@ export function GlitchList({
           {glitches.length === 0 ? emptyMessage : 'No glitches match your search.'}
         </p>
       ) : (
-        <ul className="divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
+        <ul className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
           {found.map((glitch) => (
             <li key={glitch.glitchId}>
               <Link

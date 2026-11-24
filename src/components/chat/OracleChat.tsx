@@ -17,8 +17,9 @@ const GREETING: Message = {
 
 const UNKNOWN = 'The Codex holds no answer to that.'
 
-const ORACLE_COLOR = '#b892ff'
-const GUARDIAN_COLOR = '#e8954f'
+// Theme variables (styles.css); used as CSS `color` so they switch with the theme.
+const ORACLE_COLOR = 'var(--oracle)'
+const GUARDIAN_COLOR = 'var(--guardian)'
 
 /** Floating chat with the Oracle. Answers come from the knowledge base, in the browser. */
 export function OracleChat() {
@@ -61,7 +62,7 @@ export function OracleChat() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed right-4 bottom-20 z-40 md:bottom-4 flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border-2 border-edge bg-panel py-1.5 pr-5 pl-2.5 font-display text-lg font-bold shadow-[0_8px_24px_rgb(0_0_0/0.45)] hover:border-[#7d6ad6]"
+        className="fixed right-4 bottom-20 z-40 md:bottom-4 flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border-2 border-edge bg-panel py-1.5 pr-5 pl-2.5 font-display text-lg font-bold shadow-[0_8px_24px_rgb(0_0_0/0.45)] hover:border-edge-hover"
       >
         <OracleSigil size={34} />
         Ask the Oracle
@@ -99,14 +100,14 @@ export function OracleChat() {
           return (
             <li key={i} className="relative grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-3">
               <span className="relative flex justify-center">
-                <span aria-hidden="true" className={`absolute left-1/2 w-0.5 -translate-x-1/2 bg-[#4a3a9e] ${i === 0 ? 'top-2.5' : 'top-0'} ${i === last ? 'h-2.5' : 'bottom-0'}`} />
+                <span aria-hidden="true" className={`absolute left-1/2 w-0.5 -translate-x-1/2 bg-ley ${i === 0 ? 'top-2.5' : 'top-0'} ${i === last ? 'h-2.5' : 'bottom-0'}`} />
                 <MessageRune oracle={oracle} />
               </span>
               <div className="min-w-0 pb-5">
                 <p className="font-display text-[.95rem] leading-tight font-bold" style={{ color: oracle ? ORACLE_COLOR : GUARDIAN_COLOR }}>
                   {oracle ? 'The Oracle' : 'You'}
                 </p>
-                <p className={`mt-1 leading-snug ${oracle ? 'text-fg' : 'text-[#c9cff0]'}`}>{m.content}</p>
+                <p className={`mt-1 leading-snug ${oracle ? 'text-fg' : 'text-soft'}`}>{m.content}</p>
 
                 {/* Only the latest message offers suggestions, so old ones don't pile up. */}
                 {i === last && m.related && (
@@ -116,12 +117,12 @@ export function OracleChat() {
                         <button
                           type="button"
                           onClick={() => send(q)}
-                          className="flex min-h-9 w-full cursor-pointer items-center gap-2.5 py-1 text-left text-[.92rem] text-[#b9c0e6] hover:text-fg"
+                          className="flex min-h-9 w-full cursor-pointer items-center gap-2.5 py-1 text-left text-[.92rem] text-soft hover:text-fg"
                         >
                           <svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" className="shrink-0">
                             <polygon points="4,0 8,4 4,8 0,4" fill="none" stroke={ORACLE_COLOR} strokeWidth="1.3" />
                           </svg>
-                          <span className="underline decoration-[#4a3a9e] underline-offset-4">{q}</span>
+                          <span className="underline decoration-ley underline-offset-4">{q}</span>
                         </button>
                       </li>
                     ))}
@@ -151,7 +152,7 @@ export function OracleChat() {
           type="submit"
           disabled={!draft.trim()}
           aria-label="Send"
-          className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-copper text-[#1a0f08] hover:brightness-110 disabled:cursor-default disabled:opacity-50"
+          className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-copper text-on-copper hover:brightness-110 disabled:cursor-default disabled:opacity-50"
         >
           <SendHorizontal size={20} />
         </button>
@@ -168,7 +169,7 @@ function OracleSigil({ size }: { size: number }) {
         <circle cx="20" cy="20" r="18" strokeWidth="1.5" strokeDasharray="7 3 1 3" />
         <circle cx="20" cy="20" r="13.5" strokeWidth="1" opacity=".55" />
       </g>
-      <path d="M10.5 20 Q20 11.5 29.5 20 Q20 28.5 10.5 20 Z" fill="#141527" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M10.5 20 Q20 11.5 29.5 20 Q20 28.5 10.5 20 Z" className="fill-well" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
       <circle cx="20" cy="20" r="3.4" fill="currentColor" />
     </svg>
   )
@@ -178,16 +179,16 @@ function OracleSigil({ size }: { size: number }) {
 function MessageRune({ oracle }: { oracle: boolean }) {
   const color = oracle ? ORACLE_COLOR : GUARDIAN_COLOR
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" className="relative mt-px">
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" className="relative mt-px" style={{ color }}>
       {oracle ? (
         <>
-          <polygon points="9,1.5 16.5,9 9,16.5 1.5,9" fill="#141527" stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
-          <polygon points="9,5.5 12.5,9 9,12.5 5.5,9" fill={color} />
+          <polygon points="9,1.5 16.5,9 9,16.5 1.5,9" className="fill-well" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+          <polygon points="9,5.5 12.5,9 9,12.5 5.5,9" fill="currentColor" />
         </>
       ) : (
         <>
-          <circle cx="9" cy="9" r="7.2" fill="#141527" stroke={color} strokeWidth="1.6" />
-          <circle cx="9" cy="9" r="3.2" fill={color} />
+          <circle cx="9" cy="9" r="7.2" className="fill-well" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="9" cy="9" r="3.2" fill="currentColor" />
         </>
       )}
     </svg>

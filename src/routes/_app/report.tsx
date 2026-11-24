@@ -36,7 +36,7 @@ function ReportPage() {
         </Link>
         <button
           type="button"
-          className="flex min-h-12 cursor-pointer items-center gap-2 rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110"
+          className="flex min-h-12 cursor-pointer items-center gap-2 rounded-xl bg-copper px-5.5 py-3 font-bold text-on-copper hover:brightness-110"
           onClick={() => window.print()}
         >
           <FileDown size={18} aria-hidden="true" />
