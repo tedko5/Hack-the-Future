@@ -52,28 +52,6 @@ Put every text in `src/i18n/en.ts` and `nl.ts`, and use it in a component as `us
 
 Server errors are thrown in English and translated by `src/i18n/errors.ts` on their way out. The Oracle's answers are in `src/lib/knowledge.ts` and `knowledge.nl.ts`. The choice is kept in a cookie, and without one the browser's language decides.
 
-## Notifications
-
-To notify someone, do the change inside `withNotifications` (`src/server/notifications/notify.server.ts`) and call `notify()`. The notification is saved in the same transaction, shows up live in the app, and is then handed to every channel. Nobody is notified about their own actions.
-
-To add a kind of notification, add it to `NOTIFICATION_TYPES` and give it a title in `src/lib/notification.ts`.
-
-To add push, email or anything else, add a channel to `src/server/notifications/channels.server.ts`:
-
-```ts
-export const channels: NotificationChannel[] = [
-  {
-    name: 'email',
-    async send({ guardianId, title, body, path }) {
-      // guardianId is the Clerk user ID: clerkClient().users.getUser(guardianId) has the address.
-      // path is relative to the site, or null.
-    },
-  },
-]
-```
-
-A channel runs after the change is saved and not awaited, and its errors are only logged. Per-guardian preferences belong in the channel, before it sends. Delivery is tried once: a restart in between loses it, though it stays in the notification center.
-
 ## Login
 
 Clerk handles accounts and sessions. The `guardians` table holds the codename and role, and everyone starts as `defender`. Every server function uses a middleware from `src/middleware/auth.ts`, because anyone can call them directly.
