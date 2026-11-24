@@ -1,7 +1,6 @@
 import { useRouter } from '@tanstack/react-router'
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { useFormat, useT } from '#/i18n/index.ts'
-import type { Echo } from '#/lib/echo.ts'
 import { HACK_SUCCESS_CHANCE, canHack } from '#/lib/glitch.ts'
 import { hackGlitch } from '#/lib/glitches.functions.ts'
 import { DISTRICTS } from '#/lib/map.ts'
@@ -40,8 +39,6 @@ function makeFrequency() {
 
 type Props = {
   glitch: MapGlitch
-  /** Leave out to hack in through the glitch itself, e.g. when it has no echoes yet. */
-  echo?: Echo
   /** Magic now and if this glitch were fixed, for the result line. */
   magic: number
   magicIfFixed: number
@@ -50,10 +47,10 @@ type Props = {
 }
 
 /**
- * The commander types commands to hack into an echo. Scanning reveals the ward frequency,
+ * The commander types commands to hack into a glitch. Scanning reveals the ward frequency,
  * breaching with it unlocks inject, and inject makes the one random attempt on the server.
  */
-export function HackTerminal({ glitch, echo, magic, magicIfFixed, onFixed, onClose }: Props) {
+export function HackTerminal({ glitch, magic, magicIfFixed, onFixed, onClose }: Props) {
   const t = useT()
   const format = useFormat()
   const router = useRouter()
@@ -75,10 +72,7 @@ export function HackTerminal({ glitch, echo, magic, magicIfFixed, onFixed, onClo
     const make = (text: string, tone: Tone): Line => ({ id: nextId.current++, text, tone })
     return [
       make(t.hack.banner, 'accent'),
-      make(
-        echo ? t.hack.lockedOnEcho(echo.echoId, glitch.glitchId) : t.hack.lockedOn(glitch.glitchId),
-        'out',
-      ),
+      make(t.hack.lockedOn(glitch.glitchId), 'out'),
       make(
         `${t.common.status} ${t.status[glitch.status].toUpperCase()} · ${t.map.districts[glitch.district.id]}`,
         'out',
@@ -130,12 +124,7 @@ export function HackTerminal({ glitch, echo, magic, magicIfFixed, onFixed, onClo
       case 'scan':
         await stream([
           [t.hack.scanning, 'dim'],
-          ...(echo
-            ? [
-                row(t.hack.rows.echo, `#${echo.echoId} · ${format.dateTime(echo.timestamp)}`),
-                row(t.hack.rows.reporter, `${echo.reporter.codename} (${echo.reporter.role})`),
-              ]
-            : [row(t.hack.rows.leaked, format.dateTime(glitch.timestamp))]),
+          row(t.hack.rows.leaked, format.dateTime(glitch.timestamp)),
           row(t.hack.rows.glitch, `${glitch.glitchId} · ${t.status[glitch.status]}`),
           row(t.hack.rows.echoes, t.hack.onThisGlitch(glitch.echoes.length)),
           row(t.hack.rows.assigned, glitch.assignedCodename ?? t.hack.nobody),
@@ -156,7 +145,7 @@ export function HackTerminal({ glitch, echo, magic, magicIfFixed, onFixed, onClo
       }
       case 'decrypt':
         await stream([[t.hack.decoding, 'dim']], 300)
-        await stream([[`  "${echo?.description ?? glitch.description}"`, 'out']], 400)
+        await stream([[`  "${glitch.description}"`, 'out']], 400)
         return
       case 'breach':
         await breach(args[0])
@@ -206,6 +195,8 @@ export function HackTerminal({ glitch, echo, magic, magicIfFixed, onFixed, onClo
       // Before the result prints: refreshing the page puts the terminal's scroll position back.
       const result = await attempt.finally(() => router.invalidate())
       await sleep(600)
+      // A buzz on phones that support it (Android); others ignore it.
+      navigator.vibrate?.(result === 'SUCCESS' ? [60, 80, 60] : [400])
       if (result === 'SUCCESS') {
         print(t.hack.success, 'ok')
         print(t.hack.desyncReduced(magic, magicIfFixed), 'ok')
@@ -272,7 +263,6 @@ export function HackTerminal({ glitch, echo, magic, magicIfFixed, onFixed, onClo
         </span>
         <span className="flex-1 truncate font-mono text-[.8rem] text-muted">
           achrona://{glitch.glitchId.toLowerCase()}
-          {echo && `/echo-${echo.echoId}`}
         </span>
         <button
           type="button"
