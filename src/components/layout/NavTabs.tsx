@@ -22,7 +22,7 @@ export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props
   return (
     <nav
       aria-label={t.nav.label}
-      className="fixed inset-x-0 bottom-0 z-30 flex border-t-2 border-edge bg-panel md:static md:gap-2 md:self-start md:rounded-xl md:border-0 md:p-1.5 print:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 flex border-t-2 border-edge bg-panel md:static md:gap-2 md:self-center md:rounded-xl md:border-0 md:p-1.5 print:hidden"
     >
       <Tab
         link={linkOptions({ to: '/' })}

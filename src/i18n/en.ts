@@ -34,7 +34,7 @@ export const en = {
     toDark: 'Switch to dark theme',
   },
   footer: {
-    credit: 'Developed for the Hack the Future hackathon by Teodor and Vivian (team Clown car)',
+    credit: 'Developed for the Hack the Future hackathon by Teodor and Vivian (team Clown Car)',
   },
   magic: {
     title: 'Magic in Achrona',
@@ -200,7 +200,7 @@ export const en = {
   about: {
     title: 'About us',
     intro:
-      'We are Teodor and Vivian, team Clown car. We built Achrona Mission Control in one day for Guardians of the Grid, a challenge of the Hack the Future hackathon.',
+      'We are Teodor and Vivian, team Clown Car. We built Achrona Mission Control in one day for Guardians of the Grid, a challenge of the Hack the Future hackathon.',
     technologies: {
       title: 'What we built it with',
       items: [

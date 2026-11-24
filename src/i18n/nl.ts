@@ -37,7 +37,7 @@ export const nl: Dictionary = {
     toDark: 'Naar het donkere thema',
   },
   footer: {
-    credit: 'Ontwikkeld voor de Hack the Future-hackathon door Teodor en Vivian (team Clown car)',
+    credit: 'Ontwikkeld voor de Hack the Future-hackathon door Teodor en Vivian (team Clown Car)',
   },
   magic: {
     title: 'Magie in Achrona',
@@ -204,7 +204,7 @@ export const nl: Dictionary = {
   about: {
     title: 'Over ons',
     intro:
-      'Wij zijn Teodor en Vivian, team Clown car. We bouwden Achrona Mission Control op één dag voor Guardians of the Grid, een uitdaging van de Hack the Future-hackathon.',
+      'Wij zijn Teodor en Vivian, team Clown Car. We bouwden Achrona Mission Control op één dag voor Guardians of the Grid, een uitdaging van de Hack the Future-hackathon.',
     technologies: {
       title: 'Waarmee we het bouwden',
       items: [
