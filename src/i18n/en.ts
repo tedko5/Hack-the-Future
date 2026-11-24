@@ -197,6 +197,70 @@ export const en = {
       reported: 'Reported',
     },
   },
+  about: {
+    title: 'About us',
+    intro:
+      'We are Teodor and Vivian, team Clown car. We built Achrona Mission Control in one day for Guardians of the Grid, a challenge of the Hack the Future hackathon.',
+    technologies: {
+      title: 'What we built it with',
+      items: [
+        { name: 'TypeScript', use: 'One language from the database to the browser' },
+        { name: 'React', use: 'The interface' },
+        { name: 'TanStack Start, Router and Query', use: 'Pages, server functions and data' },
+        { name: 'PostgreSQL', use: 'All our data, and the signals behind the live updates' },
+        { name: 'Drizzle', use: 'Typed queries and migrations' },
+        { name: 'Server-Sent Events', use: 'Live updates in every open browser' },
+        { name: 'Clerk', use: 'Accounts and sessions' },
+        { name: 'Zod', use: 'Checks everything that comes in' },
+        { name: 'Tailwind CSS and Lucide', use: 'Styling and icons' },
+        { name: 'Vite and Nitro', use: 'Building and serving' },
+        { name: 'Docker, GitHub Actions and Railway', use: 'Local database, checks and hosting' },
+      ],
+    },
+    features: {
+      title: 'What it can do',
+      groups: [
+        {
+          title: 'Mission control',
+          items: [
+            'Magic level with the Desync Well, calculated from the open glitches',
+            'Live updates without refreshing',
+            "Today's echoes, your assigned glitches and all glitches",
+            'Search and sorting',
+            'PDF report for the High Council',
+          ],
+        },
+        {
+          title: 'Echoes and glitches',
+          items: [
+            'Report echoes and add updates, with an image',
+            'Status from leaked to fixed, with its history',
+            'Assign glitches, or take and release them yourself',
+            'Edit and remove, depending on your role',
+          ],
+        },
+        {
+          title: 'Guardians',
+          items: [
+            'Defenders and commanders, checked on the server',
+            'Private and shared chat with replies, reactions and images',
+            'Notifications that lead to where they came from',
+            'Leaderboard with badges',
+          ],
+        },
+        {
+          title: 'For everyone',
+          items: [
+            'Dark and light theme',
+            'English and Dutch',
+            'Made for phones as well as desktops',
+            'Keyboard shortcuts',
+            'The Oracle, for questions about Achrona',
+          ],
+        },
+      ],
+    },
+  },
   shortcuts: {
     title: 'Keyboard shortcuts',
     next: 'Next glitch',

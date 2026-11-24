@@ -355,10 +355,10 @@ select:focus {
   background: var(--well);
 }
 :root[data-theme="light"] .readout-pct {
-  text-shadow: 0 0 22px var(--st-soft);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--st-soft) 60%, transparent);
 }
 :root[data-theme="light"] .gauge-sweep {
-  filter: drop-shadow(0 0 5px var(--st-soft)) drop-shadow(0 0 14px var(--st-soft));
+  filter: drop-shadow(0 0 5px var(--st-soft));
 }
 .readout-icon { color: var(--st); filter: drop-shadow(0 0 6px var(--st-soft)); }
 
@@ -386,11 +386,10 @@ select:focus {
 :root[data-theme="light"] .desync-well .dw-glow .dw-gem { fill: var(--glow); }
 /* Light swallows a soft blur, so the bright parts get a tighter halo of their own. */
 :root[data-theme="light"] .desync-well .dw-gem-body {
-  filter: drop-shadow(0 0 8px var(--glow)) drop-shadow(0 0 22px var(--glow));
+  filter: drop-shadow(0 0 9px color-mix(in srgb, var(--glow) 65%, transparent));
 }
-:root[data-theme="light"] .desync-well .dw-ring { filter: drop-shadow(0 0 5px #17dbe6) drop-shadow(0 0 12px #17dbe6); }
-:root[data-theme="light"] .desync-well .dw-water-4 { filter: drop-shadow(0 0 16px #d9fffc); }
-:root[data-theme="light"] .desync-well .dw-sparkle { filter: drop-shadow(0 0 5px #fff); }
+:root[data-theme="light"] .desync-well .dw-ring { filter: drop-shadow(0 0 5px rgb(23 219 230 / 0.6)); }
+:root[data-theme="light"] .desync-well .dw-water-4 { filter: drop-shadow(0 0 10px rgb(217 255 252 / 0.6)); }
 :root[data-theme="light"] .desync-well .dw-gem { fill: var(--gem); }
 :root[data-theme="light"] .desync-well .dw-gem-body { fill: var(--gem-body); }
 :root[data-theme="light"] .desync-well .dw-gem-crack { stroke: #2a1f14; }

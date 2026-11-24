@@ -201,6 +201,70 @@ export const nl: Dictionary = {
       reported: 'Gemeld',
     },
   },
+  about: {
+    title: 'Over ons',
+    intro:
+      'Wij zijn Teodor en Vivian, team Clown car. We bouwden Achrona Mission Control op één dag voor Guardians of the Grid, een uitdaging van de Hack the Future-hackathon.',
+    technologies: {
+      title: 'Waarmee we het bouwden',
+      items: [
+        { name: 'TypeScript', use: 'Eén taal, van databank tot browser' },
+        { name: 'React', use: 'De interface' },
+        { name: 'TanStack Start, Router en Query', use: "Pagina's, serverfuncties en data" },
+        { name: 'PostgreSQL', use: 'Al onze data, en de signalen achter de live updates' },
+        { name: 'Drizzle', use: "Getypeerde query's en migraties" },
+        { name: 'Server-Sent Events', use: 'Live updates in elke open browser' },
+        { name: 'Clerk', use: 'Accounts en sessies' },
+        { name: 'Zod', use: 'Controleert alles wat binnenkomt' },
+        { name: 'Tailwind CSS en Lucide', use: 'Vormgeving en iconen' },
+        { name: 'Vite en Nitro', use: 'Bouwen en serveren' },
+        { name: 'Docker, GitHub Actions en Railway', use: 'Lokale databank, controles en hosting' },
+      ],
+    },
+    features: {
+      title: 'Wat het kan',
+      groups: [
+        {
+          title: 'Mission control',
+          items: [
+            'Magieniveau met de Desync-bron, berekend uit de open glitches',
+            'Live updates zonder te verversen',
+            "De echo's van vandaag, jouw toegewezen glitches en alle glitches",
+            'Zoeken en sorteren',
+            'Pdf-rapport voor de Hoge Raad',
+          ],
+        },
+        {
+          title: "Echo's en glitches",
+          items: [
+            "Echo's melden en updates toevoegen, met een afbeelding",
+            'Status van gelekt tot hersteld, met de geschiedenis ervan',
+            'Glitches toewijzen, of zelf op je nemen en vrijgeven',
+            'Bewerken en verwijderen, naargelang je rol',
+          ],
+        },
+        {
+          title: 'Guardians',
+          items: [
+            'Defenders en commanders, gecontroleerd op de server',
+            'Privé- en groepsgesprekken met antwoorden, reacties en afbeeldingen',
+            'Meldingen die je brengen naar waar ze vandaan komen',
+            'Klassement met badges',
+          ],
+        },
+        {
+          title: 'Voor iedereen',
+          items: [
+            'Donker en licht thema',
+            'Engels en Nederlands',
+            'Gemaakt voor zowel gsm als computer',
+            'Sneltoetsen',
+            'Het Orakel, voor vragen over Achrona',
+          ],
+        },
+      ],
+    },
+  },
   shortcuts: {
     title: 'Sneltoetsen',
     next: 'Volgende glitch',
