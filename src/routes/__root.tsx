@@ -8,6 +8,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { RiftBackground } from '#/components/layout/RiftBackground.tsx'
+import { clerkAppearance } from '#/lib/clerk-appearance.ts'
 
 import type { QueryClient } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
@@ -45,6 +46,7 @@ function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body className="bg-app font-sans antialiased">
         <ClerkProvider
+          appearance={clerkAppearance}
           signInUrl="/sign-in"
           signUpUrl="/sign-up"
           signInFallbackRedirectUrl="/"
