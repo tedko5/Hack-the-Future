@@ -50,6 +50,13 @@
       "when": 1795516156264,
       "tag": "0006_status_updates",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795516835382,
+      "tag": "0007_echo_status",
+      "breakpoints": true
     }
   ]
 }

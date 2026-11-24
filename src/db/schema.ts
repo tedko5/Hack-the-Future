@@ -41,6 +41,8 @@ export const echoes = pgTable(
     glitchId: text('glitch_id').notNull().references(() => glitches.glitchId),
     description: text('description').notNull(),
     timestamp: timestamp('timestamp', { withTimezone: true }).notNull(),
+    /** The glitch's status right after this echo. Null only for rows added by hand. */
+    status: text('status', { enum: GLITCH_STATUSES }),
     /** The status this echo gave the glitch, or null if it left it alone. */
     newStatus: text('new_status', { enum: GLITCH_STATUSES }),
     reportingGuardianId: text('reporting_guardian_id').notNull().references(() => guardians.guardianId),

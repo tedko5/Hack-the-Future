@@ -10,13 +10,15 @@ export type Echo = {
   description: string
   /** ISO 8601 */
   timestamp: string
+  /** The glitch's status right after this echo; glitch.status is the current one. */
+  status: GlitchStatus
   /** The status this echo gave the glitch, or null if it left it alone. */
   newStatus: GlitchStatus | null
   reporter: Pick<Guardian, 'codename' | 'role'>
   glitch: Pick<Glitch, 'glitchId' | 'status'>
 }
 
-/** Echoes are ordered oldest first. */
+/** Echoes are ordered newest first. */
 export type GlitchDetails = Glitch & { echoes: Echo[] }
 
 const descriptionMessage = `Describe the echo in 1 to ${ECHO_MAX_LENGTH} characters`

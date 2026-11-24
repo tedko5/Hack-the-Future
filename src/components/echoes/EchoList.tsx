@@ -87,7 +87,7 @@ function DayMarker({ day }: { day: string }) {
 }
 
 function EchoEntry({ echo }: { echo: Echo }) {
-  const status = STATUS_STYLES[echo.glitch.status]
+  const status = STATUS_STYLES[echo.status]
 
   return (
     <li className={ROW}>
@@ -115,7 +115,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
             <span className="text-fg">{echo.reporter.codename}</span>
             <span className="ml-1.5">{echo.reporter.role}</span>
           </span>
-          {echo.newStatus && <span>Set to {STATUS_STYLES[echo.newStatus].label}</span>}
+          {echo.newStatus && <span>Status changed</span>}
         </p>
       </div>
     </li>

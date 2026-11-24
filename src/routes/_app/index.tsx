@@ -13,13 +13,27 @@ export const Route = createFileRoute('/_app/')({
 
 function MissionControl() {
   const { magic, glitches, echoes } = Route.useLoaderData()
+  const { guardian } = Route.useRouteContext()
   const [isReporting, setIsReporting] = useState(false)
+
+  const mine = glitches.filter(
+    (glitch) => glitch.assignedGuardianId === guardian.guardianId && glitch.status !== 'FIXED',
+  )
+  // Glitches are assigned to defenders, so a commander only has some left from before a promotion.
+  const showMine = guardian.role === 'defender' || mine.length > 0
 
   return (
     <>
       <HealthPanel magic={magic} />
-      <GlitchList glitches={glitches} />
+      {showMine && (
+        <GlitchList
+          title="Assigned to you"
+          glitches={mine}
+          emptyMessage="Nothing assigned to you right now."
+        />
+      )}
       <EchoList echoes={echoes} onReport={() => setIsReporting(true)} />
+      <GlitchList title="Glitches" glitches={glitches} emptyMessage="No glitches. Magic is safe." />
       {isReporting && <ReportEchoDialog onClose={() => setIsReporting(false)} />}
     </>
   )

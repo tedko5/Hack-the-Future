@@ -1,18 +1,27 @@
 import { Link } from '@tanstack/react-router'
+import { useId } from 'react'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
 import { formatDateTime } from '#/lib/formatDate.ts'
 import type { Glitch } from '#/lib/glitch.ts'
 
-export function GlitchList({ glitches }: { glitches: Glitch[] }) {
+type Props = {
+  title: string
+  glitches: Glitch[]
+  emptyMessage: string
+}
+
+export function GlitchList({ title, glitches, emptyMessage }: Props) {
+  const titleId = useId()
+
   return (
-    <section aria-labelledby="glitches-title" className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
-      <h2 id="glitches-title" className="font-display text-[1.6rem] font-bold">
-        Glitches
+    <section aria-labelledby={titleId} className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
+      <h2 id={titleId} className="font-display text-[1.6rem] font-bold">
+        {title}
         <span className="ml-2 font-sans text-base font-normal text-muted tabular-nums">{glitches.length}</span>
       </h2>
 
       {glitches.length === 0 ? (
-        <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">No glitches. Magic is safe.</p>
+        <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">{emptyMessage}</p>
       ) : (
         <ul className="divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
           {glitches.map((glitch) => (

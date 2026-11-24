@@ -1,4 +1,4 @@
-import { asc, desc, eq, sql } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
 import { db } from '#/db/index.ts'
 import { echoes, glitches, guardians } from '#/db/schema.ts'
 import type { Echo } from '#/lib/echo.ts'
@@ -22,6 +22,7 @@ const selectEchoes = () =>
       echoId: echoes.echoId,
       description: echoes.description,
       timestamp: echoes.timestamp,
+      status: sql<GlitchStatus>`coalesce(${echoes.status}, ${glitches.status})`,
       newStatus: echoes.newStatus,
       reporter: { codename: guardians.codename, role: guardians.role },
       glitch: { glitchId: glitches.glitchId, status: glitches.status },
@@ -34,16 +35,16 @@ type EchoRow = Awaited<ReturnType<typeof selectEchoes>>[number]
 
 const toEcho = (row: EchoRow): Echo => ({ ...row, timestamp: row.timestamp.toISOString() })
 
-/** Newest first. */
+const newestFirst = [desc(echoes.timestamp), desc(echoes.echoId)]
+
 export async function listEchoes(): Promise<Echo[]> {
-  return (await selectEchoes().orderBy(desc(echoes.timestamp), desc(echoes.echoId))).map(toEcho)
+  return (await selectEchoes().orderBy(...newestFirst)).map(toEcho)
 }
 
-/** Oldest first. */
 export async function listGlitchEchoes(glitchId: string): Promise<Echo[]> {
   const rows = await selectEchoes()
     .where(eq(echoes.glitchId, glitchId))
-    .orderBy(asc(echoes.timestamp), asc(echoes.echoId))
+    .orderBy(...newestFirst)
   return rows.map(toEcho)
 }
 
@@ -53,8 +54,8 @@ export function createEcho({ description, reporter, glitchId, status }: NewEcho)
 
   return db.transaction(async (tx) => {
     const target = glitchId
-      ? await updateStatus(tx, glitchId, reporter, status)
-      : { glitchId: await openGlitch(tx, description, timestamp), newStatus: null }
+      ? await updateGlitch(tx, glitchId, reporter, status)
+      : await openGlitch(tx, description, timestamp)
 
     const [{ echoId }] = await tx
       .insert(echoes)
@@ -64,7 +65,7 @@ export function createEcho({ description, reporter, glitchId, status }: NewEcho)
   })
 }
 
-async function updateStatus(
+async function updateGlitch(
   tx: Transaction,
   glitchId: string,
   reporter: Guardian,
@@ -77,13 +78,15 @@ async function updateStatus(
     .where(eq(glitches.glitchId, glitchId))
     .for('update')
   if (!glitch) throw new Error('That glitch does not exist')
-  if (!status || status === glitch.status) return { glitchId, newStatus: null }
+  if (!status || status === glitch.status) {
+    return { glitchId, status: glitch.status, newStatus: null }
+  }
 
   if (!canChangeStatus(reporter, glitch)) {
     throw new Error('Only the assigned defender or a commander can change the status')
   }
   await tx.update(glitches).set({ status }).where(eq(glitches.glitchId, glitchId))
-  return { glitchId, newStatus: status }
+  return { glitchId, status, newStatus: status }
 }
 
 async function openGlitch(tx: Transaction, description: string, timestamp: Date) {
@@ -92,6 +95,7 @@ async function openGlitch(tx: Transaction, description: string, timestamp: Date)
     sql`select nextval('glitch_number') as number`,
   )
   const glitchId = `GL-${rows[0].number.padStart(4, '0')}`
-  await tx.insert(glitches).values({ glitchId, status: 'LEAKED', description, timestamp })
-  return glitchId
+  const status: GlitchStatus = 'LEAKED'
+  await tx.insert(glitches).values({ glitchId, status, description, timestamp })
+  return { glitchId, status, newStatus: null }
 }
