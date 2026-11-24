@@ -80,7 +80,7 @@ function Tab({ link, icon: Icon, label, isActive, badge = 0 }: TabProps) {
       {...link}
       aria-current={isActive ? 'page' : undefined}
       className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-center text-[.68rem] leading-tight -outline-offset-2 md:min-h-11 md:flex-none md:flex-row md:gap-2.5 md:rounded-lg md:px-4 md:text-sm md:leading-normal ${
-        isActive ? 'bg-row font-bold text-cyan' : 'text-muted hover:text-cyan'
+        isActive ? 'bg-row font-bold text-highlight' : 'text-muted hover:text-highlight'
       }`}
     >
       <Icon size={20} />

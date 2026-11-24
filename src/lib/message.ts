@@ -21,14 +21,16 @@ export type MessageQuote = {
   messageId: number
   senderCodename: string
   body: string
+  isDeleted: boolean
 }
 
 export type Message = {
   messageId: number
   senderId: string
   senderCodename: string
-  /** Empty when the message is only an image. */
+  /** Empty when the message is only an image, or deleted. */
   body: string
+  isDeleted: boolean
   hasImage: boolean
   /** ISO 8601 */
   createdAt: string
@@ -65,6 +67,8 @@ export const markReadSchema = z.object({
   conversationId: conversationIdSchema,
   messageId: messageIdSchema,
 })
+
+export const messageRefSchema = z.object({ messageId: messageIdSchema })
 
 export const toggleReactionSchema = z.object({
   messageId: messageIdSchema,

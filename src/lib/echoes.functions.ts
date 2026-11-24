@@ -1,8 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
-import { reportEchoSchema } from '#/lib/echo.ts'
+import { echoRefSchema, editEchoSchema, reportEchoSchema } from '#/lib/echo.ts'
 import { validate } from '#/lib/validate.ts'
-import { guardianMiddleware } from '#/middleware/auth.ts'
-import { createEcho } from '#/server/echoes.server.ts'
+import { commanderMiddleware, guardianMiddleware } from '#/middleware/auth.ts'
+import * as echoes from '#/server/echoes.server.ts'
 import { readImage } from '#/server/images.server.ts'
 
 /**
@@ -13,9 +13,19 @@ export const reportEcho = createServerFn({ method: 'POST' })
   .middleware([guardianMiddleware])
   .validator((form: FormData) => validate(reportEchoSchema)(form))
   .handler(async ({ data, context }) =>
-    createEcho({
+    echoes.createEcho({
       ...data,
       image: data.image && (await readImage(data.image)),
       reporter: context.guardian,
     }),
   )
+
+export const editEcho = createServerFn({ method: 'POST' })
+  .middleware([guardianMiddleware])
+  .validator(validate(editEchoSchema))
+  .handler(({ data, context }) => echoes.editEcho(context.guardian, data.echoId, data.description))
+
+export const removeEcho = createServerFn({ method: 'POST' })
+  .middleware([commanderMiddleware])
+  .validator(validate(echoRefSchema))
+  .handler(({ data }) => echoes.removeEcho(data.echoId))

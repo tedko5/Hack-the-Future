@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
+import { EchoActions } from '#/components/echoes/EchoActions.tsx'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
@@ -170,7 +171,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
         <Rune kind={status.shape} color={status.color} />
       </span>
       <div className="min-w-0 pb-6">
-        <p className="leading-snug">{echo.description}</p>
+        <p className="leading-snug break-words">{echo.description}</p>
         {echo.hasImage && (
           <a
             href={`/api/echo-images/${echo.echoId}`}
@@ -187,7 +188,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
             />
           </a>
         )}
-        <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[.85rem] text-muted">
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[.85rem] text-muted">
           <span className="font-medium" style={{ color: status.color }}>
             {t.status[echo.status]}
           </span>
@@ -203,7 +204,9 @@ function EchoEntry({ echo }: { echo: Echo }) {
             <span className="ml-1.5">{echo.reporter.role}</span>
           </span>
           {echo.newStatus && <span>{t.echoes.statusChanged}</span>}
-        </p>
+          {echo.isEdited && <span>{t.echoes.edited}</span>}
+          <EchoActions echo={echo} />
+        </div>
       </div>
     </li>
   )

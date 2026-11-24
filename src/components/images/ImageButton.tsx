@@ -30,7 +30,7 @@ export function ImageButton({ disabled, onPick }: Props) {
         type="button"
         aria-label={t.images.add}
         title={t.images.add}
-        className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 border-edge bg-well text-muted hover:text-cyan disabled:opacity-50"
+        className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl border-2 border-edge bg-well text-muted hover:text-highlight disabled:opacity-50"
         disabled={disabled}
         onClick={() => input.current?.click()}
       >

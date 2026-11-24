@@ -5,6 +5,9 @@ export const nl: Dictionary = {
   languageSwitch: 'English',
   common: {
     cancel: 'Annuleren',
+    save: 'Bewaren',
+    edit: 'Bewerken',
+    remove: 'Verwijderen',
     close: 'Sluiten',
     send: 'Versturen',
     you: 'Jij',
@@ -57,6 +60,11 @@ export const nl: Dictionary = {
     noMatch: "Geen echo's gevonden.",
     statusChanged: 'Status gewijzigd',
     imageBy: (codename) => `Verstuurd door ${codename}`,
+    edited: 'Bewerkt',
+    editTitle: 'Echo bewerken',
+    removeTitle: 'Deze echo verwijderen?',
+    removeWarning:
+      'Hij verdwijnt voor iedereen, samen met de afbeelding. Dit kan niet ongedaan gemaakt worden.',
     sorts: { newest: 'Nieuwste eerst', oldest: 'Oudste eerst' },
     updateTitle: (glitchId) => `Update voor ${glitchId}`,
     question: 'Wat heb je opgemerkt?',
@@ -83,6 +91,10 @@ export const nl: Dictionary = {
     assignedDefender: 'Toegewezen defender',
     assignToMe: 'Aan mij toewijzen',
     release: 'Glitch vrijgeven',
+    editTitle: (glitchId) => `${glitchId} bewerken`,
+    removeTitle: (glitchId) => `${glitchId} verwijderen?`,
+    removeWarning:
+      "Alle echo's ervan verdwijnen ook. Dit kan niet ongedaan gemaakt worden.",
   },
   guardians: {
     title: 'Guardians',
@@ -119,6 +131,11 @@ export const nl: Dictionary = {
     reactWith: (emoji) => `Reageer met ${emoji}`,
     reactionFrom: (emoji, codenames) => `${emoji} van ${codenames}`,
     image: 'Afbeelding',
+    deleted: 'Bericht verwijderd',
+    delete: 'Verwijderen',
+    deleteTitle: 'Dit bericht verwijderen?',
+    deleteWarning:
+      'Anderen zien dat er een bericht verwijderd is. Dit kan niet ongedaan gemaakt worden.',
     imageBy: (codename) => `Verstuurd door ${codename}`,
   },
   images: {

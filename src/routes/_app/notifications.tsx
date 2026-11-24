@@ -33,7 +33,7 @@ function NotificationsPage() {
         {notifications.some(({ isRead }) => !isRead) && (
           <button
             type="button"
-            className="flex min-h-11 cursor-pointer items-center gap-2 px-2 text-sm text-muted hover:text-cyan disabled:opacity-50"
+            className="flex min-h-11 cursor-pointer items-center gap-2 px-2 text-sm text-muted hover:text-highlight disabled:opacity-50"
             disabled={markAll.isPending}
             onClick={() => markAll.mutate()}
           >

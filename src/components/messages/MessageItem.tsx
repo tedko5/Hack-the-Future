@@ -1,9 +1,12 @@
-import { Reply, SmilePlus } from 'lucide-react'
+import { Reply, SmilePlus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
+import { ConfirmDialog } from '#/components/ui/ConfirmDialog.tsx'
 import { MessageReactions, ReactionPicker, useToggleReaction } from '#/components/messages/Reactions.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import type { Message } from '#/lib/message.ts'
+import type { Dictionary } from '#/i18n/en.ts'
+import type { Message, MessageQuote } from '#/lib/message.ts'
+import { deleteMessage } from '#/lib/messages.functions.ts'
 
 type Props = {
   message: Message
@@ -14,14 +17,21 @@ type Props = {
 const elementId = (messageId: number) => `message-${messageId}`
 
 const actionClass =
-  'flex size-9 cursor-pointer items-center justify-center rounded-lg text-muted hover:text-cyan'
+  'flex size-9 cursor-pointer items-center justify-center rounded-lg text-muted hover:text-highlight'
+
+/** The text that stands for a message in a quote. */
+export function quoteText({ body, isDeleted }: MessageQuote, t: Dictionary) {
+  return isDeleted ? t.messages.deleted : body || t.messages.image
+}
 
 export function MessageItem({ message, isMine, onReply }: Props) {
   const t = useT()
   const format = useFormat()
   const [isPicking, setIsPicking] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const toggle = useToggleReaction(message.messageId)
   const { replyTo } = message
+  const quote = replyTo && quoteText(replyTo, t)
 
   return (
     <li
@@ -50,7 +60,7 @@ export function MessageItem({ message, isMine, onReply }: Props) {
                   ?.scrollIntoView({ block: 'center', behavior: 'smooth' })
               }
             >
-              <b>{replyTo.senderCodename}</b> {replyTo.body || t.messages.image}
+              <b>{replyTo.senderCodename}</b> {quote}
             </button>
           )}
           {message.hasImage && (
@@ -68,24 +78,49 @@ export function MessageItem({ message, isMine, onReply }: Props) {
               />
             </a>
           )}
+          {message.isDeleted && <p className="text-soft italic">{t.messages.deleted}</p>}
           {message.body && (
             <p className="leading-snug break-words whitespace-pre-wrap">{message.body}</p>
           )}
         </div>
-        <button type="button" className={actionClass} aria-label={t.messages.reply} title={t.messages.reply} onClick={onReply}>
-          <Reply size={18} />
-        </button>
-        <button
-          type="button"
-          className={actionClass}
-          aria-label={t.messages.react}
-          title={t.messages.react}
-          aria-expanded={isPicking}
-          onClick={() => setIsPicking(!isPicking)}
-        >
-          <SmilePlus size={18} />
-        </button>
+        {!message.isDeleted && (
+          <>
+            <button type="button" className={actionClass} aria-label={t.messages.reply} title={t.messages.reply} onClick={onReply}>
+              <Reply size={18} />
+            </button>
+            <button
+              type="button"
+              className={actionClass}
+              aria-label={t.messages.react}
+              title={t.messages.react}
+              aria-expanded={isPicking}
+              onClick={() => setIsPicking(!isPicking)}
+            >
+              <SmilePlus size={18} />
+            </button>
+            {isMine && (
+              <button
+                type="button"
+                className={actionClass}
+                aria-label={t.messages.delete}
+                title={t.messages.delete}
+                onClick={() => setIsDeleting(true)}
+              >
+                <Trash2 size={18} />
+              </button>
+            )}
+          </>
+        )}
       </div>
+      {isDeleting && (
+        <ConfirmDialog
+          title={t.messages.deleteTitle}
+          warning={t.messages.deleteWarning}
+          confirmLabel={t.messages.delete}
+          onConfirm={() => deleteMessage({ data: { messageId: message.messageId } })}
+          onClose={() => setIsDeleting(false)}
+        />
+      )}
       {isPicking && (
         <ReactionPicker
           onPick={(emoji) => {

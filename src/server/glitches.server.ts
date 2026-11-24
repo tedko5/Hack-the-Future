@@ -1,6 +1,6 @@
-import { and, desc, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, inArray, isNull } from 'drizzle-orm'
 import { db } from '#/db/index.ts'
-import { glitches, guardians } from '#/db/schema.ts'
+import { echoImages, echoes, glitches, guardians, notifications } from '#/db/schema.ts'
 import type { Glitch } from '#/lib/glitch.ts'
 import { listCommanderIds } from '#/server/guardians.server.ts'
 import { withNotifications } from '#/server/notifications/notify.server.ts'
@@ -74,5 +74,36 @@ export function releaseGlitch(glitchId: string, guardianId: string) {
     for (const commanderId of await listCommanderIds(tx)) {
       notify({ guardianId: commanderId, actorId: guardianId, type: 'glitch_released', glitchId })
     }
+  })
+}
+
+export async function editGlitch(glitchId: string, description: string) {
+  const updated = await db
+    .update(glitches)
+    .set({ description })
+    .where(eq(glitches.glitchId, glitchId))
+    .returning({ glitchId: glitches.glitchId })
+  if (updated.length === 0) throw new Error('That glitch does not exist')
+}
+
+/** For good, with everything that belongs to it. */
+export async function removeGlitch(glitchId: string) {
+  await db.transaction(async (tx) => {
+    // Locked first, so no echo can be added while the rest is being removed.
+    const [glitch] = await tx
+      .select({ glitchId: glitches.glitchId })
+      .from(glitches)
+      .where(eq(glitches.glitchId, glitchId))
+      .for('update')
+    if (!glitch) throw new Error('That glitch does not exist')
+
+    const echoIds = tx
+      .select({ echoId: echoes.echoId })
+      .from(echoes)
+      .where(eq(echoes.glitchId, glitchId))
+    await tx.delete(echoImages).where(inArray(echoImages.echoId, echoIds))
+    await tx.delete(echoes).where(eq(echoes.glitchId, glitchId))
+    await tx.delete(notifications).where(eq(notifications.glitchId, glitchId))
+    await tx.delete(glitches).where(eq(glitches.glitchId, glitchId))
   })
 }

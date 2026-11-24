@@ -1,6 +1,6 @@
 import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import type { GlitchDetails } from '#/lib/echo.ts'
+import { editGlitchSchema, type GlitchDetails } from '#/lib/echo.ts'
 import { assignGlitchSchema, glitchRefSchema } from '#/lib/glitch.ts'
 import { validate } from '#/lib/validate.ts'
 import { commanderMiddleware, guardianMiddleware } from '#/middleware/auth.ts'
@@ -48,3 +48,14 @@ export const releaseGlitch = createServerFn({ method: 'POST' })
   .handler(({ data, context }) =>
     glitches.releaseGlitch(data.glitchId, context.guardian.guardianId),
   )
+
+export const editGlitch = createServerFn({ method: 'POST' })
+  .middleware([commanderMiddleware])
+  .validator(validate(editGlitchSchema))
+  .handler(({ data }) => glitches.editGlitch(data.glitchId, data.description))
+
+/** Also removes its echoes. This cannot be undone. */
+export const removeGlitch = createServerFn({ method: 'POST' })
+  .middleware([commanderMiddleware])
+  .validator(validate(glitchRefSchema))
+  .handler(({ data }) => glitches.removeGlitch(data.glitchId))

@@ -57,6 +57,12 @@ A: Wees concreet. "Lantaarns op de oostelijke brug flikkeren om de paar seconden
 Q: Wat gebeurt er nadat ik een echo heb gemeld?
 A: Hij verschijnt als glitch met status Gelekt. Een commander wijst hem toe aan een defender, of een defender neemt hem op zich, en updates brengen hem naar de volgende statussen.
 
+Q: Kan ik een echo bewerken?
+A: Ja, je eigen echo's. Commanders kunnen alle echo's en glitches bewerken en verwijderen.
+
+Q: Kan ik een bericht verwijderen?
+A: Ja, je eigen berichten. Anderen zien dan dat er een bericht verwijderd is.
+
 Q: Wat zijn de statussen van een glitch?
 A: Gelekt (net gemeld), In onderzoek (wordt bekeken), In bedwang (wordt ingeperkt) en Hersteld (opgelost).
 

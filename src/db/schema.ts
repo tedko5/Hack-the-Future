@@ -62,6 +62,7 @@ export const echoes = pgTable(
     status: text('status', { enum: GLITCH_STATUSES }),
     /** The status this echo gave the glitch, or null if it left it alone. */
     newStatus: text('new_status', { enum: GLITCH_STATUSES }),
+    editedAt: timestamp('edited_at', { withTimezone: true }),
     reportingGuardianId: text('reporting_guardian_id').notNull().references(() => guardians.guardianId),
   },
   (table) => [index('echoes_glitch_id').on(table.glitchId)],
@@ -83,6 +84,8 @@ export const messages = pgTable(
     recipientId: text('recipient_id').references(() => guardians.guardianId),
     /** Empty when the message is only an image. */
     body: text('body').notNull(),
+    /** Set when its author deleted it. The text, image and reactions are gone by then. */
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
     replyToId: integer('reply_to_id').references((): AnyPgColumn => messages.messageId),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },

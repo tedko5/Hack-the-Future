@@ -22,7 +22,7 @@ export function CollapsibleSection({ title, count, storageKey, action, children 
         <h2 id={titleId} className="font-display text-[1.6rem] font-bold">
           <button
             type="button"
-            className="flex min-h-11 cursor-pointer items-center gap-3 hover:text-cyan"
+            className="flex min-h-11 cursor-pointer items-center gap-3 hover:text-highlight"
             aria-expanded={!isCollapsed}
             aria-controls={contentId}
             onClick={() => setIsCollapsed(!isCollapsed)}

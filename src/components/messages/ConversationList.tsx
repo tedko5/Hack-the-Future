@@ -32,7 +32,7 @@ export function ConversationList({ conversations }: { conversations: Conversatio
               to="/messages/$conversationId"
               params={{ conversationId }}
               className="flex min-h-11 items-center gap-2.5 rounded-lg px-2 hover:bg-row"
-              activeProps={{ className: 'bg-row text-cyan' }}
+              activeProps={{ className: 'bg-row text-highlight' }}
             >
               {conversationId === EVERYONE ? (
                 <span

@@ -48,7 +48,7 @@ export function MessageReactions({ reactions, onToggle }: Props) {
           aria-pressed={isMine}
           aria-label={t.messages.reactionFrom(emoji, codenames.join(', '))}
           title={codenames.join(', ')}
-          className={`flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 text-sm tabular-nums ${isMine ? 'border-cyan bg-row' : 'border-line bg-panel'}`}
+          className={`flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 text-sm tabular-nums ${isMine ? 'border-highlight bg-row' : 'border-line bg-panel'}`}
           onClick={() => onToggle(emoji)}
         >
           {emoji} {codenames.length}

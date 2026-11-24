@@ -20,7 +20,7 @@
   --color-soft: var(--soft);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --color-cyan: var(--cyan);
+  --color-highlight: var(--highlight);
   --color-violet: var(--violet);
   --color-magenta: var(--magenta);
   --color-copper: var(--copper);
@@ -47,6 +47,8 @@
   --muted: #9aa3d6;
   --accent: #5b3fd0;
   --cyan: #4df3ff;
+  /* hovered and selected: gold, next to the violet and unlike any status colour */
+  --highlight: #ffd07a;
   --violet: #a77bff;
   --magenta: #ff3df0;
   --copper: #d9803f;
@@ -106,6 +108,7 @@
   --accent: #a37a3a;
   /* No purple in light: steel blue and ruby stand in for violet and magenta. */
   --cyan: #0b7480;
+  --highlight: #8f4310;
   --violet: #2f5f8a;
   --magenta: #a3244f;
   --copper: #c2702f;
@@ -461,7 +464,7 @@ select:focus {
   text-decoration: underline 1px var(--edge-hover);
   text-underline-offset: 4px;
   &:hover {
-    color: var(--cyan);
+    color: var(--highlight);
     text-decoration-color: currentColor;
   }
 }

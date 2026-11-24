@@ -61,6 +61,12 @@ A: Be specific. "Lanterns on the east bridge flicker every few seconds" is bette
 Q: What happens after I send an echo?
 A: It shows up as a glitch with status LEAKED. A commander assigns it to a defender, or a defender takes it, and updates move it through the next statuses.
 
+Q: Can I edit an echo?
+A: Yes, your own echoes. Commanders can edit and remove all echoes and glitches.
+
+Q: Can I delete a message?
+A: Yes, your own messages. Others then see that a message was deleted.
+
 Q: What are the glitch statuses?
 A: LEAKED (just reported), ASSESSING (being investigated), CONTAINING (being contained), and FIXED (resolved).
 

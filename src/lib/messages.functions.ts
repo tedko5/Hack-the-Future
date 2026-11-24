@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import {
   conversationSchema,
   markReadSchema,
+  messageRefSchema,
   searchMessagesSchema,
   sendMessageSchema,
   toggleReactionSchema,
@@ -52,6 +53,13 @@ export const sendMessage = createServerFn({ method: 'POST' })
     const image = data.image && (await readImage(data.image))
     await messages.createMessage({ ...data, senderId, image })
   })
+
+export const deleteMessage = createServerFn({ method: 'POST' })
+  .middleware([guardianMiddleware])
+  .validator(validate(messageRefSchema))
+  .handler(({ data, context }) =>
+    messages.deleteMessage(context.guardian.guardianId, data.messageId),
+  )
 
 export const toggleReaction = createServerFn({ method: 'POST' })
   .middleware([guardianMiddleware])

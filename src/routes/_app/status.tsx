@@ -26,7 +26,7 @@ function StatusPage() {
       <h2 className="font-display text-[1.6rem] font-bold">Status</h2>
       {health.ok ? (
         <div>
-          <p className="text-cyan">Database connected ({health.latencyMs} ms)</p>
+          <p className="text-highlight">Database connected ({health.latencyMs} ms)</p>
           <p>Server time: {health.serverTime}</p>
           <p>Pings stored: {health.pings}</p>
         </div>

@@ -74,7 +74,7 @@ export function TakeOrRelease({ glitch, guardian }: DefenderProps) {
       {!isTakenByOther && (
         <button
           type="button"
-          className="min-h-12 cursor-pointer rounded-xl border-2 border-edge bg-well px-5 font-bold hover:border-cyan disabled:opacity-50"
+          className="min-h-12 cursor-pointer rounded-xl border-2 border-edge bg-well px-5 font-bold hover:border-highlight disabled:opacity-50"
           disabled={change.isPending}
           onClick={() => change.mutate()}
         >

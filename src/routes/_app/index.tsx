@@ -53,7 +53,7 @@ function MissionControl() {
         action={
           <Link
             to="/report"
-            className="flex min-h-11 items-center gap-2 px-2 text-sm text-muted hover:text-cyan"
+            className="flex min-h-11 items-center gap-2 px-2 text-sm text-muted hover:text-highlight"
           >
             <FileDown size={18} aria-hidden="true" />
             <span className="clickable">{t.glitches.exportPdf}</span>

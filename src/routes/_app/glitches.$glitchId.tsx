@@ -2,6 +2,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { EchoList } from '#/components/echoes/EchoList.tsx'
 import { ReportEchoDialog } from '#/components/echoes/ReportEchoDialog.tsx'
+import { GlitchActions } from '#/components/glitches/GlitchActions.tsx'
 import { AssignDefender, TakeOrRelease } from '#/components/glitches/GlitchAssignment.tsx'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
@@ -43,7 +44,10 @@ function GlitchPage() {
         <Link to="/" className="clickable self-start text-sm text-muted">
           {t.glitches.back}
         </Link>
-        <h2 className="font-display text-[1.6rem] font-bold">{glitch.glitchId}</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-display text-[1.6rem] font-bold">{glitch.glitchId}</h2>
+          {guardian.role === 'commander' && <GlitchActions glitch={glitch} />}
+        </div>
         <p className="leading-snug break-words">{glitch.description}</p>
         <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[.9rem] text-muted">
           <GlitchStatusLabel status={glitch.status} />

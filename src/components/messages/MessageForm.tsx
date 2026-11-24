@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { SendHorizontal } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { quoteText } from '#/components/messages/MessageItem.tsx'
 import { Attachment, ImageAttachment } from '#/components/images/Attachment.tsx'
 import { ImageButton } from '#/components/images/ImageButton.tsx'
 import { useImageAttachment } from '#/components/images/useImageAttachment.ts'
@@ -62,7 +63,7 @@ export function MessageForm({ conversationId, title, replyTo, onCancelReply, onS
         <Attachment label={t.messages.cancelReply} onRemove={onCancelReply}>
           <p className="min-w-0 truncate">
             {t.messages.replyingTo} <b>{replyTo.senderCodename}</b>:{' '}
-            {replyTo.body || t.messages.image}
+            {quoteText(replyTo, t)}
           </p>
         </Attachment>
       )}

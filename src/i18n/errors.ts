@@ -31,6 +31,13 @@ const DUTCH: Record<string, string> = {
     'Enkel de toegewezen defender of een commander kan de status wijzigen',
   'That conversation does not exist': 'Dat gesprek bestaat niet',
   'That message does not exist': 'Dat bericht bestaat niet',
+  'That message does not exist or is not yours': 'Dat bericht bestaat niet of is niet van jou',
+  'Invalid echo': 'Ongeldige echo',
+  'That echo does not exist': 'Die echo bestaat niet',
+  'Only its author or a commander can edit an echo':
+    'Enkel de auteur of een commander kan een echo bewerken',
+  'This is the only echo, remove the glitch instead':
+    'Dit is de enige echo, verwijder in plaats daarvan de glitch',
   'The message you reply to does not exist': 'Het bericht waarop je antwoordt, bestaat niet',
   'Write 1 to 1000 characters, or add an image':
     'Schrijf 1 tot 1000 tekens, of voeg een afbeelding toe',

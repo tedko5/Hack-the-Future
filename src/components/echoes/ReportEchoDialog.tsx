@@ -108,7 +108,7 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
           </div>
           <button
             type="button"
-            className="min-h-12 cursor-pointer px-4 text-muted hover:text-cyan"
+            className="min-h-12 cursor-pointer px-4 text-muted hover:text-highlight"
             onClick={onClose}
           >
             {t.common.cancel}

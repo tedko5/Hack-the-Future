@@ -77,12 +77,14 @@ export async function listMessages(
       senderId: messages.senderId,
       senderCodename: guardians.codename,
       body: messages.body,
+      isDeleted: sql<boolean>`${messages.deletedAt} is not null`,
       hasImage: sql<boolean>`${messageImages.messageId} is not null`,
       createdAt: messages.createdAt,
       replyTo: {
         messageId: quoted.messageId,
         senderCodename: quotedSender.codename,
         body: quoted.body,
+        isDeleted: sql<boolean>`${quoted.deletedAt} is not null`,
       },
     })
     .from(messages)
@@ -152,7 +154,13 @@ export async function createMessage(message: NewMessage) {
     const [target] = await db
       .select({ senderId: messages.senderId })
       .from(messages)
-      .where(and(eq(messages.messageId, replyToId), inConversation(senderId, conversationId)))
+      .where(
+        and(
+          eq(messages.messageId, replyToId),
+          inConversation(senderId, conversationId),
+          isNull(messages.deletedAt),
+        ),
+      )
     if (!target) throw new Error('The message you reply to does not exist')
     repliedToId = target.senderId
   }
@@ -179,7 +187,13 @@ export async function toggleReaction(guardianId: string, messageId: number, emoj
   const [message] = await db
     .select({ senderId: messages.senderId, recipientId: messages.recipientId })
     .from(messages)
-    .where(and(eq(messages.messageId, messageId), visibleTo(guardianId)))
+    .where(
+      and(
+        eq(messages.messageId, messageId),
+        visibleTo(guardianId),
+        isNull(messages.deletedAt),
+      ),
+    )
   if (!message) throw new Error('That message does not exist')
 
   const removed = await db
@@ -206,6 +220,26 @@ export async function toggleReaction(guardianId: string, messageId: number, emoj
       conversationId: message.recipientId === null ? EVERYONE : guardianId,
       detail: emoji,
     })
+  })
+}
+
+/** Only its author can. The message stays as a placeholder, without anything it contained. */
+export async function deleteMessage(guardianId: string, messageId: number) {
+  await db.transaction(async (tx) => {
+    const deleted = await tx
+      .update(messages)
+      .set({ body: '', deletedAt: sql`now()` })
+      .where(
+        and(
+          eq(messages.messageId, messageId),
+          eq(messages.senderId, guardianId),
+          isNull(messages.deletedAt),
+        ),
+      )
+      .returning({ messageId: messages.messageId })
+    if (deleted.length === 0) throw new Error('That message does not exist or is not yours')
+    await tx.delete(messageImages).where(eq(messageImages.messageId, messageId))
+    await tx.delete(messageReactions).where(eq(messageReactions.messageId, messageId))
   })
 }
 
@@ -247,6 +281,7 @@ async function countUnread(guardianId: string): Promise<Map<string, number>> {
     .where(
       and(
         ne(messages.senderId, guardianId),
+        isNull(messages.deletedAt),
         or(isNull(messages.recipientId), eq(messages.recipientId, guardianId)),
         gt(messages.messageId, sql`coalesce(${conversationReads.lastReadMessageId}, 0)`),
       ),

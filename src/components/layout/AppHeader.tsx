@@ -29,7 +29,7 @@ export function AppHeader({ guardian }: { guardian: Guardian }) {
           <button
             type="button"
             title={t.header.logOut}
-            className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 px-2 text-sm text-muted hover:text-cyan"
+            className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 px-2 text-sm text-muted hover:text-highlight"
             onClick={() => signOut()}
           >
             <LogOut size={18} aria-hidden="true" />
