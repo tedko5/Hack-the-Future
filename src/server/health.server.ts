@@ -1,6 +1,6 @@
 import { count, sql } from 'drizzle-orm'
-import { db } from './index'
-import { pings } from './schema'
+import { db } from '#/db/index.ts'
+import { pings } from '#/db/schema.ts'
 
 export type Health =
   | { ok: true; serverTime: string; pings: number; latencyMs: number }
@@ -22,4 +22,8 @@ export async function checkHealth(): Promise<Health> {
     console.error('Health check failed:', error)
     return { ok: false, error: 'Database query failed, see the server log' }
   }
+}
+
+export async function createPing() {
+  await db.insert(pings).values({})
 }

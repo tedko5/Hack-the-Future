@@ -22,9 +22,32 @@ After changing `src/db/schema.ts`, run `pnpm db:generate` and `pnpm db:migrate`,
 
 `/status` shows the database connection. `pnpm db:seed` adds the sample glitches and never overwrites existing rows.
 
+## Where things live
+
+| Folder | What it holds |
+|---|---|
+| `src/routes` | Pages, and HTTP endpoints under `routes/api`. Pages under `routes/_app` need a guardian. |
+| `src/components` | UI components |
+| `src/lib/*.ts` | Types and Zod schemas, shared by browser and server |
+| `src/lib/*.functions.ts` | Server functions: the API the pages call |
+| `src/middleware` | Login and role checks, and error hiding |
+| `src/server/*.server.ts` | Database queries and other server-only code |
+| `src/db` | Connection and table definitions |
+| `drizzle` | Generated migrations, plus the live update triggers |
+
+A call goes page, server function (access check, validation, rules), query, Postgres.
+
+To add a server function:
+
+1. Put its Zod schema in `src/lib/<entity>.ts`.
+2. Put its query in `src/server/<entities>.server.ts`.
+3. Add it to `src/lib/<entities>.functions.ts` with `guardianMiddleware` or `commanderMiddleware` and `validate(schema)`. Take the user from `context.guardian`, never from the input.
+
+Changes to glitches and echoes reach open pages live: call `useLiveEvents(() => router.invalidate())` in a page.
+
 ## Login
 
-Clerk handles accounts and sessions. The `guardians` table holds the codename and role, and everyone starts as `defender`. Server functions must start with `requireGuardian()` or `requireCommander()` from `src/lib/guardian.server.ts`, because anyone can call them directly.
+Clerk handles accounts and sessions. The `guardians` table holds the codename and role, and everyone starts as `defender`. Every server function uses a middleware from `src/middleware/auth.ts`, because anyone can call them directly.
 
 Make the first commander in the database, then use the Guardians page:
 

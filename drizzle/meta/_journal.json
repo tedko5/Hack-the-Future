@@ -22,6 +22,27 @@
       "when": 1795511913392,
       "tag": "0002_guardians",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795514061159,
+      "tag": "0003_echoes",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795514273276,
+      "tag": "0004_assignments",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795514273788,
+      "tag": "0005_live_events",
+      "breakpoints": true
     }
   ]
 }

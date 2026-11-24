@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { checkHealth } from '../../db/health'
+import { checkHealth } from '#/server/health.server.ts'
 
 export const Route = createFileRoute('/api/health')({
   server: {

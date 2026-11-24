@@ -1,5 +1,6 @@
 import { clerkMiddleware } from '@clerk/tanstack-react-start/server'
 import { createCsrfMiddleware, createStart } from '@tanstack/react-start'
+import { hideDatabaseErrors } from '#/middleware/errors.ts'
 
 // A custom start file drops TanStack Start's default CSRF check, so add it back.
 const csrfMiddleware = createCsrfMiddleware({
@@ -16,6 +17,7 @@ function authorizedParties() {
 }
 
 export const startInstance = createStart(() => ({
+  functionMiddleware: [hideDatabaseErrors],
   requestMiddleware: [
     csrfMiddleware,
     clerkMiddleware(() => ({

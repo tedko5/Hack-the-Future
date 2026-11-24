@@ -1,0 +1,2 @@
+ALTER TABLE "glitches" ADD COLUMN "assigned_guardian_id" text;--> statement-breakpoint
+ALTER TABLE "glitches" ADD CONSTRAINT "glitches_assigned_guardian_id_guardians_guardian_id_fk" FOREIGN KEY ("assigned_guardian_id") REFERENCES "public"."guardians"("guardian_id") ON DELETE no action ON UPDATE no action;

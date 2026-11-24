@@ -14,6 +14,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppGuardiansRouteImport } from './routes/_app/guardians'
 import { Route as AppStatusRouteImport } from './routes/_app/status'
+import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
 import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
@@ -42,6 +43,11 @@ const AppStatusRoute = AppStatusRouteImport.update({
   path: '/status',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiEventsRoute = ApiEventsRouteImport.update({
+  id: '/api/events',
+  path: '/api/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
   id: '/api/health',
   path: '/api/health',
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
   '/status': typeof AppStatusRoute
+  '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
   '/status': typeof AppStatusRoute
+  '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
@@ -82,6 +90,7 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/_app/guardians': typeof AppGuardiansRoute
   '/_app/status': typeof AppStatusRoute
+  '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/guardians'
     | '/status'
+    | '/api/events'
     | '/api/health'
     | '/sign-in/$'
     | '/sign-up/$'
@@ -102,6 +112,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/guardians'
     | '/status'
+    | '/api/events'
     | '/api/health'
     | '/sign-in/$'
     | '/sign-up/$'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/_app/guardians'
     | '/_app/status'
+    | '/api/events'
     | '/api/health'
     | '/sign-in/$'
     | '/sign-up/$'
@@ -121,6 +133,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   WelcomeRoute: typeof WelcomeRoute
+  ApiEventsRoute: typeof ApiEventsRoute
   ApiHealthRoute: typeof ApiHealthRoute
   SignInSplatRoute: typeof SignInSplatRoute
   SignUpSplatRoute: typeof SignUpSplatRoute
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStatusRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/events': {
+      id: '/api/events'
+      path: '/api/events'
+      fullPath: '/api/events'
+      preLoaderRoute: typeof ApiEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/health': {
       id: '/api/health'
       path: '/api/health'
@@ -204,6 +224,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   WelcomeRoute: WelcomeRoute,
+  ApiEventsRoute: ApiEventsRoute,
   ApiHealthRoute: ApiHealthRoute,
   SignInSplatRoute: SignInSplatRoute,
   SignUpSplatRoute: SignUpSplatRoute,
