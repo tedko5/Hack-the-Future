@@ -474,3 +474,79 @@ select:focus {
   :root, :root[data-theme="light"] { --app: #fff; color-scheme: light; }
   :root[data-theme="light"] body { background-image: none; }
 }
+
+/* ---------- Map of Achrona ---------- */
+.achrona-map .map-mark { filter: drop-shadow(0 0 5px currentColor); }
+:root[data-theme="light"] .achrona-map .map-mark { filter: none; }
+:root[data-theme="light"] .achrona-map .map-coast-halo { display: none; }
+.achrona-map .map-marker:focus { outline: none; }
+.achrona-map .map-marker:hover .map-mark { transform: scale(1.15); }
+.achrona-map .map-mark { transform-box: fill-box; transform-origin: center; transition: transform 0.15s; }
+.achrona-map .map-marker:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; }
+/* Rings over the map (HTML, so they animate on the GPU). Sizes are % of the map's width. */
+.map-ring {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.map-pulse { width: 3.2%; border: 2px solid currentColor; opacity: 0.6; }
+.map-selected { width: 6.4%; border: 2px dashed currentColor; }
+.map-flash { width: 2.8%; border: 3px solid currentColor; opacity: 0; }
+
+/* The hack button: the same slab as Clerk's Continue button. */
+.hack-button {
+  background: linear-gradient(180deg, var(--slab-top) 0%, var(--slab-mid) 55%, var(--slab-bottom) 100%);
+  border: 1px solid var(--slab-border);
+  color: var(--slab-ink);
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-shadow: 0 1px 0 var(--slab-emboss);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 -2px 0 rgb(0 0 0 / 0.15),
+    0 3px 0 var(--slab-edge),
+    0 6px 14px rgb(0 0 0 / 0.35);
+  transition: transform 0.1s, box-shadow 0.1s, filter 0.15s;
+}
+.hack-button:hover:not(:disabled) { filter: brightness(1.08); }
+.hack-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 1px 0 var(--slab-edge), 0 3px 8px rgb(0 0 0 / 0.3);
+}
+
+/* Faint scanlines on the hack console in dark */
+:root:not([data-theme="light"]) .hack-console {
+  background-image: repeating-linear-gradient(0deg, color-mix(in srgb, var(--highlight) 4%, transparent) 0 1px, transparent 1px 3px);
+  box-shadow: inset 0 0 24px color-mix(in srgb, var(--highlight) 8%, transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .map-pulse { animation: map-pulse 2.4s ease-out infinite; will-change: scale, opacity; }
+  .map-selected { animation: map-spin 12s linear infinite; will-change: rotate; }
+  .map-flash { animation: map-flash 1.6s ease-out 2 both; will-change: scale, opacity; }
+  .hack-line { animation: hack-line 0.25s ease-out both; }
+  .hack-caret { animation: caret 0.8s steps(1) infinite; }
+}
+@keyframes map-pulse { from { scale: 0.8; opacity: 0.9 } to { scale: 2.6; opacity: 0 } }
+@keyframes map-flash { from { scale: 1; opacity: 1 } to { scale: 5; opacity: 0 } }
+@keyframes map-spin { to { rotate: 360deg } }
+@keyframes hack-line { from { opacity: 0; transform: translateX(-6px) } to { opacity: 1; transform: none } }
+@keyframes caret { 50% { opacity: 0 } }
+
+/* The terminal's own prompt line: no field border or halo. */
+.hack-console input.hack-input,
+.hack-console input.hack-input:hover,
+.hack-console input.hack-input:focus {
+  border: 0;
+  box-shadow: none;
+  outline: none;
+}
+.achrona-map .map-echo { cursor: crosshair; }
+.achrona-map .map-echo circle:last-child { transition: r 0.15s; }
+.achrona-map .map-echo:hover circle:last-child { r: 8.5; }
+
+/* Rows you swipe through on a phone: no scrollbar line under them. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

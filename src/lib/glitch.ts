@@ -11,6 +11,19 @@ export const GLITCH_STATUSES = [
 
 export type GlitchStatus = (typeof GLITCH_STATUSES)[number]
 
+/** Outcome of a commander's one attempt to hack into a glitch. */
+export const HACK_RESULTS = ['SUCCESS', 'FAILED'] as const
+
+export type HackResult = (typeof HACK_RESULTS)[number]
+
+/** Chance that hacking into a glitch fixes it. */
+export const HACK_SUCCESS_CHANCE = 0.55
+
+/** A glitch can be hacked once, and only while it is still open. */
+export function canHack(glitch: Pick<Glitch, 'status' | 'hackResult'>) {
+  return glitch.status !== 'FIXED' && glitch.hackResult === null
+}
+
 export type Glitch = {
   glitchId: string
   status: GlitchStatus
@@ -20,6 +33,8 @@ export type Glitch = {
   /** null while nobody is assigned */
   assignedGuardianId: string | null
   assignedCodename: string | null
+  /** null until a commander has tried to hack into it */
+  hackResult: HackResult | null
 }
 
 /** Commanders always may, defenders only on a glitch assigned to them. */

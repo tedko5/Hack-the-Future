@@ -107,6 +107,12 @@ A: Commanders kunnen elke glitch aan een defender toewijzen. Defenders kunnen ze
 Q: Hoe voeg ik een update toe aan een glitch?
 A: Open de glitch en klik op "Update toevoegen". Elke guardian kan dit.
 
+Q: Wat is de kaart?
+A: De pagina Kaart toont elke glitch op de plek in Achrona waar hij lekte, omringd door zijn echo's.
+
+Q: Kan ik een glitch hacken?
+A: Commanders wel, één keer per glitch, vanaf de kaart. Een geslaagde hack herstelt de glitch. Na een mislukte moet een defender hem herstellen.
+
 Q: Hoe word ik commander?
 A: Een commander kan je commander maken op de pagina Guardians.
 

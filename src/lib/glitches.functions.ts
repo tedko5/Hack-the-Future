@@ -59,3 +59,9 @@ export const removeGlitch = createServerFn({ method: 'POST' })
   .middleware([commanderMiddleware])
   .validator(validate(glitchRefSchema))
   .handler(({ data }) => glitches.removeGlitch(data.glitchId))
+
+/** One random attempt to fix the glitch. On failure it needs manual intervention. */
+export const hackGlitch = createServerFn({ method: 'POST' })
+  .middleware([commanderMiddleware])
+  .validator(validate(glitchRefSchema))
+  .handler(({ data, context }) => glitches.hackGlitch(data.glitchId, context.guardian))

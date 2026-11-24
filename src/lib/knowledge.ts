@@ -111,6 +111,12 @@ A: Commanders can assign any glitch to a defender. Defenders can take a free gli
 Q: How do I add an update to a glitch?
 A: Open the glitch and click "Add update". Every guardian can do this.
 
+Q: What is the map?
+A: The Map page shows every glitch where it leaked in Achrona, ringed by its echoes.
+
+Q: Can I hack a glitch?
+A: Commanders can, once per glitch, from the map. A successful hack fixes the glitch. After a failed one, a defender has to fix it.
+
 Q: How do I become a commander?
 A: A commander can make you one on the Guardians page.
 
