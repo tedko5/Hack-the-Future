@@ -72,6 +72,16 @@
   --oracle: #b892ff;
   --guardian: #e8954f;
 
+  /* Map of Achrona: a star chart in violet and cyan. */
+  --map-land: #1d2040;
+  --map-land-core: #352a7c;
+  --map-ripple: #8a5cff;
+  --map-rune: #7d6ad6;
+  --map-river: #4df3ff;
+  --map-ley: #c9a8ff;
+  --map-gem-top: #c9a8ff;
+  --map-gem-bottom: #7a3fe0;
+
   --desync-stable: #6ff6ff;
   --desync-stable-soft: rgb(77 243 255 / 0.4);
   --desync-unstable: #c9a8ff;
@@ -129,6 +139,16 @@
   --status-fixed: #0b7480;
   --oracle: #0b7480;
   --guardian: #a55a12;
+
+  /* Map of Achrona: a sea chart in sandstone and brass, jade crystals, teal water. */
+  --map-land: #e6d6b0;
+  --map-land-core: #f1e6cb;
+  --map-ripple: #a37a3a;
+  --map-rune: #8a6428;
+  --map-river: #2a8f99;
+  --map-ley: #a37a3a;
+  --map-gem-top: #2f9e8f;
+  --map-gem-bottom: #1d5f57;
 
   /* Match the well's gems: jade, topaz, ruby. */
   --desync-stable: #1f7f74;
@@ -490,7 +510,6 @@ select:focus {
 /* ---------- Map of Achrona ---------- */
 .achrona-map .map-mark { filter: drop-shadow(0 0 5px currentColor); }
 :root[data-theme="light"] .achrona-map .map-mark { filter: none; }
-:root[data-theme="light"] .achrona-map .map-coast-halo { display: none; }
 .achrona-map .map-marker:focus { outline: none; }
 .achrona-map .map-marker:hover .map-mark { transform: scale(1.15); }
 .achrona-map .map-mark { transform-box: fill-box; transform-origin: center; transition: transform 0.15s; }
@@ -553,10 +572,21 @@ select:focus {
   box-shadow: none;
   outline: none;
 }
-.achrona-map .map-echo { cursor: crosshair; }
-.achrona-map .map-echo circle:last-child { transition: r 0.15s; }
-.achrona-map .map-echo:hover circle:last-child { r: 8.5; }
 
 /* Rows you swipe through on a phone: no scrollbar line under them. */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Magic meter on the map: slanted rune segments in the desync colour (--st). */
+.rune-segment {
+  height: 0.6rem;
+  flex: 1;
+  border-radius: 2px;
+  transform: skewX(-20deg);
+  background: color-mix(in srgb, var(--line) 70%, transparent);
+}
+.rune-segment.is-lit {
+  background: var(--st);
+  box-shadow: 0 0 8px var(--st-soft);
+}
+:root[data-theme="light"] .rune-segment.is-lit { box-shadow: none; }

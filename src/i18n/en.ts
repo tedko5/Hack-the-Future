@@ -111,6 +111,7 @@ export const en = {
     openGlitch: 'Open glitch',
     noneOpen: 'No open glitches. Pick any marker to see its echoes.',
     swipe: 'Swipe the map to explore, or pick a glitch:',
+    showDetails: 'Show details',
     districts: {
       'crystal-spire': 'Crystal Spire',
       'clock-tower': 'Clock Tower',
@@ -123,9 +124,10 @@ export const en = {
   },
   hack: {
     open: 'Open hacking terminal',
-    hint: 'Or click an echo, here or on the map. One hack attempt per glitch.',
-    intoThisEcho: 'Hack into this echo',
-    intoEcho: (echoId: number) => `Hack into echo #${echoId}`,
+    /** The button in the bar at the bottom on phones. */
+    openShort: 'Hack',
+    manualShort: 'Needs a defender',
+    hint: 'One hack attempt per glitch. If it fails, a defender has to step in.',
     manual: 'Manual intervention required.',
     failed: 'The hack failed and cannot be tried again. Assign a defender.',
     fixed: 'Fixed by a hack.',
@@ -139,7 +141,7 @@ export const en = {
     commands: {
       help: 'Show these commands',
       scan: 'Read the signal and find the ward frequency',
-      trace: 'Locate the echo in Achrona',
+      trace: 'Locate the glitch in Achrona',
       decrypt: 'Decode what was reported',
       breach: 'breach <frequency>: bring the wards down',
       inject: 'Hack in and fix the glitch (one attempt)',
@@ -147,8 +149,6 @@ export const en = {
       exit: 'Close the terminal',
     },
     rows: {
-      echo: 'echo',
-      reporter: 'reporter',
       leaked: 'leaked',
       glitch: 'glitch',
       echoes: 'echoes',
@@ -159,7 +159,6 @@ export const en = {
     },
     banner: 'ACHRONA LEY TERMINAL v3.1 · secure channel open',
     lockedOn: (glitchId: string) => `Locked on ${glitchId}`,
-    lockedOnEcho: (echoId: number, glitchId: string) => `Locked on echo #${echoId} of ${glitchId}`,
     typeHelp: 'Type "help" to see the commands.',
     notFound: (command: string) => `command not found: ${command}. Type "help".`,
     scanning: 'Scanning signature…',
