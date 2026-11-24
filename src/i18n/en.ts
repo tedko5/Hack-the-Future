@@ -300,6 +300,8 @@ export const en = {
     title: 'About us',
     intro:
       'We are Teodor and Vivian, team Clown Car. We built Achrona Mission Control in one day for Guardians of the Grid, a challenge of the Hack the Future hackathon.',
+    visit: 'Scan to try it yourself',
+    qrCode: 'QR code that opens this website',
     technologies: {
       title: 'What we built it with',
       items: [
