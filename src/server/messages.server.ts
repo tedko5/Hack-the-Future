@@ -17,6 +17,7 @@ import {
   type Reaction,
   type ReactionEmoji,
 } from '#/lib/message.ts'
+import { getAvatars } from '#/server/avatars.server.ts'
 import { findGuardian, listGuardians } from '#/server/guardians.server.ts'
 import { detectImageType } from '#/server/imageType.server.ts'
 
@@ -242,12 +243,16 @@ export async function countAllUnread(guardianId: string) {
 
 /** Everyone first, then one conversation per other guardian. */
 export async function listConversations(guardianId: string): Promise<Conversation[]> {
-  const [unread, others] = await Promise.all([countUnread(guardianId), listGuardians()])
+  const [unread, guardianList] = await Promise.all([countUnread(guardianId), listGuardians()])
+  const others = guardianList.filter((other) => other.guardianId !== guardianId)
+  const avatars = await getAvatars(others.map((other) => other.guardianId))
   return [
-    { conversationId: EVERYONE, title: 'All guardians' },
-    ...others
-      .filter((other) => other.guardianId !== guardianId)
-      .map((other) => ({ conversationId: other.guardianId, title: other.codename })),
+    { conversationId: EVERYONE, title: 'All guardians', imageUrl: null },
+    ...others.map((other) => ({
+      conversationId: other.guardianId,
+      title: other.codename,
+      imageUrl: avatars.get(other.guardianId) ?? null,
+    })),
   ].map((conversation) => ({
     ...conversation,
     unread: unread.get(conversation.conversationId) ?? 0,

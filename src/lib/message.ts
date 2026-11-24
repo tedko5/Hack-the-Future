@@ -45,6 +45,8 @@ export type Message = {
 export type Conversation = {
   conversationId: string
   title: string
+  /** The other guardian's profile picture, if there is one. */
+  imageUrl: string | null
   unread: number
 }
 
