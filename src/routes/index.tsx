@@ -1,19 +1,23 @@
-import {createFileRoute} from '@tanstack/react-router'
-import {GlitchesTable} from '#/components/GlitchesTable.tsx'
-import {getGlitches} from '#/lib/glitches.functions.ts'
+import { createFileRoute } from '@tanstack/react-router'
+import { EchoList } from '#/components/echoes/EchoList.tsx'
+import { HealthPanel } from '#/components/health/HealthPanel.tsx'
+import { AppHeader } from '#/components/layout/AppHeader.tsx'
+import { getDashboard } from '#/lib/dashboard.functions.ts'
 
 export const Route = createFileRoute('/')({
-  loader: () => getGlitches(),
-  component: OverviewPage,
+  loader: () => getDashboard(),
+  component: MissionControl,
 })
 
-function OverviewPage() {
-  const glitches = Route.useLoaderData()
+function MissionControl() {
+  const { guardian, magic, openGlitches, echoesToday, echoes } = Route.useLoaderData()
 
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-3xl font-semibold text-fg">Overview</h1>
-      <GlitchesTable glitches={glitches} />
+    <div className="flex flex-col gap-6 md:gap-8">
+      <AppHeader guardian={guardian} />
+      <HealthPanel magic={magic} openGlitches={openGlitches} echoesToday={echoesToday} />
+      {/* TODO: open the report-echo form once it exists */}
+      <EchoList echoes={echoes} />
     </div>
   )
 }

@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { Sidebar } from '#/components/layout/Sidebar'
+import { RiftBackground } from '#/components/layout/RiftBackground.tsx'
 
 import type { QueryClient } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
@@ -17,7 +17,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Control Center' },
+      { title: 'Achrona Mission Control' },
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
@@ -27,9 +27,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function AppLayout() {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="min-w-0 flex-1 px-16 py-10">
+    <div className="relative min-h-screen overflow-x-hidden">
+      <RiftBackground />
+      <main className="relative z-10 mx-auto max-w-[1120px] px-4 pt-7 pb-20 md:pt-11">
         <Outlet />
       </main>
     </div>
