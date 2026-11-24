@@ -7,8 +7,8 @@ import {
   searchMessagesSchema,
   sendMessageSchema,
   toggleReactionSchema,
-} from '#/lib/message.ts'
-import { validate } from '#/lib/validate.ts'
+} from '#/lib/schemas/message.ts'
+import { validate } from './validate.ts'
 import { guardianMiddleware } from '#/middleware/auth.ts'
 import { readImage } from '#/server/images.server.ts'
 import * as messages from '#/server/messages.server.ts'

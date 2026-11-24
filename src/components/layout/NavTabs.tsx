@@ -4,7 +4,7 @@ import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
 import { useT } from '#/i18n/index.ts'
-import { EVERYONE } from '#/lib/message.ts'
+import { EVERYONE } from '#/lib/schemas/message.ts'
 
 /** A bar at the bottom of the screen on phones. On larger screens, a row under the header that stays in view. */
 export function NavTabs({ unreadMessages }: { unreadMessages: number }) {

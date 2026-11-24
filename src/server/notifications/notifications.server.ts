@@ -1,7 +1,7 @@
 import { and, count, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 import { db } from '#/db/index.ts'
 import { glitches, guardians, notifications } from '#/db/schema.ts'
-import type { Notification } from '#/lib/notification.ts'
+import type { Notification } from '#/lib/schemas/notification.ts'
 
 const MAX_LISTED = 200
 

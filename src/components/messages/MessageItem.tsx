@@ -5,8 +5,8 @@ import { ConfirmDialog } from '#/components/ui/ConfirmDialog.tsx'
 import { MessageReactions, ReactionPicker, useToggleReaction } from '#/components/messages/Reactions.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
 import type { Dictionary } from '#/i18n/en.ts'
-import type { Message, MessageQuote } from '#/lib/message.ts'
-import { deleteMessage } from '#/lib/messages.functions.ts'
+import type { Message, MessageQuote } from '#/lib/schemas/message.ts'
+import { deleteMessage } from '#/lib/functions/messages.functions.ts'
 
 type Props = {
   message: Message

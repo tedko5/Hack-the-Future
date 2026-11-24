@@ -1,5 +1,5 @@
 import { useT } from '#/i18n/index.ts'
-import { DESYNC_STYLES, desyncStateFor } from '#/lib/desync.ts'
+import { DESYNC_STYLES, desyncStateFor } from '#/lib/achrona/desync.ts'
 
 type Style = (typeof DESYNC_STYLES)[keyof typeof DESYNC_STYLES]
 

@@ -6,10 +6,10 @@ import { AppHeader } from '#/components/layout/AppHeader.tsx'
 import { KeyboardShortcuts } from '#/components/layout/KeyboardShortcuts.tsx'
 import { NavTabs } from '#/components/layout/NavTabs.tsx'
 import { PageLoader } from '#/components/layout/PageLoader.tsx'
-import { getCurrentGuardian } from '#/lib/guardians.functions.ts'
+import { getCurrentGuardian } from '#/lib/functions/guardians.functions.ts'
 import { NotificationToast } from '#/components/notifications/NotificationToast.tsx'
-import { getInbox } from '#/lib/notifications.functions.ts'
-import { useLiveEvents } from '#/lib/useLiveEvents.ts'
+import { getInbox } from '#/lib/functions/notifications.functions.ts'
+import { useLiveEvents } from '#/lib/hooks/useLiveEvents.ts'
 
 // Everything under _app needs a signed-in guardian.
 export const Route = createFileRoute('/_app')({

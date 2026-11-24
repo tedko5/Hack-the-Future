@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { useFormat, useT } from '#/i18n/index.ts'
-import type { Glitch } from '#/lib/glitch.ts'
-import { assignGlitch, releaseGlitch, takeGlitch } from '#/lib/glitches.functions.ts'
-import type { Guardian } from '#/lib/guardian.ts'
+import type { Glitch } from '#/lib/schemas/glitch.ts'
+import { assignGlitch, releaseGlitch, takeGlitch } from '#/lib/functions/glitches.functions.ts'
+import type { Guardian } from '#/lib/schemas/guardian.ts'
 
 const UNASSIGNED = ''
 

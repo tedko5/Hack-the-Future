@@ -7,9 +7,9 @@ import { GlitchList } from '#/components/glitches/GlitchList.tsx'
 import { GuardianList } from '#/components/guardians/GuardianList.tsx'
 import { HealthPanel } from '#/components/health/HealthPanel.tsx'
 import { useT } from '#/i18n/index.ts'
-import { getDashboard } from '#/lib/dashboard.functions.ts'
-import { listGuardians } from '#/lib/guardians.functions.ts'
-import { useShortcuts } from '#/lib/useShortcuts.ts'
+import { getDashboard } from '#/lib/functions/dashboard.functions.ts'
+import { listGuardians } from '#/lib/functions/guardians.functions.ts'
+import { useShortcuts } from '#/lib/hooks/useShortcuts.ts'
 
 export const Route = createFileRoute('/_app/')({
   loader: async ({ context }) => {

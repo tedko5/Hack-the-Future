@@ -1,7 +1,7 @@
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { Shape } from '#/components/ui/Shape.tsx'
 import { useT } from '#/i18n/index.ts'
-import type { GlitchStatus } from '#/lib/glitch.ts'
+import type { GlitchStatus } from '#/lib/schemas/glitch.ts'
 
 export function GlitchStatusLabel({ status }: { status: GlitchStatus }) {
   const t = useT()

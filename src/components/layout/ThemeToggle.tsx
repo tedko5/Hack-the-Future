@@ -1,7 +1,7 @@
 import { Cog, MoonStar } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useT } from '#/i18n/index.ts'
-import { getTheme, setTheme, type Theme } from '#/lib/theme.ts'
+import { getTheme, setTheme, type Theme } from '#/lib/ui/theme.ts'
 
 /** Switches between the dark (rift) and light (brass) themes. */
 export function ThemeToggle({ className = '' }: { className?: string }) {

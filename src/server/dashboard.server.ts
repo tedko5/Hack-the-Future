@@ -1,6 +1,6 @@
-import type { Dashboard } from '#/lib/dashboard.ts'
-import type { Guardian } from '#/lib/guardian.ts'
-import { magicLevel } from '#/lib/magic.ts'
+import type { Dashboard } from '#/lib/schemas/dashboard.ts'
+import type { Guardian } from '#/lib/schemas/guardian.ts'
+import { magicLevel } from '#/lib/achrona/magic.ts'
 import { listEchoes } from '#/server/echoes.server.ts'
 import { listGlitches } from '#/server/glitches.server.ts'
 

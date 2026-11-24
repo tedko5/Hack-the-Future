@@ -16,7 +16,7 @@ import {
   type MessageQuote,
   type Reaction,
   type ReactionEmoji,
-} from '#/lib/message.ts'
+} from '#/lib/schemas/message.ts'
 import { getAvatars } from '#/server/avatars.server.ts'
 import { findGuardian, listGuardians } from '#/server/guardians.server.ts'
 import type { StoredImage } from '#/server/images.server.ts'

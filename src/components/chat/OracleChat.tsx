@@ -2,7 +2,7 @@ import { X, SendHorizontal } from 'lucide-react'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import type { Language } from '#/i18n/language.ts'
 import { useT } from '#/i18n/index.ts'
-import { askCodex, SUGGESTED_QUESTIONS } from '#/lib/chat.ts'
+import { askCodex, SUGGESTED_QUESTIONS } from '#/lib/oracle/chat.ts'
 
 type Message = {
   role: 'user' | 'assistant'

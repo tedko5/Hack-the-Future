@@ -1,6 +1,6 @@
 import { Anchor, Clock, Library, Store, Tornado, Trees, type LucideIcon } from 'lucide-react'
 import { useT } from '#/i18n/index.ts'
-import { DISTRICTS, MAP_HEIGHT, MAP_WIDTH, type District, type DistrictId } from '#/lib/map.ts'
+import { DISTRICTS, MAP_HEIGHT, MAP_WIDTH, type District, type DistrictId } from '#/lib/achrona/map.ts'
 
 /**
  * The land, sea, ley lines and districts under the glitch markers. Dark theme: an arcane star

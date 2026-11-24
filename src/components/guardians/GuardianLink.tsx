@@ -1,6 +1,6 @@
 import { Link, getRouteApi } from '@tanstack/react-router'
 import { useT } from '#/i18n/index.ts'
-import type { Guardian } from '#/lib/guardian.ts'
+import type { Guardian } from '#/lib/schemas/guardian.ts'
 
 const appRoute = getRouteApi('/_app')
 

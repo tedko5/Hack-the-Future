@@ -6,8 +6,8 @@ import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { SearchInput } from '#/components/ui/SearchInput.tsx'
 import { type Dictionary } from '#/i18n/en.ts'
 import { useT } from '#/i18n/index.ts'
-import { EVERYONE, type Conversation } from '#/lib/message.ts'
-import { matchesSearch } from '#/lib/search.ts'
+import { EVERYONE, type Conversation } from '#/lib/schemas/message.ts'
+import { matchesSearch } from '#/lib/utils/search.ts'
 
 /** The shared conversation has no name of its own. */
 export function titleOf(conversation: Conversation, t: Dictionary) {

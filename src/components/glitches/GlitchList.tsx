@@ -5,9 +5,9 @@ import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
 import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import type { Glitch } from '#/lib/glitch.ts'
-import { sortGlitches, type GlitchSort } from '#/lib/glitchSort.ts'
-import { matchesSearch } from '#/lib/search.ts'
+import type { Glitch } from '#/lib/schemas/glitch.ts'
+import { sortGlitches, type GlitchSort } from '#/lib/utils/glitchSort.ts'
+import { matchesSearch } from '#/lib/utils/search.ts'
 
 type Props = {
   title: string

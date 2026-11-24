@@ -1,5 +1,5 @@
 import { useId, type ReactNode } from 'react'
-import { useStoredFlag } from '#/lib/useStoredFlag.ts'
+import { useStoredFlag } from '#/lib/hooks/useStoredFlag.ts'
 
 type Props = {
   title: string

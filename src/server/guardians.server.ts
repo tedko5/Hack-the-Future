@@ -1,7 +1,7 @@
 import { and, asc, eq, ne } from 'drizzle-orm'
 import { db, type Transaction } from '#/db/index.ts'
 import { guardians } from '#/db/schema.ts'
-import type { Guardian, GuardianRole } from '#/lib/guardian.ts'
+import type { Guardian, GuardianRole } from '#/lib/schemas/guardian.ts'
 import { withNotifications } from '#/server/notifications/notify.server.ts'
 
 const selectGuardians = () =>

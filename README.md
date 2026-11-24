@@ -28,8 +28,13 @@ After changing `src/db/schema.ts`, run `pnpm db:generate` and `pnpm db:migrate`,
 |---|---|
 | `src/routes` | Pages, and HTTP endpoints under `routes/api`. Pages under `routes/_app` need a guardian. |
 | `src/components` | UI components |
-| `src/lib/*.ts` | Types and Zod schemas, shared by browser and server |
-| `src/lib/*.functions.ts` | Server functions: the API the pages call |
+| `src/lib/schemas` | Types and Zod schemas, shared by browser and server |
+| `src/lib/functions` | Server functions (`*.functions.ts`): the API the pages call, plus `validate` |
+| `src/lib/hooks` | Shared React hooks |
+| `src/lib/oracle` | The Oracle chatbot and its knowledge base |
+| `src/lib/achrona` | Game rules: magic, desync and the map |
+| `src/lib/ui` | Theme, Clerk styling and other visual helpers |
+| `src/lib/utils` | Small pure helpers: dates, search, sorting, image preparation |
 | `src/i18n` | The texts in English (`en.ts`) and Dutch (`nl.ts`), and the language choice |
 | `src/middleware` | Login and role checks, and error translation and hiding |
 | `src/server/*.server.ts` | Database queries and other server-only code |
@@ -40,9 +45,9 @@ A call goes page, server function (access check, validation, rules), query, Post
 
 To add a server function:
 
-1. Put its Zod schema in `src/lib/<entity>.ts`.
+1. Put its Zod schema in `src/lib/schemas/<entity>.ts`.
 2. Put its query in `src/server/<entities>.server.ts`.
-3. Add it to `src/lib/<entities>.functions.ts` with `guardianMiddleware` or `commanderMiddleware` and `validate(schema)`. Take the user from `context.guardian`, never from the input.
+3. Add it to `src/lib/functions/<entities>.functions.ts` with `guardianMiddleware` or `commanderMiddleware` and `validate(schema)`. Take the user from `context.guardian`, never from the input.
 
 Changes to glitches, echoes, messages and notifications reach every open page under `routes/_app` live, through `useLiveEvents` in `routes/_app.tsx`.
 
@@ -50,7 +55,7 @@ Changes to glitches, echoes, messages and notifications reach every open page un
 
 Put every text in `src/i18n/en.ts` and `nl.ts`, and use it in a component as `useT().echoes.title`. TypeScript refuses a text that is missing in one of them. Dates go through `useFormat()`.
 
-Server errors are thrown in English and translated by `src/i18n/errors.ts` on their way out. The Oracle's answers are in `src/lib/knowledge.ts` and `knowledge.nl.ts`. The choice is kept in a cookie, and without one the browser's language decides.
+Server errors are thrown in English and translated by `src/i18n/errors.ts` on their way out. The Oracle's answers are in `src/lib/oracle/knowledge.ts` and `knowledge.nl.ts`. The choice is kept in a cookie, and without one the browser's language decides.
 
 ## Login
 

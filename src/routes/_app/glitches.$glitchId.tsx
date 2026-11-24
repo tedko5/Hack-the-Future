@@ -7,10 +7,10 @@ import { AssignDefender, TakeOrRelease } from '#/components/glitches/GlitchAssig
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { canChangeStatus } from '#/lib/glitch.ts'
-import { getGlitch } from '#/lib/glitches.functions.ts'
-import { listGuardians } from '#/lib/guardians.functions.ts'
-import { useShortcuts } from '#/lib/useShortcuts.ts'
+import { canChangeStatus } from '#/lib/schemas/glitch.ts'
+import { getGlitch } from '#/lib/functions/glitches.functions.ts'
+import { listGuardians } from '#/lib/functions/guardians.functions.ts'
+import { useShortcuts } from '#/lib/hooks/useShortcuts.ts'
 
 export const Route = createFileRoute('/_app/glitches/$glitchId')({
   loader: async ({ params, context }) => {

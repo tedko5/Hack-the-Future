@@ -10,7 +10,7 @@ import {
   UserMinus,
   type LucideIcon,
 } from 'lucide-react'
-import type { NotificationType } from '#/lib/notification.ts'
+import type { NotificationType } from '#/lib/schemas/notification.ts'
 
 const ICONS: Record<NotificationType, LucideIcon> = {
   glitch_reported: CircleAlert,

@@ -3,8 +3,8 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { LanguageToggle } from '#/components/layout/LanguageToggle.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { CODENAME_MAX_LENGTH, CODENAME_MIN_LENGTH } from '#/lib/guardian.ts'
-import { registerGuardian, requireNewcomer } from '#/lib/guardians.functions.ts'
+import { CODENAME_MAX_LENGTH, CODENAME_MIN_LENGTH } from '#/lib/schemas/guardian.ts'
+import { registerGuardian, requireNewcomer } from '#/lib/functions/guardians.functions.ts'
 
 export const Route = createFileRoute('/welcome')({
   beforeLoad: () => requireNewcomer(),

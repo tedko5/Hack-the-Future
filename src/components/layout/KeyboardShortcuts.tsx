@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { Dialog } from '#/components/ui/Dialog.tsx'
 import { useT } from '#/i18n/index.ts'
-import { getGlitches } from '#/lib/glitches.functions.ts'
-import { EVERYONE } from '#/lib/message.ts'
-import { useShortcuts } from '#/lib/useShortcuts.ts'
+import { getGlitches } from '#/lib/functions/glitches.functions.ts'
+import { EVERYONE } from '#/lib/schemas/message.ts'
+import { useShortcuts } from '#/lib/hooks/useShortcuts.ts'
 
 type Props = {
   isHelpOpen: boolean

@@ -1,5 +1,5 @@
 import pg from 'pg'
-import type { LiveEvent } from '#/lib/liveEvents.ts'
+import type { LiveEvent } from '#/lib/schemas/liveEvents.ts'
 
 const HEARTBEAT_MS = 20_000
 // The browser reconnects after this, so access is checked again regularly.

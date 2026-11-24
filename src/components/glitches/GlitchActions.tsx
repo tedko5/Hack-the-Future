@@ -4,9 +4,9 @@ import { ConfirmDialog } from '#/components/ui/ConfirmDialog.tsx'
 import { EditRemoveButtons } from '#/components/ui/EditRemoveButtons.tsx'
 import { EditTextDialog } from '#/components/ui/EditTextDialog.tsx'
 import { useT } from '#/i18n/index.ts'
-import { ECHO_MAX_LENGTH } from '#/lib/echo.ts'
-import type { Glitch } from '#/lib/glitch.ts'
-import { editGlitch, removeGlitch } from '#/lib/glitches.functions.ts'
+import { ECHO_MAX_LENGTH } from '#/lib/schemas/echo.ts'
+import type { Glitch } from '#/lib/schemas/glitch.ts'
+import { editGlitch, removeGlitch } from '#/lib/functions/glitches.functions.ts'
 
 /** For commanders, on the page of the glitch. The server checks it too. */
 export function GlitchActions({ glitch }: { glitch: Glitch }) {

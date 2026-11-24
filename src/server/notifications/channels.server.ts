@@ -1,4 +1,4 @@
-import type { Notification, NotificationText } from '#/lib/notification.ts'
+import type { Notification, NotificationText } from '#/lib/schemas/notification.ts'
 
 export type Delivery = NotificationText & {
   /** Who receives it. This is also the Clerk user ID, which is how to find an email address. */

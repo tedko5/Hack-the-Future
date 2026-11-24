@@ -1,5 +1,5 @@
 import { auth } from '@clerk/tanstack-react-start/server'
-import type { ImageType } from '#/lib/image.ts'
+import type { ImageType } from '#/lib/schemas/image.ts'
 import { findGuardian } from '#/server/guardians.server.ts'
 
 export type StoredImage = { type: ImageType; data: Buffer }

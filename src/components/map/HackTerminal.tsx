@@ -1,9 +1,9 @@
 import { useRouter } from '@tanstack/react-router'
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { HACK_SUCCESS_CHANCE, canHack } from '#/lib/glitch.ts'
-import { hackGlitch } from '#/lib/glitches.functions.ts'
-import { DISTRICTS } from '#/lib/map.ts'
+import { HACK_SUCCESS_CHANCE, canHack } from '#/lib/schemas/glitch.ts'
+import { hackGlitch } from '#/lib/functions/glitches.functions.ts'
+import { DISTRICTS } from '#/lib/achrona/map.ts'
 import type { MapGlitch } from './AchronaMap.tsx'
 
 type Tone = 'out' | 'cmd' | 'dim' | 'accent' | 'ok' | 'err'

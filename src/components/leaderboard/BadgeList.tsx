@@ -1,6 +1,6 @@
 import { Crown, Ear, MessageCircle, ShieldCheck, Sparkles, Zap, type LucideIcon } from 'lucide-react'
 import { useT } from '#/i18n/index.ts'
-import type { Badge } from '#/lib/leaderboard.ts'
+import type { Badge } from '#/lib/schemas/leaderboard.ts'
 
 const ICONS: Record<Badge['id'], LucideIcon> = {
   'first-whisper': MessageCircle,
