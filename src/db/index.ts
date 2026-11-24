@@ -12,3 +12,5 @@ const pool = new pg.Pool({
 pool.on('error', (error) => console.error('Postgres pool error:', error.message))
 
 export const db = drizzle(pool, { schema })
+
+export type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0]

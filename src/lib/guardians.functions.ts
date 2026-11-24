@@ -33,5 +33,5 @@ export const setGuardianRole = createServerFn({ method: 'POST' })
     if (data.guardianId === context.guardian.guardianId) {
       throw new Error('You cannot change your own role')
     }
-    await guardians.updateGuardianRole(data.guardianId, data.role)
+    await guardians.updateGuardianRole(data.guardianId, data.role, context.guardian.guardianId)
   })

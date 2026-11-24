@@ -2,6 +2,8 @@ import { and, desc, eq, isNull } from 'drizzle-orm'
 import { db } from '#/db/index.ts'
 import { glitches, guardians } from '#/db/schema.ts'
 import type { Glitch } from '#/lib/glitch.ts'
+import { listCommanderIds } from '#/server/guardians.server.ts'
+import { withNotifications } from '#/server/notifications/notify.server.ts'
 
 const selectGlitches = () =>
   db
@@ -30,13 +32,24 @@ export async function findGlitch(glitchId: string): Promise<Glitch | undefined> 
   return row && toGlitch(row)
 }
 
-export async function assignGlitch(glitchId: string, guardianId: string | null) {
-  const updated = await db
-    .update(glitches)
-    .set({ assignedGuardianId: guardianId })
-    .where(eq(glitches.glitchId, glitchId))
-    .returning({ glitchId: glitches.glitchId })
-  if (updated.length === 0) throw new Error('That glitch does not exist')
+export function assignGlitch(glitchId: string, guardianId: string | null, actorId: string) {
+  return withNotifications(async (tx, notify) => {
+    const [glitch] = await tx
+      .select({ assignedGuardianId: glitches.assignedGuardianId })
+      .from(glitches)
+      .where(eq(glitches.glitchId, glitchId))
+      .for('update')
+    if (!glitch) throw new Error('That glitch does not exist')
+    const previousId = glitch.assignedGuardianId
+    if (previousId === guardianId) return
+
+    await tx
+      .update(glitches)
+      .set({ assignedGuardianId: guardianId })
+      .where(eq(glitches.glitchId, glitchId))
+    if (previousId) notify({ guardianId: previousId, actorId, type: 'glitch_unassigned', glitchId })
+    if (guardianId) notify({ guardianId, actorId, type: 'glitch_assigned', glitchId })
+  })
 }
 
 /** Checked in the update itself, so two defenders can never both take it. */
@@ -49,11 +62,17 @@ export async function takeGlitch(glitchId: string, guardianId: string) {
   if (updated.length === 0) throw new Error('That glitch is already assigned or does not exist')
 }
 
-export async function releaseGlitch(glitchId: string, guardianId: string) {
-  const updated = await db
-    .update(glitches)
-    .set({ assignedGuardianId: null })
-    .where(and(eq(glitches.glitchId, glitchId), eq(glitches.assignedGuardianId, guardianId)))
-    .returning({ glitchId: glitches.glitchId })
-  if (updated.length === 0) throw new Error('That glitch is not assigned to you')
+/** Tells the commanders, because the glitch needs a new defender. */
+export function releaseGlitch(glitchId: string, guardianId: string) {
+  return withNotifications(async (tx, notify) => {
+    const updated = await tx
+      .update(glitches)
+      .set({ assignedGuardianId: null })
+      .where(and(eq(glitches.glitchId, glitchId), eq(glitches.assignedGuardianId, guardianId)))
+      .returning({ glitchId: glitches.glitchId })
+    if (updated.length === 0) throw new Error('That glitch is not assigned to you')
+    for (const commanderId of await listCommanderIds(tx)) {
+      notify({ guardianId: commanderId, actorId: guardianId, type: 'glitch_released', glitchId })
+    }
+  })
 }

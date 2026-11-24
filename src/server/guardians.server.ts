@@ -1,7 +1,8 @@
-import { asc, eq } from 'drizzle-orm'
-import { db } from '#/db/index.ts'
+import { and, asc, eq, ne } from 'drizzle-orm'
+import { db, type Transaction } from '#/db/index.ts'
 import { guardians } from '#/db/schema.ts'
 import type { Guardian, GuardianRole } from '#/lib/guardian.ts'
+import { withNotifications } from '#/server/notifications/notify.server.ts'
 
 const selectGuardians = () =>
   db
@@ -31,6 +32,21 @@ export async function createGuardian(guardianId: string, codename: string) {
   if (!created && !(await findGuardian(guardianId))) throw new Error('That codename is taken')
 }
 
-export async function updateGuardianRole(guardianId: string, role: GuardianRole) {
-  await db.update(guardians).set({ role }).where(eq(guardians.guardianId, guardianId))
+export function updateGuardianRole(guardianId: string, role: GuardianRole, actorId: string) {
+  return withNotifications(async (tx, notify) => {
+    const updated = await tx
+      .update(guardians)
+      .set({ role })
+      .where(and(eq(guardians.guardianId, guardianId), ne(guardians.role, role)))
+      .returning({ guardianId: guardians.guardianId })
+    if (updated.length > 0) notify({ guardianId, actorId, type: 'role_changed', detail: role })
+  })
+}
+
+export async function listCommanderIds(tx: Transaction) {
+  const rows = await tx
+    .select({ guardianId: guardians.guardianId })
+    .from(guardians)
+    .where(eq(guardians.role, 'commander'))
+  return rows.map((row) => row.guardianId)
 }

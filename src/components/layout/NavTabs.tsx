@@ -1,5 +1,5 @@
 import { Link, linkOptions, useLocation, type LinkProps } from '@tanstack/react-router'
-import { MessageCircle, Users } from 'lucide-react'
+import { Bell, MessageCircle, Users } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
@@ -9,10 +9,11 @@ import { EVERYONE } from '#/lib/message.ts'
 type Props = {
   guardian: Guardian
   unreadMessages: number
+  unreadNotifications: number
 }
 
 /** A bar at the bottom of the screen on phones, a row under the header on larger screens. */
-export function NavTabs({ guardian, unreadMessages }: Props) {
+export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props) {
   const { pathname } = useLocation()
   const isIn = (section: string) => pathname === section || pathname.startsWith(`${section}/`)
 
@@ -36,6 +37,13 @@ export function NavTabs({ guardian, unreadMessages }: Props) {
         label="Messages"
         isActive={isIn('/messages')}
         badge={unreadMessages}
+      />
+      <Tab
+        link={linkOptions({ to: '/notifications' })}
+        icon={Bell}
+        label="Notifications"
+        isActive={isIn('/notifications')}
+        badge={unreadNotifications}
       />
       {guardian.role === 'commander' && (
         <Tab

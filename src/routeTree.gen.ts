@@ -13,6 +13,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppGuardiansRouteImport } from './routes/_app/guardians'
+import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
 import { Route as AppStatusRouteImport } from './routes/_app/status'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
@@ -39,6 +40,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppGuardiansRoute = AppGuardiansRouteImport.update({
   id: '/guardians',
   path: '/guardians',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
   getParentRoute: () => AppRoute,
 } as any)
 const AppStatusRoute = AppStatusRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
+  '/notifications': typeof AppNotificationsRoute
   '/status': typeof AppStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
+  '/notifications': typeof AppNotificationsRoute
   '/status': typeof AppStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/_app/guardians': typeof AppGuardiansRoute
+  '/_app/notifications': typeof AppNotificationsRoute
   '/_app/status': typeof AppStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/'
     | '/welcome'
     | '/guardians'
+    | '/notifications'
     | '/status'
     | '/api/events'
     | '/api/health'
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
   to:
     | '/welcome'
     | '/guardians'
+    | '/notifications'
     | '/status'
     | '/api/events'
     | '/api/health'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/welcome'
     | '/_app/guardians'
+    | '/_app/notifications'
     | '/_app/status'
     | '/api/events'
     | '/api/health'
@@ -206,6 +218,13 @@ declare module '@tanstack/react-router' {
       path: '/guardians'
       fullPath: '/guardians'
       preLoaderRoute: typeof AppGuardiansRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/status': {
@@ -269,6 +288,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppGuardiansRoute: typeof AppGuardiansRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
   AppStatusRoute: typeof AppStatusRoute
   AppIndexRoute: typeof AppIndexRoute
   AppGlitchesGlitchIdRoute: typeof AppGlitchesGlitchIdRoute
@@ -277,6 +297,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppGuardiansRoute: AppGuardiansRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
   AppStatusRoute: AppStatusRoute,
   AppIndexRoute: AppIndexRoute,
   AppGlitchesGlitchIdRoute: AppGlitchesGlitchIdRoute,

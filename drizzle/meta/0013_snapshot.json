@@ -1,0 +1,698 @@
+{
+  "id": "6901aa9c-3bbe-42a7-833d-295b733868c6",
+  "prevId": "444ee0a8-7325-4ed7-8686-9404e606adb6",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.conversation_reads": {
+      "name": "conversation_reads",
+      "schema": "",
+      "columns": {
+        "guardian_id": {
+          "name": "guardian_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "conversation_id": {
+          "name": "conversation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_read_message_id": {
+          "name": "last_read_message_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "conversation_reads_guardian_id_guardians_guardian_id_fk": {
+          "name": "conversation_reads_guardian_id_guardians_guardian_id_fk",
+          "tableFrom": "conversation_reads",
+          "columnsFrom": [
+            "guardian_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "conversation_reads_guardian_id_conversation_id_pk": {
+          "name": "conversation_reads_guardian_id_conversation_id_pk",
+          "columns": [
+            "guardian_id",
+            "conversation_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.echoes": {
+      "name": "echoes",
+      "schema": "",
+      "columns": {
+        "echo_id": {
+          "name": "echo_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "glitch_id": {
+          "name": "glitch_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "new_status": {
+          "name": "new_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reporting_guardian_id": {
+          "name": "reporting_guardian_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "echoes_glitch_id": {
+          "name": "echoes_glitch_id",
+          "columns": [
+            {
+              "expression": "glitch_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "echoes_glitch_id_glitches_glitch_id_fk": {
+          "name": "echoes_glitch_id_glitches_glitch_id_fk",
+          "tableFrom": "echoes",
+          "columnsFrom": [
+            "glitch_id"
+          ],
+          "tableTo": "glitches",
+          "columnsTo": [
+            "glitch_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "echoes_reporting_guardian_id_guardians_guardian_id_fk": {
+          "name": "echoes_reporting_guardian_id_guardians_guardian_id_fk",
+          "tableFrom": "echoes",
+          "columnsFrom": [
+            "reporting_guardian_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.glitches": {
+      "name": "glitches",
+      "schema": "",
+      "columns": {
+        "glitch_id": {
+          "name": "glitch_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assigned_guardian_id": {
+          "name": "assigned_guardian_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "glitches_assigned_guardian_id_guardians_guardian_id_fk": {
+          "name": "glitches_assigned_guardian_id_guardians_guardian_id_fk",
+          "tableFrom": "glitches",
+          "columnsFrom": [
+            "assigned_guardian_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.guardians": {
+      "name": "guardians",
+      "schema": "",
+      "columns": {
+        "guardian_id": {
+          "name": "guardian_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "codename": {
+          "name": "codename",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'defender'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "guardians_codename_lower": {
+          "name": "guardians_codename_lower",
+          "columns": [
+            {
+              "expression": "lower(\"codename\")",
+              "isExpression": true,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.message_images": {
+      "name": "message_images",
+      "schema": "",
+      "columns": {
+        "message_id": {
+          "name": "message_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "message_images_message_id_messages_message_id_fk": {
+          "name": "message_images_message_id_messages_message_id_fk",
+          "tableFrom": "message_images",
+          "columnsFrom": [
+            "message_id"
+          ],
+          "tableTo": "messages",
+          "columnsTo": [
+            "message_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.message_reactions": {
+      "name": "message_reactions",
+      "schema": "",
+      "columns": {
+        "message_id": {
+          "name": "message_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "guardian_id": {
+          "name": "guardian_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "emoji": {
+          "name": "emoji",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "message_reactions_message_id_messages_message_id_fk": {
+          "name": "message_reactions_message_id_messages_message_id_fk",
+          "tableFrom": "message_reactions",
+          "columnsFrom": [
+            "message_id"
+          ],
+          "tableTo": "messages",
+          "columnsTo": [
+            "message_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "message_reactions_guardian_id_guardians_guardian_id_fk": {
+          "name": "message_reactions_guardian_id_guardians_guardian_id_fk",
+          "tableFrom": "message_reactions",
+          "columnsFrom": [
+            "guardian_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "message_reactions_message_id_guardian_id_emoji_pk": {
+          "name": "message_reactions_message_id_guardian_id_emoji_pk",
+          "columns": [
+            "message_id",
+            "guardian_id",
+            "emoji"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.messages": {
+      "name": "messages",
+      "schema": "",
+      "columns": {
+        "message_id": {
+          "name": "message_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sender_id": {
+          "name": "sender_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recipient_id": {
+          "name": "recipient_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reply_to_id": {
+          "name": "reply_to_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "messages_participants": {
+          "name": "messages_participants",
+          "columns": [
+            {
+              "expression": "recipient_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "sender_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "message_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "messages_sender_id_guardians_guardian_id_fk": {
+          "name": "messages_sender_id_guardians_guardian_id_fk",
+          "tableFrom": "messages",
+          "columnsFrom": [
+            "sender_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "messages_recipient_id_guardians_guardian_id_fk": {
+          "name": "messages_recipient_id_guardians_guardian_id_fk",
+          "tableFrom": "messages",
+          "columnsFrom": [
+            "recipient_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "messages_reply_to_id_messages_message_id_fk": {
+          "name": "messages_reply_to_id_messages_message_id_fk",
+          "tableFrom": "messages",
+          "columnsFrom": [
+            "reply_to_id"
+          ],
+          "tableTo": "messages",
+          "columnsTo": [
+            "message_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.notifications": {
+      "name": "notifications",
+      "schema": "",
+      "columns": {
+        "notification_id": {
+          "name": "notification_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "guardian_id": {
+          "name": "guardian_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "actor_id": {
+          "name": "actor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "glitch_id": {
+          "name": "glitch_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "message_id": {
+          "name": "message_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "conversation_id": {
+          "name": "conversation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "detail": {
+          "name": "detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "read_at": {
+          "name": "read_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "notifications_guardian": {
+          "name": "notifications_guardian",
+          "columns": [
+            {
+              "expression": "guardian_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "notification_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "with": {},
+          "method": "btree",
+          "concurrently": false
+        }
+      },
+      "foreignKeys": {
+        "notifications_guardian_id_guardians_guardian_id_fk": {
+          "name": "notifications_guardian_id_guardians_guardian_id_fk",
+          "tableFrom": "notifications",
+          "columnsFrom": [
+            "guardian_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "notifications_actor_id_guardians_guardian_id_fk": {
+          "name": "notifications_actor_id_guardians_guardian_id_fk",
+          "tableFrom": "notifications",
+          "columnsFrom": [
+            "actor_id"
+          ],
+          "tableTo": "guardians",
+          "columnsTo": [
+            "guardian_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "notifications_glitch_id_glitches_glitch_id_fk": {
+          "name": "notifications_glitch_id_glitches_glitch_id_fk",
+          "tableFrom": "notifications",
+          "columnsFrom": [
+            "glitch_id"
+          ],
+          "tableTo": "glitches",
+          "columnsTo": [
+            "glitch_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "notifications_message_id_messages_message_id_fk": {
+          "name": "notifications_message_id_messages_message_id_fk",
+          "tableFrom": "notifications",
+          "columnsFrom": [
+            "message_id"
+          ],
+          "tableTo": "messages",
+          "columnsTo": [
+            "message_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pings": {
+      "name": "pings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "views": {},
+  "sequences": {
+    "public.glitch_number": {
+      "name": "glitch_number",
+      "increment": "1",
+      "minValue": "1",
+      "maxValue": "9223372036854775807",
+      "startWith": "143",
+      "cache": "1",
+      "cycle": false,
+      "schema": "public"
+    }
+  },
+  "roles": {},
+  "policies": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

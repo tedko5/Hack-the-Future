@@ -1,11 +1,11 @@
-import { desc, eq, sql } from 'drizzle-orm'
-import { db } from '#/db/index.ts'
+import { asc, desc, eq, sql } from 'drizzle-orm'
+import { db, type Transaction } from '#/db/index.ts'
 import { echoes, glitches, guardians } from '#/db/schema.ts'
 import type { Echo } from '#/lib/echo.ts'
 import { canChangeStatus, type GlitchStatus } from '#/lib/glitch.ts'
 import type { Guardian } from '#/lib/guardian.ts'
-
-type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0]
+import { listCommanderIds } from '#/server/guardians.server.ts'
+import { withNotifications } from '#/server/notifications/notify.server.ts'
 
 type NewEcho = {
   description: string
@@ -56,10 +56,25 @@ export async function listGlitchEchoes(glitchId: string): Promise<Echo[]> {
 export function createEcho({ description, reporter, glitchId, status }: NewEcho) {
   const timestamp = new Date()
 
-  return db.transaction(async (tx) => {
+  return withNotifications(async (tx, notify) => {
     const target = glitchId
       ? await updateGlitch(tx, glitchId, reporter, status)
       : await openGlitch(tx, description, timestamp)
+    const about = { actorId: reporter.guardianId, glitchId: target.glitchId }
+
+    if (!glitchId) {
+      for (const guardianId of await listCommanderIds(tx)) {
+        notify({ ...about, guardianId, type: 'glitch_reported' })
+      }
+    } else {
+      for (const guardianId of await listInvolvedIds(tx, glitchId)) {
+        notify(
+          target.newStatus
+            ? { ...about, guardianId, type: 'glitch_status_changed', detail: target.newStatus }
+            : { ...about, guardianId, type: 'glitch_updated' },
+        )
+      }
+    }
 
     const [{ echoId }] = await tx
       .insert(echoes)
@@ -67,6 +82,22 @@ export function createEcho({ description, reporter, glitchId, status }: NewEcho)
       .returning({ echoId: echoes.echoId })
     return { echoId, glitchId: target.glitchId }
   })
+}
+
+/** The assigned defender and whoever reported the glitch first. */
+async function listInvolvedIds(tx: Transaction, glitchId: string) {
+  const [glitch] = await tx
+    .select({ assignedGuardianId: glitches.assignedGuardianId })
+    .from(glitches)
+    .where(eq(glitches.glitchId, glitchId))
+  const [first] = await tx
+    .select({ guardianId: echoes.reportingGuardianId })
+    .from(echoes)
+    .where(eq(echoes.glitchId, glitchId))
+    .orderBy(asc(echoes.timestamp), asc(echoes.echoId))
+    .limit(1)
+  const ids = [glitch?.assignedGuardianId, first?.guardianId].filter((id) => id != null)
+  return new Set(ids)
 }
 
 async function updateGlitch(

@@ -10,12 +10,9 @@ import {
 import { validate } from '#/lib/validate.ts'
 import { guardianMiddleware } from '#/middleware/auth.ts'
 import * as messages from '#/server/messages.server.ts'
+import { markConversationNotificationsRead } from '#/server/notifications/notifications.server.ts'
 
 // The reader is always context.guardian, so nobody can open someone else's conversation.
-
-export const getUnreadCount = createServerFn({ method: 'GET' })
-  .middleware([guardianMiddleware])
-  .handler(({ context }) => messages.countAllUnread(context.guardian.guardianId))
 
 /** All conversations, plus the messages of the open one. */
 export const getConversation = createServerFn({ method: 'GET' })
@@ -69,4 +66,5 @@ export const markRead = createServerFn({ method: 'POST' })
     const { guardianId } = context.guardian
     await messages.requireConversation(guardianId, data.conversationId)
     await messages.markRead(guardianId, data.conversationId, data.messageId)
+    await markConversationNotificationsRead(guardianId, data.conversationId)
   })

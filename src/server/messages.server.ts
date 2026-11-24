@@ -20,6 +20,7 @@ import {
 import { getAvatars } from '#/server/avatars.server.ts'
 import { findGuardian, listGuardians } from '#/server/guardians.server.ts'
 import { detectImageType } from '#/server/imageType.server.ts'
+import { withNotifications } from '#/server/notifications/notify.server.ts'
 
 const PAGE_SIZE = 100
 
@@ -148,28 +149,38 @@ export async function createMessage(message: NewMessage) {
   const type = image && detectImageType(image)
   if (image && !type) throw new Error('Use a JPEG, PNG, WebP or GIF image')
 
+  let repliedToId: string | undefined
   if (replyToId !== undefined) {
     // Within the same conversation, so a reply never quotes a message its readers cannot see.
     const [target] = await db
-      .select({ messageId: messages.messageId })
+      .select({ senderId: messages.senderId })
       .from(messages)
       .where(and(eq(messages.messageId, replyToId), inConversation(senderId, conversationId)))
     if (!target) throw new Error('The message you reply to does not exist')
+    repliedToId = target.senderId
   }
 
-  await db.transaction(async (tx) => {
+  await withNotifications(async (tx, notify) => {
     const recipientId = conversationId === EVERYONE ? null : conversationId
     const [{ messageId }] = await tx
       .insert(messages)
       .values({ senderId, recipientId, body, replyToId })
       .returning({ messageId: messages.messageId })
     if (image && type) await tx.insert(messageImages).values({ messageId, type, data: image })
+
+    const about = { actorId: senderId, messageId }
+    if (recipientId) {
+      // For the recipient, a private conversation is the one with the sender.
+      notify({ ...about, guardianId: recipientId, type: 'message_received', conversationId: senderId })
+    } else if (repliedToId) {
+      notify({ ...about, guardianId: repliedToId, type: 'message_replied', conversationId: EVERYONE })
+    }
   })
 }
 
 export async function toggleReaction(guardianId: string, messageId: number, emoji: ReactionEmoji) {
   const [message] = await db
-    .select({ messageId: messages.messageId })
+    .select({ senderId: messages.senderId, recipientId: messages.recipientId })
     .from(messages)
     .where(and(eq(messages.messageId, messageId), visibleTo(guardianId)))
   if (!message) throw new Error('That message does not exist')
@@ -185,10 +196,20 @@ export async function toggleReaction(guardianId: string, messageId: number, emoj
     )
     .returning({ messageId: messageReactions.messageId })
   if (removed.length > 0) return
-  await db
-    .insert(messageReactions)
-    .values({ messageId, guardianId, emoji })
-    .onConflictDoNothing()
+  await withNotifications(async (tx, notify) => {
+    await tx
+      .insert(messageReactions)
+      .values({ messageId, guardianId, emoji })
+      .onConflictDoNothing()
+    notify({
+      guardianId: message.senderId,
+      actorId: guardianId,
+      type: 'message_reacted',
+      messageId,
+      conversationId: message.recipientId === null ? EVERYONE : guardianId,
+      detail: emoji,
+    })
+  })
 }
 
 export async function findImage(guardianId: string, messageId: number) {

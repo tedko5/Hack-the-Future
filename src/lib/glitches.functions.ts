@@ -25,12 +25,12 @@ export const getGlitch = createServerFn({ method: 'GET' })
 export const assignGlitch = createServerFn({ method: 'POST' })
   .middleware([commanderMiddleware])
   .validator(validate(assignGlitchSchema))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     if (data.guardianId !== null) {
       const assignee = await findGuardian(data.guardianId)
       if (assignee?.role !== 'defender') throw new Error('Choose a defender')
     }
-    await glitches.assignGlitch(data.glitchId, data.guardianId)
+    await glitches.assignGlitch(data.glitchId, data.guardianId, context.guardian.guardianId)
   })
 
 /** A defender assigns a free glitch to themselves. Commanders use assignGlitch. */

@@ -43,7 +43,29 @@ To add a server function:
 2. Put its query in `src/server/<entities>.server.ts`.
 3. Add it to `src/lib/<entities>.functions.ts` with `guardianMiddleware` or `commanderMiddleware` and `validate(schema)`. Take the user from `context.guardian`, never from the input.
 
-Changes to glitches, echoes and messages reach every open page under `routes/_app` live, through `useLiveEvents` in `routes/_app.tsx`.
+Changes to glitches, echoes, messages and notifications reach every open page under `routes/_app` live, through `useLiveEvents` in `routes/_app.tsx`.
+
+## Notifications
+
+To notify someone, do the change inside `withNotifications` (`src/server/notifications/notify.server.ts`) and call `notify()`. The notification is saved in the same transaction, shows up live in the app, and is then handed to every channel. Nobody is notified about their own actions.
+
+To add a kind of notification, add it to `NOTIFICATION_TYPES` and give it a title in `src/lib/notification.ts`.
+
+To add push, email or anything else, add a channel to `src/server/notifications/channels.server.ts`:
+
+```ts
+export const channels: NotificationChannel[] = [
+  {
+    name: 'email',
+    async send({ guardianId, title, body, path }) {
+      // guardianId is the Clerk user ID: clerkClient().users.getUser(guardianId) has the address.
+      // path is relative to the site, or null.
+    },
+  },
+]
+```
+
+A channel runs after the change is saved and not awaited, and its errors are only logged. Per-guardian preferences belong in the channel, before it sends. Delivery is tried once: a restart in between loses it, though it stays in the notification center.
 
 ## Login
 

@@ -16,6 +16,7 @@ import {
 import { GLITCH_STATUSES } from '../lib/glitch.ts'
 import { GUARDIAN_ROLES } from '../lib/guardian.ts'
 import { IMAGE_TYPES, REACTIONS } from '../lib/message.ts'
+import { NOTIFICATION_TYPES } from '../lib/notification.ts'
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => 'bytea' })
 
@@ -107,4 +108,24 @@ export const messageReactions = pgTable(
     emoji: text('emoji', { enum: REACTIONS }).notNull(),
   },
   (table) => [primaryKey({ columns: [table.messageId, table.guardianId, table.emoji] })],
+)
+
+export const notifications = pgTable(
+  'notifications',
+  {
+    notificationId: serial('notification_id').primaryKey(),
+    /** Who receives it. */
+    guardianId: text('guardian_id').notNull().references(() => guardians.guardianId),
+    actorId: text('actor_id').notNull().references(() => guardians.guardianId),
+    type: text('type', { enum: NOTIFICATION_TYPES }).notNull(),
+    glitchId: text('glitch_id').references(() => glitches.glitchId),
+    messageId: integer('message_id').references(() => messages.messageId),
+    /** The conversation as the recipient opens it. */
+    conversationId: text('conversation_id'),
+    /** The new status, the new role or the reaction, depending on the type. */
+    detail: text('detail'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    readAt: timestamp('read_at', { withTimezone: true }),
+  },
+  (table) => [index('notifications_guardian').on(table.guardianId, table.notificationId)],
 )
