@@ -114,6 +114,7 @@ export const nl: Dictionary = {
     openGlitch: 'Glitch openen',
     noneOpen: "Geen open glitches. Kies een markering om de echo's ervan te zien.",
     swipe: 'Veeg over de kaart, of kies een glitch:',
+    showDetails: 'Details tonen',
     districts: {
       'crystal-spire': 'Kristallen Spits',
       'clock-tower': 'Klokkentoren',
@@ -126,9 +127,9 @@ export const nl: Dictionary = {
   },
   hack: {
     open: 'Hackterminal openen',
-    hint: 'Of klik op een echo, hier of op de kaart. Eén hackpoging per glitch.',
-    intoThisEcho: 'Deze echo hacken',
-    intoEcho: (echoId) => `Echo #${echoId} hacken`,
+    openShort: 'Hacken',
+    manualShort: 'Defender nodig',
+    hint: 'Eén hackpoging per glitch. Mislukt ze, dan moet een defender ingrijpen.',
     manual: 'Manuele tussenkomst nodig.',
     failed: 'De hack is mislukt en kan niet opnieuw geprobeerd worden. Wijs een defender toe.',
     fixed: 'Hersteld met een hack.',
@@ -141,7 +142,7 @@ export const nl: Dictionary = {
     commands: {
       help: 'Deze commando\'s tonen',
       scan: 'Het signaal lezen en de schildfrequentie vinden',
-      trace: 'De echo opsporen in Achrona',
+      trace: 'De glitch opsporen in Achrona',
       decrypt: 'Ontcijferen wat er gemeld werd',
       breach: 'breach <frequentie>: de schilden neerhalen',
       inject: 'Binnendringen en de glitch herstellen (één poging)',
@@ -149,8 +150,6 @@ export const nl: Dictionary = {
       exit: 'De terminal sluiten',
     },
     rows: {
-      echo: 'echo',
-      reporter: 'melder',
       leaked: 'gelekt',
       glitch: 'glitch',
       echoes: "echo's",
@@ -161,7 +160,6 @@ export const nl: Dictionary = {
     },
     banner: 'ACHRONA LEY-TERMINAL v3.1 · beveiligd kanaal open',
     lockedOn: (glitchId) => `Gericht op ${glitchId}`,
-    lockedOnEcho: (echoId, glitchId) => `Gericht op echo #${echoId} van ${glitchId}`,
     typeHelp: 'Typ "help" om de commando\'s te zien.',
     notFound: (command) => `commando niet gevonden: ${command}. Typ "help".`,
     scanning: 'Signatuur scannen…',

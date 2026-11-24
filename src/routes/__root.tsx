@@ -1,4 +1,6 @@
 import { ClerkProvider } from '@clerk/tanstack-react-start'
+// Bundled rather than loaded from Clerk's CDN, so our CSS overrides keep matching its DOM.
+import { ui } from '@clerk/ui'
 import {
   HeadContent,
   Outlet,
@@ -61,6 +63,7 @@ function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body className="bg-app font-sans antialiased">
         <ClerkProvider
+          ui={ui}
           appearance={appearance}
           localization={clerkLocalizations[language]}
           signInUrl="/sign-in"

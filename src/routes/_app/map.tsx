@@ -1,6 +1,6 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { ArrowRight, MapPin, ShieldAlert, Sparkles, Terminal } from 'lucide-react'
-import { useMemo, useState, type ReactNode } from 'react'
+import { ArrowRight, ChevronUp, MapPin, ShieldAlert, Sparkles, Terminal } from 'lucide-react'
+import { useMemo, useState, type CSSProperties } from 'react'
 import { z } from 'zod'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
@@ -12,7 +12,7 @@ import { getDashboard } from '#/lib/dashboard.functions.ts'
 import { desyncStateFor } from '#/lib/desync.ts'
 import { GLITCH_STATUSES, canHack, type GlitchStatus } from '#/lib/glitch.ts'
 import { magicLevel } from '#/lib/magic.ts'
-import { locate } from '#/lib/map.ts'
+import { placeGlitches } from '#/lib/map.ts'
 
 export const Route = createFileRoute('/_app/map')({
   validateSearch: z.object({ glitch: z.string().optional().catch(undefined) }),
@@ -32,19 +32,19 @@ function MapPage() {
   const navigate = useNavigate({ from: Route.fullPath })
   const [hidden, setHidden] = useState<GlitchStatus[]>([])
   const [flashId, setFlashId] = useState<string>()
-  /** Without an echoId the terminal hacks in through the glitch itself. */
-  const [hacking, setHacking] = useState<{ glitchId: string; echoId?: number }>()
+  /** The glitch whose hacking terminal is open. */
+  const [hackingId, setHackingId] = useState<string>()
   const isCommander = guardian.role === 'commander'
 
-  const placed = useMemo<MapGlitch[]>(
-    () =>
-      glitches.map((glitch) => ({
-        ...glitch,
-        ...locate(glitch),
-        echoes: echoes.filter((echo) => echo.glitch.glitchId === glitch.glitchId),
-      })),
-    [glitches, echoes],
-  )
+  // Placed from all glitches, so hiding a status never moves the others.
+  const placed = useMemo<MapGlitch[]>(() => {
+    const places = placeGlitches(glitches)
+    return glitches.map((glitch) => ({
+      ...glitch,
+      ...places.get(glitch.glitchId)!,
+      echoes: echoes.filter((echo) => echo.glitch.glitchId === glitch.glitchId),
+    }))
+  }, [glitches, echoes])
   const visible = placed.filter((glitch) => !hidden.includes(glitch.status))
   // Without a choice, the newest open glitch is the one to look at.
   const selected =
@@ -59,9 +59,7 @@ function MapPage() {
       current.includes(status) ? current.filter((s) => s !== status) : [...current, status],
     )
 
-  const hackGlitch = hacking && placed.find((glitch) => glitch.glitchId === hacking.glitchId)
-  const hackEcho = hackGlitch?.echoes.find((echo) => echo.echoId === hacking?.echoId)
-  const hackTarget = hackGlitch && { glitch: hackGlitch, echo: hackEcho }
+  const hackTarget = placed.find((glitch) => glitch.glitchId === hackingId)
 
   return (
     <section
@@ -78,7 +76,11 @@ function MapPage() {
         <MagicMeter magic={magic} />
       </div>
 
-      <div className="flex flex-wrap gap-2" role="group" aria-label={t.map.showStatuses}>
+      <div
+        className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 md:flex-wrap md:overflow-visible"
+        role="group"
+        aria-label={t.map.showStatuses}
+      >
         {GLITCH_STATUSES.map((status) => {
           const { shape, color } = STATUS_STYLES[status]
           const count = placed.filter((glitch) => glitch.status === status).length
@@ -89,7 +91,7 @@ function MapPage() {
               type="button"
               aria-pressed={isShown}
               onClick={() => toggle(status)}
-              className={`flex min-h-10 cursor-pointer items-center gap-2 rounded-full border-2 px-3.5 text-sm ${
+              className={`flex min-h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border-2 px-3.5 text-sm ${
                 isShown ? 'border-edge bg-well text-fg' : 'border-line text-muted line-through opacity-60'
               } hover:border-edge-hover`}
             >
@@ -109,15 +111,16 @@ function MapPage() {
               selectedId={selected?.glitchId}
               onSelect={select}
               flashId={flashId}
-              onEchoSelect={
-                isCommander ? (glitchId, echoId) => setHacking({ glitchId, echoId }) : undefined
-              }
             />
           </div>
           <GlitchChips glitches={visible} selectedId={selected?.glitchId} onSelect={select} />
         </div>
 
-        <aside aria-label={t.map.selected} className="flex flex-col gap-4 rounded-xl bg-row p-4">
+        <aside
+          id="glitch-details"
+          aria-label={t.map.selected}
+          className="tech-frame flex scroll-mt-4 flex-col gap-4 rounded-xl border-2 border-edge bg-well p-4"
+        >
           {selected ? (
             <>
               <div className="flex flex-col gap-2">
@@ -142,24 +145,16 @@ function MapPage() {
                 </h4>
                 <ul className="flex flex-col gap-2">
                   {selected.echoes.slice(0, RECENT_ECHOES).map((echo) => (
-                    <li key={echo.echoId}>
-                      <EchoRow
-                        onHack={
-                          isCommander
-                            ? () => setHacking({ glitchId: selected.glitchId, echoId: echo.echoId })
-                            : undefined
-                        }
-                      >
-                        <span className="mt-1">
-                          <Shape kind={STATUS_STYLES[echo.status].shape} color={STATUS_STYLES[echo.status].color} size={10} />
+                    <li key={echo.echoId} className="flex gap-2.5 text-sm">
+                      <span className="mt-1">
+                        <Shape kind={STATUS_STYLES[echo.status].shape} color={STATUS_STYLES[echo.status].color} size={10} />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="line-clamp-2 break-words">{echo.description}</span>
+                        <span className="block text-[.8rem] text-muted">
+                          {echo.reporter.codename} · {format.dateTime(echo.timestamp)}
                         </span>
-                        <span className="min-w-0">
-                          <span className="line-clamp-2 break-words">{echo.description}</span>
-                          <span className="block text-[.8rem] text-muted">
-                            {echo.reporter.codename} · {format.dateTime(echo.timestamp)}
-                          </span>
-                        </span>
-                      </EchoRow>
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -174,10 +169,10 @@ function MapPage() {
               </div>
 
               {isCommander && (
-                <HackStatus
-                  glitch={selected}
-                  onOpen={() => setHacking({ glitchId: selected.glitchId })}
-                />
+                // On phones the bar at the bottom has it, always in reach.
+                <div className="hidden md:block">
+                  <HackStatus glitch={selected} onOpen={() => setHackingId(selected.glitchId)} />
+                </div>
               )}
             </>
           ) : (
@@ -185,33 +180,50 @@ function MapPage() {
           )}
         </aside>
       </div>
+      {selected && (
+        <MobileGlitchBar
+          glitch={selected}
+          canHackHere={isCommander}
+          onHack={() => setHackingId(selected.glitchId)}
+        />
+      )}
       {hackTarget && (
         <HackTerminal
-          key={`${hackTarget.glitch.glitchId}-${hackTarget.echo?.echoId}`}
-          glitch={hackTarget.glitch}
-          echo={hackTarget.echo}
+          key={hackTarget.glitchId}
+          glitch={hackTarget}
           magic={magic}
           magicIfFixed={magicLevel(
             glitches.map((glitch) =>
-              glitch.glitchId === hackTarget.glitch.glitchId ? 'FIXED' : glitch.status,
+              glitch.glitchId === hackTarget.glitchId ? 'FIXED' : glitch.status,
             ),
           )}
-          onFixed={() => setFlashId(hackTarget.glitch.glitchId)}
-          onClose={() => setHacking(undefined)}
+          onFixed={() => setFlashId(hackTarget.glitchId)}
+          onClose={() => setHackingId(undefined)}
         />
       )}
     </section>
   )
 }
 
+const METER_SEGMENTS = 12
+
+/**
+ * Magic as twelve rune segments that go dark as it drains, like the cracking ring of the
+ * Desync Well on mission control.
+ */
 function MagicMeter({ magic }: { magic: number }) {
   const t = useT()
   const state = desyncStateFor(magic)
+  const lit = Math.round((magic / 100) * METER_SEGMENTS)
+  const vars = { '--st': `var(--desync-${state})`, '--st-soft': `var(--desync-${state}-soft)` } as CSSProperties
   return (
-    <div className="flex min-w-48 flex-col gap-1.5" style={{ color: `var(--desync-${state})` }}>
-      <div className="flex items-baseline justify-between gap-3 text-sm">
-        <span>{t.magic.states[state]}</span>
-        <span className="font-display text-xl font-bold tabular-nums">{magic}%</span>
+    <div className="flex min-w-52 flex-col gap-2" style={vars}>
+      <div className="flex items-baseline justify-between gap-3">
+        <span className="readout-glow font-display text-base font-bold">{t.magic.states[state]}</span>
+        <span className="readout-glow font-display text-2xl leading-none font-bold tabular-nums">
+          {magic}
+          <span className="ml-0.5 text-[.55em] text-muted [text-shadow:none]">%</span>
+        </span>
       </div>
       <div
         role="meter"
@@ -219,34 +231,13 @@ function MagicMeter({ magic }: { magic: number }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={magic}
-        className="h-2 overflow-hidden rounded-full bg-well"
+        className="flex gap-1"
       >
-        <div
-          className="h-full rounded-full bg-current transition-[width] duration-700"
-          style={{ width: `${magic}%`, boxShadow: `0 0 10px var(--desync-${state}-soft)` }}
-        />
+        {Array.from({ length: METER_SEGMENTS }, (_, index) => (
+          <span key={index} className={`rune-segment ${index < lit ? 'is-lit' : ''}`} />
+        ))}
       </div>
     </div>
-  )
-}
-
-/** For commanders, each echo opens the hacking terminal. */
-function EchoRow({ onHack, children }: { onHack?: () => void; children: ReactNode }) {
-  const t = useT()
-  if (!onHack) return <div className="flex gap-2.5 text-sm">{children}</div>
-  return (
-    <button
-      type="button"
-      onClick={onHack}
-      className="group flex w-full cursor-pointer gap-2.5 rounded-lg border-2 border-transparent p-1.5 text-left text-sm hover:border-edge hover:bg-well"
-    >
-      {children}
-      <Terminal
-        size={16}
-        aria-label={t.hack.intoThisEcho}
-        className="mt-0.5 ml-auto shrink-0 text-muted group-hover:text-highlight"
-      />
-    </button>
   )
 }
 
@@ -322,4 +313,78 @@ function GlitchChips({
       </div>
     </div>
   )
+}
+
+/**
+ * On phones, pinned above the tab bar: the selected glitch and its hack button stay in reach
+ * while you explore the map. Tapping it scrolls to the full details.
+ */
+function MobileGlitchBar({
+  glitch,
+  canHackHere,
+  onHack,
+}: {
+  glitch: MapGlitch
+  canHackHere: boolean
+  onHack: () => void
+}) {
+  const t = useT()
+  const { shape, color } = STATUS_STYLES[glitch.status]
+  const showDetails = () =>
+    document.getElementById('glitch-details')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+  return (
+    <>
+      {/* Keeps the end of the page clear of the bar. */}
+      <div aria-hidden="true" className="h-14 md:hidden" />
+      <div className="fixed inset-x-0 bottom-[calc(4rem+2px)] z-20 border-t-2 border-edge bg-panel/95 px-3 py-2 backdrop-blur md:hidden print:hidden">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={showDetails}
+            aria-label={`${t.map.showDetails}: ${glitch.glitchId}`}
+            className="flex min-h-12 min-w-0 flex-1 cursor-pointer items-center gap-2.5 rounded-lg px-1 text-left"
+          >
+            <Shape kind={shape} color={color} size={14} />
+            <span className="min-w-0 flex-1">
+              <span className="block font-bold">{glitch.glitchId}</span>
+              <span className="block truncate text-[.8rem] text-muted">
+                {t.status[glitch.status]} · {t.map.districts[glitch.district.id]}
+              </span>
+            </span>
+            <ChevronUp size={18} className="shrink-0 text-muted" aria-hidden="true" />
+          </button>
+          {canHackHere && <BarAction glitch={glitch} onHack={onHack} />}
+        </div>
+      </div>
+    </>
+  )
+}
+
+function BarAction({ glitch, onHack }: { glitch: MapGlitch; onHack: () => void }) {
+  const t = useT()
+  if (canHack(glitch)) {
+    return (
+      <button
+        type="button"
+        onClick={onHack}
+        className="hack-button flex min-h-12 shrink-0 cursor-pointer items-center gap-2 rounded-xl px-4"
+      >
+        <Terminal size={18} aria-hidden="true" />
+        {t.hack.openShort}
+      </button>
+    )
+  }
+  if (glitch.hackResult === 'FAILED') {
+    return (
+      <span className="flex shrink-0 items-center gap-1.5 rounded-lg border-2 border-(--status-leaked) px-2.5 py-1.5 text-[.8rem] font-bold text-(--status-leaked)">
+        <ShieldAlert size={15} aria-hidden="true" />
+        {t.hack.manualShort}
+      </span>
+    )
+  }
+  if (glitch.hackResult === 'SUCCESS') {
+    return <Sparkles size={20} className="shrink-0 text-(--status-fixed)" aria-label={t.hack.fixed} />
+  }
+  return null
 }
