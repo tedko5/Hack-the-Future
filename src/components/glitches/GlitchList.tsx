@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
+import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
 import type { Glitch } from '#/lib/glitch.ts'
 import { sortGlitches, type GlitchSort } from '#/lib/glitchSort.ts'
@@ -39,6 +40,8 @@ export function GlitchList({
     ),
   )
 
+  const { visible, showMore } = useShowMore(found)
+
   return (
     <CollapsibleSection title={title} count={glitches.length} storageKey={storageKey} action={action}>
       {isSearchable && glitches.length > 0 && (
@@ -59,7 +62,7 @@ export function GlitchList({
         </p>
       ) : (
         <ul className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
-          {found.map((glitch) => (
+          {visible.map((glitch) => (
             <li key={glitch.glitchId}>
               <Link
                 to="/glitches/$glitchId"
@@ -80,6 +83,7 @@ export function GlitchList({
           ))}
         </ul>
       )}
+      <ShowMore {...showMore} />
     </CollapsibleSection>
   )
 }

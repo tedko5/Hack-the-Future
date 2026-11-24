@@ -3,6 +3,7 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { CheckCheck } from 'lucide-react'
 import { NotificationIcon } from '#/components/notifications/NotificationIcon.tsx'
 import { NotificationLink } from '#/components/notifications/NotificationLink.tsx'
+import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
 import { describeNotification, type Notification } from '#/lib/notification.ts'
 import { getNotifications, markAllNotificationsRead } from '#/lib/notifications.functions.ts'
@@ -16,6 +17,7 @@ function NotificationsPage() {
   const notifications = Route.useLoaderData()
   const t = useT()
   const router = useRouter()
+  const { visible, showMore } = useShowMore(notifications)
   const markAll = useMutation({
     mutationFn: () => markAllNotificationsRead(),
     onSettled: () => router.invalidate(),
@@ -48,13 +50,14 @@ function NotificationsPage() {
         </p>
       ) : (
         <ul className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
-          {notifications.map((notification) => (
+          {visible.map((notification) => (
             <li key={notification.notificationId}>
               <NotificationRow notification={notification} />
             </li>
           ))}
         </ul>
       )}
+      <ShowMore {...showMore} />
     </section>
   )
 }

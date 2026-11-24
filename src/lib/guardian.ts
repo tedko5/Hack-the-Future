@@ -13,7 +13,11 @@ export type Guardian = {
 
 const codenameMessage = 'Use 3 to 24 letters, digits, spaces, - or _'
 
-export const registerGuardianSchema = z.object({
+export const CODENAME_MIN_LENGTH = 3
+export const CODENAME_MAX_LENGTH = 24
+
+/** For choosing a codename, and for changing it later. */
+export const codenameSchema = z.object({
   codename: z
     .string(codenameMessage)
     .trim()

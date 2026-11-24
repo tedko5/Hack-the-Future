@@ -1,6 +1,6 @@
 import { redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { registerGuardianSchema, setGuardianRoleSchema } from '#/lib/guardian.ts'
+import { codenameSchema, setGuardianRoleSchema } from '#/lib/guardian.ts'
 import { validate } from '#/lib/validate.ts'
 import { commanderMiddleware, guardianMiddleware, userMiddleware } from '#/middleware/auth.ts'
 import * as guardians from '#/server/guardians.server.ts'
@@ -18,12 +18,20 @@ export const requireNewcomer = createServerFn({ method: 'GET' })
 
 export const registerGuardian = createServerFn({ method: 'POST' })
   .middleware([userMiddleware])
-  .validator(validate(registerGuardianSchema))
+  .validator(validate(codenameSchema))
   .handler(({ data, context }) => guardians.createGuardian(context.userId, data.codename))
 
 export const listGuardians = createServerFn({ method: 'GET' })
   .middleware([commanderMiddleware])
   .handler(() => guardians.listGuardians())
+
+/** Only your own. */
+export const changeCodename = createServerFn({ method: 'POST' })
+  .middleware([guardianMiddleware])
+  .validator(validate(codenameSchema))
+  .handler(({ data, context }) =>
+    guardians.updateCodename(context.guardian.guardianId, data.codename),
+  )
 
 export const setGuardianRole = createServerFn({ method: 'POST' })
   .middleware([commanderMiddleware])

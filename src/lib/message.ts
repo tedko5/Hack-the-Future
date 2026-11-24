@@ -50,7 +50,15 @@ const conversationIdSchema = z.string('Invalid conversation').min(1, 'Invalid co
 
 const messageIdSchema = z.int32('Invalid message').positive('Invalid message')
 
-export const conversationSchema = z.object({ conversationId: conversationIdSchema })
+export const MESSAGE_PAGE_SIZE = 50
+/** Older messages than this are only found by searching. */
+export const MAX_MESSAGES = 1000
+
+export const conversationSchema = z.object({
+  conversationId: conversationIdSchema,
+  /** How many of the latest messages to load. */
+  limit: z.int32('Invalid conversation').min(1).max(MAX_MESSAGES).default(MESSAGE_PAGE_SIZE),
+})
 
 export const SEARCH_MAX_LENGTH = 100
 

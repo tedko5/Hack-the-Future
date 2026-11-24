@@ -5,6 +5,7 @@ import { EchoActions } from '#/components/echoes/EchoActions.tsx'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
+import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
 import type { Echo } from '#/lib/echo.ts'
@@ -51,6 +52,7 @@ export function EchoList({
       echo.reporter.role,
     ),
   )
+  const { visible, showMore } = useShowMore(found)
   // Without the filter, as on a glitch page, there is nothing to tell apart.
   const title = !canFilterToday ? t.echoes.title : isTodayOnly ? t.echoes.today : t.echoes.all
   const emptyMessage =
@@ -108,7 +110,7 @@ export function EchoList({
           </p>
         ) : (
           <ol>
-            {groupByDay(found, format.day).map(({ day, items }) => (
+            {groupByDay(visible, format.day).map(({ day, items }) => (
               <li key={day}>
                 <DayMarker day={day} />
                 <ol>
@@ -121,6 +123,7 @@ export function EchoList({
           </ol>
         )}
       </div>
+      <ShowMore {...showMore} />
     </CollapsibleSection>
   )
 }

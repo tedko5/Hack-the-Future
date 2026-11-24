@@ -13,6 +13,10 @@ export const en = {
     unassigned: 'Unassigned',
     sortBy: 'Sort by',
     unread: 'unread',
+    showMore: 'Show more',
+    showLess: 'Show less',
+    shown: (shown: number, total: number) => `${shown} of ${total}`,
+    loading: 'Consulting the ley lines…',
   },
   status: {
     LEAKED: 'Leaked',
@@ -187,6 +191,9 @@ export const en = {
     make: (role: string) => `Make ${role}`,
     message: (codename: string) => `Message ${codename}`,
   },
+  codename: {
+    change: 'Change your codename',
+  },
   welcome: {
     title: 'Choose your codename',
     continue: 'Continue',
@@ -196,6 +203,7 @@ export const en = {
     conversations: 'Conversations',
     searchPeople: 'Search people',
     nobody: 'Nobody matches your search.',
+    showOlder: 'Show older messages',
     searchChat: 'Search this chat',
     searching: 'Searching…',
     none: 'No messages yet.',

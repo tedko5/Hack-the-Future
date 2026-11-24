@@ -113,6 +113,9 @@ A: De pagina Kaart toont elke glitch op de plek in Achrona waar hij lekte, omrin
 Q: Kan ik een glitch hacken?
 A: Commanders wel, één keer per glitch, vanaf de kaart. Een geslaagde hack herstelt de glitch. Na een mislukte moet een defender hem herstellen.
 
+Q: Hoe wijzig ik mijn codenaam?
+A: Klik bovenaan de pagina op je codenaam. Je echo's en berichten volgen mee.
+
 Q: Hoe word ik commander?
 A: Een commander kan je commander maken onderaan mission control.
 

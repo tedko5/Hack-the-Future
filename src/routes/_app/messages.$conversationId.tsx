@@ -1,17 +1,23 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { z } from 'zod'
 import { ConversationList, titleOf } from '#/components/messages/ConversationList.tsx'
 import { MessageForm } from '#/components/messages/MessageForm.tsx'
 import { MessageThread } from '#/components/messages/MessageThread.tsx'
 import { SearchInput } from '#/components/ui/SearchInput.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
-import { SEARCH_MAX_LENGTH, type Message } from '#/lib/message.ts'
+import { MAX_MESSAGES, MESSAGE_PAGE_SIZE, SEARCH_MAX_LENGTH, type Message } from '#/lib/message.ts'
 import { getConversation, markRead, searchMessages } from '#/lib/messages.functions.ts'
 import { useDebounced } from '#/lib/useDebounced.ts'
 
 export const Route = createFileRoute('/_app/messages/$conversationId')({
-  loader: ({ params }) => getConversation({ data: params }),
+  // How many messages are shown. Left out, it is one page.
+  validateSearch: z.object({
+    show: z.int().min(1).max(MAX_MESSAGES).optional().catch(undefined),
+  }),
+  loaderDeps: ({ search }) => ({ limit: search.show }),
+  loader: ({ params, deps }) => getConversation({ data: { ...params, ...deps } }),
   component: MessagesPage,
   notFoundComponent: ConversationNotFound,
 })
@@ -23,9 +29,11 @@ function ConversationNotFound() {
 
 function MessagesPage() {
   const t = useT()
-  const { conversations, current, messages } = Route.useLoaderData()
+  const { conversations, current, messages, hasOlder } = Route.useLoaderData()
   const { guardian } = Route.useRouteContext()
   const router = useRouter()
+  const { show = MESSAGE_PAGE_SIZE } = Route.useSearch()
+  const navigate = Route.useNavigate()
   const { conversationId, unread } = current
   const title = titleOf(current, t)
   const lastId = messages.at(-1)?.messageId
@@ -55,6 +63,16 @@ function MessagesPage() {
           title={title}
           messages={messages}
           guardianId={guardian.guardianId}
+          onShowOlder={
+            hasOlder && show < MAX_MESSAGES
+              ? () =>
+                  void navigate({
+                    search: { show: Math.min(show + MESSAGE_PAGE_SIZE, MAX_MESSAGES) },
+                    replace: true,
+                    resetScroll: false,
+                  })
+              : undefined
+          }
         />
       </div>
     </section>
@@ -66,9 +84,11 @@ type ChatProps = {
   title: string
   messages: Message[]
   guardianId: string
+  /** Only when there are older messages. */
+  onShowOlder?: () => void
 }
 
-function Chat({ conversationId, title, messages, guardianId }: ChatProps) {
+function Chat({ conversationId, title, messages, guardianId, onShowOlder }: ChatProps) {
   const t = useT()
   const format = useFormat()
   const [replyTo, setReplyTo] = useState<Message | null>(null)
@@ -107,6 +127,7 @@ function Chat({ conversationId, title, messages, guardianId }: ChatProps) {
         }
         guardianId={guardianId}
         onReply={setReplyTo}
+        onShowOlder={isSearching ? undefined : onShowOlder}
       />
       <MessageForm
         conversationId={conversationId}

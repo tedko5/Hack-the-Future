@@ -14,6 +14,8 @@ import { readImage } from '#/server/images.server.ts'
 import * as messages from '#/server/messages.server.ts'
 import { markConversationNotificationsRead } from '#/server/notifications/notifications.server.ts'
 
+const MAX_SEARCH_RESULTS = 100
+
 // The reader is always context.guardian, so nobody can open someone else's conversation.
 
 /** All conversations, plus the messages of the open one. */
@@ -27,10 +29,13 @@ export const getConversation = createServerFn({ method: 'GET' })
       ({ conversationId }) => conversationId === data.conversationId,
     )
     if (!current) throw notFound()
+    // One more, to know whether there are older ones.
+    const latest = await messages.listMessages(guardianId, data.conversationId, data.limit + 1)
     return {
       conversations,
       current,
-      messages: await messages.listMessages(guardianId, data.conversationId),
+      messages: latest.slice(-data.limit),
+      hasOlder: latest.length > data.limit,
     }
   })
 
@@ -41,7 +46,7 @@ export const searchMessages = createServerFn({ method: 'POST' })
   .handler(async ({ data, context }) => {
     const { guardianId } = context.guardian
     await messages.requireConversation(guardianId, data.conversationId)
-    return messages.listMessages(guardianId, data.conversationId, data.query)
+    return messages.listMessages(guardianId, data.conversationId, MAX_SEARCH_RESULTS, data.query)
   })
 
 export const sendMessage = createServerFn({ method: 'POST' })

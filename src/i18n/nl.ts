@@ -16,6 +16,10 @@ export const nl: Dictionary = {
     unassigned: 'Niet toegewezen',
     sortBy: 'Sorteren op',
     unread: 'ongelezen',
+    showMore: 'Meer tonen',
+    showLess: 'Minder tonen',
+    shown: (shown, total) => `${shown} van ${total}`,
+    loading: 'De leylijnen raadplegen…',
   },
   status: {
     LEAKED: 'Gelekt',
@@ -190,6 +194,9 @@ export const nl: Dictionary = {
     make: (role) => `Maak ${role}`,
     message: (codename) => `Stuur ${codename} een bericht`,
   },
+  codename: {
+    change: 'Je codenaam wijzigen',
+  },
   welcome: {
     title: 'Kies je codenaam',
     continue: 'Verdergaan',
@@ -199,6 +206,7 @@ export const nl: Dictionary = {
     conversations: 'Gesprekken',
     searchPeople: 'Mensen zoeken',
     nobody: 'Niemand gevonden.',
+    showOlder: 'Oudere berichten tonen',
     searchChat: 'In dit gesprek zoeken',
     searching: 'Zoeken…',
     none: 'Nog geen berichten.',

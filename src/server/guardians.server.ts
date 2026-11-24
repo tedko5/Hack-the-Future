@@ -32,6 +32,25 @@ export async function createGuardian(guardianId: string, codename: string) {
   if (!created && !(await findGuardian(guardianId))) throw new Error('That codename is taken')
 }
 
+export async function updateCodename(guardianId: string, codename: string) {
+  try {
+    await db.update(guardians).set({ codename }).where(eq(guardians.guardianId, guardianId))
+  } catch (error) {
+    if (isUniqueViolation(error)) throw new Error('That codename is taken')
+    throw error
+  }
+}
+
+/** Drizzle wraps the error from Postgres. */
+function isUniqueViolation(error: unknown) {
+  return (
+    error instanceof Error &&
+    error.cause instanceof Error &&
+    'code' in error.cause &&
+    error.cause.code === '23505'
+  )
+}
+
 export function updateGuardianRole(guardianId: string, role: GuardianRole, actorId: string) {
   return withNotifications(async (tx, notify) => {
     const updated = await tx

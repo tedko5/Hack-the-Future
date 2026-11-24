@@ -3,7 +3,7 @@ import { db } from '#/db/index.ts'
 import { glitches, guardians, notifications } from '#/db/schema.ts'
 import type { Notification } from '#/lib/notification.ts'
 
-const PAGE_SIZE = 50
+const MAX_LISTED = 200
 
 const selectNotifications = () =>
   db
@@ -50,7 +50,7 @@ export async function listNotifications(guardianId: string): Promise<Notificatio
   const rows = await selectNotifications()
     .where(eq(notifications.guardianId, guardianId))
     .orderBy(desc(notifications.notificationId))
-    .limit(PAGE_SIZE)
+    .limit(MAX_LISTED)
   return rows.map(toNotification)
 }
 

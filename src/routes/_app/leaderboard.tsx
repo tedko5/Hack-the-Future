@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Avatar } from '#/components/guardians/Avatar.tsx'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { BadgeList } from '#/components/leaderboard/BadgeList.tsx'
+import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useT } from '#/i18n/index.ts'
 import { BADGES } from '#/lib/leaderboard.ts'
 import { getLeaderboard } from '#/lib/leaderboard.functions.ts'
@@ -15,6 +16,7 @@ function LeaderboardPage() {
   const entries = Route.useLoaderData()
   const { guardian: me } = Route.useRouteContext()
   const t = useT()
+  const { visible, showMore } = useShowMore(entries)
 
   return (
     <>
@@ -26,7 +28,7 @@ function LeaderboardPage() {
           {t.leaderboard.title}
         </h2>
         <ol className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
-          {entries.map((entry) => (
+          {visible.map((entry) => (
             <li
               key={entry.guardianId}
               className={`flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 ${entry.guardianId === me.guardianId ? 'bg-row' : ''}`}
@@ -54,6 +56,7 @@ function LeaderboardPage() {
             </li>
           ))}
         </ol>
+        <ShowMore {...showMore} />
       </section>
       <section
         aria-labelledby="badges-title"

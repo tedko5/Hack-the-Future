@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
+import { ShowMore, useShowMore } from '#/components/ui/ShowMore.tsx'
 import { useFormat, useT } from '#/i18n/index.ts'
 import type { Guardian, GuardianRole } from '#/lib/guardian.ts'
 import { setGuardianRole } from '#/lib/guardians.functions.ts'
@@ -26,6 +27,7 @@ export function GuardianList({ guardians, myId }: Props) {
   const sorted =
     sort === 'codename' ? guardians : guardians.toSorted((a, b) => a.role.localeCompare(b.role))
   const found = sorted.filter(({ codename, role }) => matchesSearch(query, codename, role))
+  const { visible, showMore } = useShowMore(found)
   const changeRole = useMutation({
     mutationFn: (data: { guardianId: string; role: GuardianRole }) => setGuardianRole({ data }),
     onSettled: () => router.invalidate(),
@@ -52,7 +54,7 @@ export function GuardianList({ guardians, myId }: Props) {
             </tr>
           </thead>
           <tbody className="text-fg">
-            {found.map((guardian) => {
+            {visible.map((guardian) => {
               const nextRole = guardian.role === 'commander' ? 'defender' : 'commander'
               return (
                 <tr key={guardian.guardianId}>
@@ -78,6 +80,7 @@ export function GuardianList({ guardians, myId }: Props) {
           </tbody>
         </table>
         {found.length === 0 && <p className="px-1.5 text-muted md:px-5">{t.guardians.noMatch}</p>}
+        <ShowMore {...showMore} />
       </div>
     </CollapsibleSection>
   )

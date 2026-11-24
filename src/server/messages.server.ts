@@ -22,7 +22,6 @@ import { findGuardian, listGuardians } from '#/server/guardians.server.ts'
 import type { StoredImage } from '#/server/images.server.ts'
 import { withNotifications } from '#/server/notifications/notify.server.ts'
 
-const PAGE_SIZE = 100
 
 /**
  * The messages of one conversation as `guardianId` may see them. Every read goes through
@@ -69,6 +68,7 @@ function containsWords(query: string) {
 export async function listMessages(
   guardianId: string,
   conversationId: string,
+  limit: number,
   query?: string,
 ): Promise<Message[]> {
   const rows = await db
@@ -94,7 +94,7 @@ export async function listMessages(
     .leftJoin(quotedSender, eq(quotedSender.guardianId, quoted.senderId))
     .where(and(inConversation(guardianId, conversationId), query ? containsWords(query) : undefined))
     .orderBy(desc(messages.messageId))
-    .limit(PAGE_SIZE)
+    .limit(limit)
 
   const reactions = await listReactions(
     guardianId,

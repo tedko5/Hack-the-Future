@@ -117,6 +117,9 @@ A: The Map page shows every glitch where it leaked in Achrona, ringed by its ech
 Q: Can I hack a glitch?
 A: Commanders can, once per glitch, from the map. A successful hack fixes the glitch. After a failed one, a defender has to fix it.
 
+Q: How do I change my codename?
+A: Click your codename at the top of the page. Your echoes and messages follow.
+
 Q: How do I become a commander?
 A: A commander can make you one at the bottom of mission control.
 

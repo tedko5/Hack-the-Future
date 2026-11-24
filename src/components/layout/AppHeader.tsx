@@ -1,6 +1,7 @@
 import { UserButton, useClerk } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { LogOut } from 'lucide-react'
+import { CodenameButton } from '#/components/guardians/CodenameButton.tsx'
 import { LanguageToggle } from '#/components/layout/LanguageToggle.tsx'
 import { ThemeToggle } from '#/components/layout/ThemeToggle.tsx'
 import { NotificationsLink } from '#/components/notifications/NotificationsLink.tsx'
@@ -23,7 +24,7 @@ export function AppHeader({ guardian, unreadNotifications }: Props) {
       </h1>
       <div className="flex flex-wrap items-center gap-3 rounded-xl bg-panel py-2 pr-2 pl-4">
         <div>
-          <b className="block text-[0.95rem]">{guardian.codename}</b>
+          <CodenameButton codename={guardian.codename} />
           <span className="text-[0.8rem] text-muted capitalize">{guardian.role}</span>
         </div>
         <div className="flex items-center">

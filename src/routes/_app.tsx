@@ -5,6 +5,7 @@ import { AppFooter } from '#/components/layout/AppFooter.tsx'
 import { AppHeader } from '#/components/layout/AppHeader.tsx'
 import { KeyboardShortcuts } from '#/components/layout/KeyboardShortcuts.tsx'
 import { NavTabs } from '#/components/layout/NavTabs.tsx'
+import { PageLoader } from '#/components/layout/PageLoader.tsx'
 import { getCurrentGuardian } from '#/lib/guardians.functions.ts'
 import { NotificationToast } from '#/components/notifications/NotificationToast.tsx'
 import { getInbox } from '#/lib/notifications.functions.ts'
@@ -35,6 +36,7 @@ function AppLayout() {
       </main>
       <KeyboardShortcuts isHelpOpen={isHelpOpen} onHelpChange={setIsHelpOpen} />
       <div className="print:hidden">
+        <PageLoader />
         <NotificationToast latest={inbox.latestNotification} />
         <OracleChat key={language} language={language} />
       </div>

@@ -475,6 +475,18 @@ select:focus {
   :root[data-theme="light"] body { background-image: none; }
 }
 
+/* ---------- Page loader ---------- */
+/* Fades in late, so a page that loads fast never shows it. */
+.page-loader { animation: page-loader-in 0.3s ease-out 0.15s both; }
+.page-loader-glow { filter: drop-shadow(0 0 12px currentColor); }
+:root[data-theme="light"] .page-loader-glow { filter: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .page-loader-ring { animation: spin 9s linear infinite; }
+  .page-loader-star { animation: spin 5s linear infinite reverse; }
+  .page-loader-crystal { animation: well-pulse 1.4s ease-in-out infinite; }
+}
+@keyframes page-loader-in { from { opacity: 0 } to { opacity: 1 } }
+
 /* ---------- Map of Achrona ---------- */
 .achrona-map .map-mark { filter: drop-shadow(0 0 5px currentColor); }
 :root[data-theme="light"] .achrona-map .map-mark { filter: none; }

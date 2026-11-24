@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query'
-import { createRouter } from '@tanstack/react-router'
+import { createRouter, type ParsedLocation } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
 import { routeTree } from './routeTree.gen'
 
@@ -8,12 +8,26 @@ export function getRouter() {
   const router = createRouter({
     routeTree,
     context: { queryClient },
-    scrollRestoration: true,
+    scrollRestoration: onlyAfterNavigating(),
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
   })
   setupRouterSsrQueryIntegration({ router, queryClient })
   return router
+}
+
+/**
+ * Live updates refresh the page that is open. Restoring its scroll positions then would undo
+ * scrolling that happened meanwhile, such as a chat moving to its newest message.
+ */
+function onlyAfterNavigating() {
+  let lastKey: string | undefined
+  return ({ location }: { location: ParsedLocation }) => {
+    const key = location.state.__TSR_key ?? location.href
+    const isNew = key !== lastKey
+    lastKey = key
+    return isNew
+  }
 }
 
 declare module '@tanstack/react-router' {
