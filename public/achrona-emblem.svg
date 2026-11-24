@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 84">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9a8ff"/>
+      <stop offset="1" stop-color="#7a3fe0"/>
+    </linearGradient>
+  </defs>
+  <!-- side crystals -->
+  <polygon points="30,22 40,32 40,70 20,70 20,32" fill="url(#g)"/>
+  <polygon points="30,22 20,32 20,70 27,70 27,32" fill="#fff" opacity=".18"/>
+  <polygon points="30,22 40,32 40,70 33,70 33,32" fill="#000" opacity=".22"/>
+  <polygon points="90,22 100,32 100,70 80,70 80,32" fill="url(#g)"/>
+  <polygon points="90,22 80,32 80,70 87,70 87,32" fill="#fff" opacity=".18"/>
+  <polygon points="90,22 100,32 100,70 93,70 93,32" fill="#000" opacity=".22"/>
+  <!-- centre crystal -->
+  <polygon points="60,2 73,15 73,70 47,70 47,15" fill="url(#g)"/>
+  <polygon points="60,2 47,15 47,70 56,70 56,15" fill="#fff" opacity=".2"/>
+  <polygon points="60,2 73,15 73,70 64,70 64,15" fill="#000" opacity=".22"/>
+  <g fill="#f2ecff" opacity=".8">
+    <rect x="50" y="28" width="9" height="2.5" rx="1"/>
+    <rect x="50" y="35" width="6" height="2.5" rx="1"/>
+    <rect x="50" y="42" width="9" height="2.5" rx="1"/>
+  </g>
+  <!-- rune ring rim -->
+  <rect x="8" y="70" width="104" height="6" rx="3" fill="#4df3ff"/>
+  <rect x="8" y="76" width="104" height="6" rx="3" fill="#3a3d5c"/>
+  <g fill="#2a1330"><rect x="34" y="70" width="4" height="6"/><rect x="82" y="70" width="4" height="6"/></g>
+</svg>
