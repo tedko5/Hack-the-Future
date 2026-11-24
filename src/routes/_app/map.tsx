@@ -12,7 +12,7 @@ import { getDashboard } from '#/lib/dashboard.functions.ts'
 import { desyncStateFor } from '#/lib/desync.ts'
 import { GLITCH_STATUSES, canHack, type GlitchStatus } from '#/lib/glitch.ts'
 import { magicLevel } from '#/lib/magic.ts'
-import { locate } from '#/lib/map.ts'
+import { placeGlitches } from '#/lib/map.ts'
 
 export const Route = createFileRoute('/_app/map')({
   validateSearch: z.object({ glitch: z.string().optional() }),
@@ -36,15 +36,15 @@ function MapPage() {
   const [hackingId, setHackingId] = useState<string>()
   const isCommander = guardian.role === 'commander'
 
-  const placed = useMemo<MapGlitch[]>(
-    () =>
-      glitches.map((glitch) => ({
-        ...glitch,
-        ...locate(glitch),
-        echoes: echoes.filter((echo) => echo.glitch.glitchId === glitch.glitchId),
-      })),
-    [glitches, echoes],
-  )
+  // Placed from all glitches, so hiding a status never moves the others.
+  const placed = useMemo<MapGlitch[]>(() => {
+    const places = placeGlitches(glitches)
+    return glitches.map((glitch) => ({
+      ...glitch,
+      ...places.get(glitch.glitchId)!,
+      echoes: echoes.filter((echo) => echo.glitch.glitchId === glitch.glitchId),
+    }))
+  }, [glitches, echoes])
   const visible = placed.filter((glitch) => !hidden.includes(glitch.status))
   // Without a choice, the newest open glitch is the one to look at.
   const selected =

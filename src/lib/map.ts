@@ -32,37 +32,60 @@ export const DISTRICTS: District[] = [
   { id: 'moonlit-harbor', x: 600, y: 135, keywords: ['harbor', 'harbour', 'sea', 'water', 'river', 'bridge', 'ship', 'north'] },
 ]
 
-/** Small, stable string hash, so a glitch always lands on the same spot. */
-function hash(text: string) {
-  let value = 2166136261
-  for (let index = 0; index < text.length; index++) {
-    value = Math.imul(value ^ text.charCodeAt(index), 16777619)
-  }
-  return value >>> 0
-}
-
-/** The district a glitch's description mentions, or a stable pick when it names none. */
-export function districtFor(glitch: Pick<Glitch, 'glitchId' | 'description'>): District {
-  // Matched at the start of a word, so "vaults" finds vault but "drifting" not rift.
-  const words = glitch.description.toLowerCase().split(/[^a-z]+/)
+/**
+ * The district a description mentions: the first one with a keyword at the start of a word,
+ * so "vaults" finds vault but "drifting" not rift. Glitches that name no district gather at
+ * the Crystal Spire, the heart of Achrona.
+ */
+export function districtFor(description: string): District {
+  const words = description.toLowerCase().split(/[^a-z]+/)
   const named = DISTRICTS.find((district) =>
     district.keywords.some((keyword) => words.some((word) => word.startsWith(keyword))),
   )
-  return named ?? DISTRICTS[hash(glitch.glitchId) % DISTRICTS.length]
+  return named ?? DISTRICTS[0]
 }
+
+/**
+ * Where the 1st, 2nd, 3rd… glitch of a district goes, relative to its centre: above, upper
+ * left, upper right, left, right, then higher up. Never below: the district's name is there.
+ */
+const SPOTS = [
+  [0, -76],
+  [-70, -40],
+  [70, -40],
+  [-92, 12],
+  [92, 12],
+  [0, -146],
+] as const
+
+/** Keeps a marker on the map near the edges. */
+const MARGIN = 30
+const clamp = (value: number, max: number) => Math.min(Math.max(value, MARGIN), max - MARGIN)
 
 export type GlitchLocation = { district: District; x: number; y: number }
 
-/** Somewhere around the district's centre, never on top of its label. */
-export function locate(glitch: Pick<Glitch, 'glitchId' | 'description'>): GlitchLocation {
-  const district = districtFor(glitch)
-  const seed = hash(glitch.glitchId)
-  // Above the centre: the district name sits right below it.
-  const angle = ((190 + (seed % 160)) * Math.PI) / 180
-  const radius = 42 + ((seed >>> 9) % 40)
-  return {
-    district,
-    x: district.x + Math.cos(angle) * radius,
-    y: district.y + Math.sin(angle) * radius * 0.75,
+/**
+ * Every glitch's place on the map. Each district hands out its spots in order, oldest glitch
+ * (lowest ID) first, so a glitch keeps its place when newer ones arrive. After the sixth,
+ * the spots are reused.
+ */
+export function placeGlitches<T extends Pick<Glitch, 'glitchId' | 'description'>>(
+  glitches: T[],
+): Map<string, GlitchLocation> {
+  const places = new Map<string, GlitchLocation>()
+  const taken = new Map<DistrictId, number>()
+  const oldestFirst = [...glitches].sort((a, b) => a.glitchId.localeCompare(b.glitchId))
+
+  for (const glitch of oldestFirst) {
+    const district = districtFor(glitch.description)
+    const count = taken.get(district.id) ?? 0
+    taken.set(district.id, count + 1)
+    const [dx, dy] = SPOTS[count % SPOTS.length]
+    places.set(glitch.glitchId, {
+      district,
+      x: clamp(district.x + dx, MAP_WIDTH),
+      y: clamp(district.y + dy, MAP_HEIGHT),
+    })
   }
+  return places
 }
