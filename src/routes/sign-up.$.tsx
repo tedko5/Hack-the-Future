@@ -5,7 +5,7 @@ export const Route = createFileRoute('/sign-up/$')({ component: SignUpPage })
 
 function SignUpPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-sidebar p-6">
+    <main className="flex min-h-screen items-center justify-center p-6">
       <SignUp />
     </main>
   )

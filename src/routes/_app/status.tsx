@@ -22,16 +22,16 @@ function StatusPage() {
   })
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-semibold text-fg">Status</h1>
+    <div className="space-y-4 rounded-[18px] bg-panel p-3 md:p-4.5">
+      <h2 className="font-display text-[1.6rem] font-bold">Status</h2>
       {health.ok ? (
         <div>
-          <p className="text-emerald-700">Database connected ({health.latencyMs} ms)</p>
+          <p className="text-cyan">Database connected ({health.latencyMs} ms)</p>
           <p>Server time: {health.serverTime}</p>
           <p>Pings stored: {health.pings}</p>
         </div>
       ) : (
-        <p className="text-red-700">Database down: {health.error}</p>
+        <p className="text-magenta">Database down: {health.error}</p>
       )}
       <button
         type="button"
@@ -41,7 +41,7 @@ function StatusPage() {
       >
         Write a ping
       </button>
-      {ping.isError && <p className="text-red-700">Ping failed</p>}
+      {ping.isError && <p className="text-magenta">Ping failed</p>}
     </div>
   )
 }

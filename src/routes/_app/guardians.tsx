@@ -21,9 +21,9 @@ function GuardiansPage() {
   })
 
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-3xl font-semibold text-fg">Guardians</h1>
-      {changeRole.isError && <p className="text-red-700">{changeRole.error.message}</p>}
+    <div className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
+      <h2 className="font-display text-[1.6rem] font-bold">Guardians</h2>
+      {changeRole.isError && <p className="text-magenta">{changeRole.error.message}</p>}
       <table className="w-full text-left">
         <thead>
           <tr className="border-b-2 border-line text-muted">
@@ -43,7 +43,7 @@ function GuardiansPage() {
                   {guardian.guardianId !== me.guardianId && (
                     <button
                       type="button"
-                      className="text-accent disabled:opacity-50"
+                      className="cursor-pointer text-cyan disabled:opacity-50"
                       disabled={changeRole.isPending}
                       onClick={() => changeRole.mutate({ guardianId: guardian.guardianId, role: nextRole })}
                     >

@@ -1,4 +1,4 @@
-import { asc, eq, sql } from 'drizzle-orm'
+import { asc, desc, eq, sql } from 'drizzle-orm'
 import { db } from '#/db/index.ts'
 import { echoes, glitches, guardians } from '#/db/schema.ts'
 import type { Echo } from '#/lib/echo.ts'
@@ -12,22 +12,34 @@ type NewEcho = {
   glitchId?: string
 }
 
-/** Oldest first. */
-export async function listEchoes(glitchId: string): Promise<Echo[]> {
-  const rows = await db
+const selectEchoes = () =>
+  db
     .select({
       echoId: echoes.echoId,
-      glitchId: echoes.glitchId,
       description: echoes.description,
       timestamp: echoes.timestamp,
-      reportingGuardianId: echoes.reportingGuardianId,
-      reportingCodename: guardians.codename,
+      reporter: { codename: guardians.codename, role: guardians.role },
+      glitch: { glitchId: glitches.glitchId, status: glitches.status },
     })
     .from(echoes)
     .innerJoin(guardians, eq(guardians.guardianId, echoes.reportingGuardianId))
+    .innerJoin(glitches, eq(glitches.glitchId, echoes.glitchId))
+
+type EchoRow = Awaited<ReturnType<typeof selectEchoes>>[number]
+
+const toEcho = (row: EchoRow): Echo => ({ ...row, timestamp: row.timestamp.toISOString() })
+
+/** Newest first. */
+export async function listEchoes(): Promise<Echo[]> {
+  return (await selectEchoes().orderBy(desc(echoes.timestamp), desc(echoes.echoId))).map(toEcho)
+}
+
+/** Oldest first. */
+export async function listGlitchEchoes(glitchId: string): Promise<Echo[]> {
+  const rows = await selectEchoes()
     .where(eq(echoes.glitchId, glitchId))
     .orderBy(asc(echoes.timestamp), asc(echoes.echoId))
-  return rows.map((row) => ({ ...row, timestamp: row.timestamp.toISOString() }))
+  return rows.map(toEcho)
 }
 
 /** One transaction, so a glitch never exists without its first echo. */

@@ -1,11 +1,13 @@
 import { ClerkProvider } from '@clerk/tanstack-react-start'
 import {
   HeadContent,
+  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { RiftBackground } from '#/components/layout/RiftBackground.tsx'
 
 import type { QueryClient } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
@@ -16,12 +18,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Control Center' },
+      { title: 'Achrona Mission Control' },
     ],
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   shellComponent: RootDocument,
+  component: RootLayout,
 })
+
+function RootLayout() {
+  return (
+    <div className="relative min-h-screen overflow-x-hidden">
+      <RiftBackground />
+      <div className="relative z-10">
+        <Outlet />
+      </div>
+    </div>
+  )
+}
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (

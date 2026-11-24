@@ -1,16 +1,17 @@
 import { z } from 'zod'
 import { glitchIdSchema, type Glitch } from './glitch.ts'
+import type { Guardian } from './guardian.ts'
 
 export const ECHO_MAX_LENGTH = 1000
 
+/** An echo joined with its reporter and its glitch. */
 export type Echo = {
   echoId: number
-  glitchId: string
   description: string
   /** ISO 8601 */
   timestamp: string
-  reportingGuardianId: string
-  reportingCodename: string
+  reporter: Pick<Guardian, 'codename' | 'role'>
+  glitch: Pick<Glitch, 'glitchId' | 'status'>
 }
 
 /** Echoes are ordered oldest first. */

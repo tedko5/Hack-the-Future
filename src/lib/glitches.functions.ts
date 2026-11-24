@@ -4,7 +4,7 @@ import type { GlitchDetails } from '#/lib/echo.ts'
 import { assignGlitchSchema, getGlitchSchema, setGlitchStatusSchema } from '#/lib/glitch.ts'
 import { validate } from '#/lib/validate.ts'
 import { commanderMiddleware, guardianMiddleware } from '#/middleware/auth.ts'
-import { listEchoes } from '#/server/echoes.server.ts'
+import { listGlitchEchoes } from '#/server/echoes.server.ts'
 import { findGlitch, listGlitches, updateGlitch } from '#/server/glitches.server.ts'
 import { findGuardian } from '#/server/guardians.server.ts'
 
@@ -18,7 +18,7 @@ export const getGlitch = createServerFn({ method: 'GET' })
   .handler(async ({ data }): Promise<GlitchDetails> => {
     const glitch = await findGlitch(data.glitchId)
     if (!glitch) throw notFound()
-    return { ...glitch, echoes: await listEchoes(data.glitchId) }
+    return { ...glitch, echoes: await listGlitchEchoes(data.glitchId) }
   })
 
 export const setGlitchStatus = createServerFn({ method: 'POST' })
