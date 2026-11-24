@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { ImagePlus, SendHorizontal, X } from 'lucide-react'
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ClipboardEvent, type ReactNode } from 'react'
 import { IMAGE_TYPES, MESSAGE_MAX_LENGTH, quoteText, type Message } from '#/lib/message.ts'
 import { sendMessage } from '#/lib/messages.functions.ts'
 import { prepareImage } from '#/lib/prepareImage.ts'
@@ -40,6 +40,15 @@ export function MessageForm({ conversationId, title, replyTo, onReplyDone }: Pro
   const error = send.error ?? pickImage.error
   const isBusy = send.isPending || pickImage.isPending
   const canSend = (body.trim() !== '' || image !== null) && !isBusy
+
+  function pasteImage(event: ClipboardEvent) {
+    const { files } = event.clipboardData
+    const file = [...files].find(({ type }) => type.startsWith('image/'))
+    // Office apps add a picture of the text they copy; then the text is what is meant.
+    if (!file || event.clipboardData.getData('text/plain')) return
+    event.preventDefault()
+    if (!isBusy) pickImage.mutate(file)
+  }
 
   useEffect(() => {
     if (replyTo) textInput.current?.focus()
@@ -100,6 +109,7 @@ export function MessageForm({ conversationId, title, replyTo, onReplyDone }: Pro
           className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-edge bg-well px-3.5 text-fg placeholder:text-muted"
           value={body}
           onChange={(event) => setBody(event.target.value)}
+          onPaste={pasteImage}
           maxLength={MESSAGE_MAX_LENGTH}
           autoComplete="off"
         />

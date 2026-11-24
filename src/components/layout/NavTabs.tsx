@@ -1,6 +1,8 @@
 import { Link, linkOptions, useLocation, type LinkProps } from '@tanstack/react-router'
-import { Gem, MessageCircle, Users, type LucideIcon } from 'lucide-react'
+import { MessageCircle, Users } from 'lucide-react'
+import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
+import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
 import type { Guardian } from '#/lib/guardian.ts'
 import { EVERYONE } from '#/lib/message.ts'
 
@@ -21,7 +23,7 @@ export function NavTabs({ guardian, unreadMessages }: Props) {
     >
       <Tab
         link={linkOptions({ to: '/' })}
-        icon={Gem}
+        icon={CrystalIcon}
         label="Mission control"
         isActive={pathname === '/' || isIn('/glitches')}
       />
@@ -49,7 +51,7 @@ export function NavTabs({ guardian, unreadMessages }: Props) {
 
 type TabProps = {
   link: Pick<LinkProps, 'to' | 'params'>
-  icon: LucideIcon
+  icon: ComponentType<{ size?: number }>
   label: string
   /** Set here, because a tab also covers the pages below it. */
   isActive: boolean
@@ -65,7 +67,7 @@ function Tab({ link, icon: Icon, label, isActive, badge = 0 }: TabProps) {
         isActive ? 'bg-row font-bold text-cyan' : 'text-muted hover:text-cyan'
       }`}
     >
-      <Icon size={20} aria-hidden="true" />
+      <Icon size={20} />
       {label}
       <span className="absolute top-1.5 left-1/2 ml-3 md:static md:ml-0">
         <UnreadBadge count={badge} />
