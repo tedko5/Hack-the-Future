@@ -52,7 +52,7 @@ function GuardiansPage() {
                   {guardian.guardianId !== me.guardianId && (
                     <button
                       type="button"
-                      className="cursor-pointer text-cyan disabled:opacity-50"
+                      className="clickable cursor-pointer text-cyan disabled:opacity-50"
                       disabled={changeRole.isPending}
                       onClick={() => changeRole.mutate({ guardianId: guardian.guardianId, role: nextRole })}
                     >

@@ -13,7 +13,7 @@ export function GuardianLink({ guardianId, codename }: Pick<Guardian, 'guardianI
       to="/messages/$conversationId"
       params={{ conversationId: guardianId }}
       title={`Message ${codename}`}
-      className="text-fg underline decoration-[#4a3a9e] underline-offset-4 hover:text-cyan"
+      className="clickable text-fg"
     >
       {codename}
     </Link>

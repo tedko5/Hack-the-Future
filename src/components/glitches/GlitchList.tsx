@@ -51,7 +51,7 @@ export function GlitchList({ title, glitches, emptyMessage, storageKey, isSearch
                 <GlitchStatusLabel status={glitch.status} />
                 <span className="min-w-0 leading-snug break-words">{glitch.description}</span>
                 <span className="text-[.85rem] text-muted tabular-nums sm:text-right">
-                  <span className="text-fg">{glitch.glitchId}</span>
+                  <span className="clickable text-fg">{glitch.glitchId}</span>
                   <span className="ml-3 sm:ml-0 sm:block">{glitch.assignedCodename ?? 'Unassigned'}</span>
                   <time dateTime={glitch.timestamp} className="ml-3 sm:ml-0 sm:block">
                     {formatDateTime(glitch.timestamp)}

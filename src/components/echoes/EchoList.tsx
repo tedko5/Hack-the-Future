@@ -156,7 +156,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
           <Link
             to="/glitches/$glitchId"
             params={{ glitchId: echo.glitch.glitchId }}
-            className="tabular-nums hover:text-cyan"
+            className="clickable tabular-nums"
           >
             {echo.glitch.glitchId}
           </Link>

@@ -178,3 +178,13 @@ select:focus {
   15% { opacity: 0.9 }
   100% { transform: translate(var(--dx, 10px), -340px); opacity: 0 }
 }
+
+/* Text that can be clicked: a thin violet line that brightens on hover. */
+@utility clickable {
+  text-decoration: underline 1px #7d6ad6;
+  text-underline-offset: 4px;
+  &:hover {
+    color: var(--cyan);
+    text-decoration-color: currentColor;
+  }
+}

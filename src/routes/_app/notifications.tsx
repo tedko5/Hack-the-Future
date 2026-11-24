@@ -59,7 +59,7 @@ function NotificationsPage() {
 }
 
 function NotificationRow({ notification }: { notification: Notification }) {
-  const { title, body } = describeNotification(notification)
+  const { title, body, path } = describeNotification(notification)
 
   return (
     <NotificationLink
@@ -68,7 +68,9 @@ function NotificationRow({ notification }: { notification: Notification }) {
     >
       <NotificationIcon type={notification.type} />
       <span className="min-w-0 flex-1">
-        <span className={`block leading-snug ${notification.isRead ? '' : 'font-bold'}`}>{title}</span>
+        <span className={`block leading-snug ${notification.isRead ? '' : 'font-bold'}`}>
+          <span className={path ? 'clickable' : ''}>{title}</span>
+        </span>
         {body && <span className="block truncate text-[.85rem] text-muted">{body}</span>}
         <time dateTime={notification.createdAt} className="text-[.85rem] text-muted">
           {formatDateTime(notification.createdAt)}

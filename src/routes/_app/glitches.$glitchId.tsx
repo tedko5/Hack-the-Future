@@ -31,7 +31,7 @@ function GlitchPage() {
   return (
     <>
       <section className="flex flex-col gap-4 rounded-[18px] bg-panel p-4 md:p-6">
-        <Link to="/" className="self-start text-sm text-muted hover:text-cyan">
+        <Link to="/" className="clickable self-start text-sm text-muted">
           Back to mission control
         </Link>
         <h2 className="font-display text-[1.6rem] font-bold">{glitch.glitchId}</h2>
