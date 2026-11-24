@@ -13,7 +13,6 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppAboutRouteImport } from './routes/_app/about'
-import { Route as AppGuardiansRouteImport } from './routes/_app/guardians'
 import { Route as AppLeaderboardRouteImport } from './routes/_app/leaderboard'
 import { Route as AppMapRouteImport } from './routes/_app/map'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
@@ -45,11 +44,6 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppAboutRoute = AppAboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppGuardiansRoute = AppGuardiansRouteImport.update({
-  id: '/guardians',
-  path: '/guardians',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLeaderboardRoute = AppLeaderboardRouteImport.update({
@@ -124,7 +118,6 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/welcome': typeof WelcomeRoute
   '/about': typeof AppAboutRoute
-  '/guardians': typeof AppGuardiansRoute
   '/leaderboard': typeof AppLeaderboardRoute
   '/map': typeof AppMapRoute
   '/notifications': typeof AppNotificationsRoute
@@ -142,7 +135,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/about': typeof AppAboutRoute
-  '/guardians': typeof AppGuardiansRoute
   '/leaderboard': typeof AppLeaderboardRoute
   '/map': typeof AppMapRoute
   '/notifications': typeof AppNotificationsRoute
@@ -163,7 +155,6 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/_app/about': typeof AppAboutRoute
-  '/_app/guardians': typeof AppGuardiansRoute
   '/_app/leaderboard': typeof AppLeaderboardRoute
   '/_app/map': typeof AppMapRoute
   '/_app/notifications': typeof AppNotificationsRoute
@@ -185,7 +176,6 @@ export interface FileRouteTypes {
     | '/'
     | '/welcome'
     | '/about'
-    | '/guardians'
     | '/leaderboard'
     | '/map'
     | '/notifications'
@@ -203,7 +193,6 @@ export interface FileRouteTypes {
   to:
     | '/welcome'
     | '/about'
-    | '/guardians'
     | '/leaderboard'
     | '/map'
     | '/notifications'
@@ -223,7 +212,6 @@ export interface FileRouteTypes {
     | '/_app'
     | '/welcome'
     | '/_app/about'
-    | '/_app/guardians'
     | '/_app/leaderboard'
     | '/_app/map'
     | '/_app/notifications'
@@ -279,13 +267,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AppAboutRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/guardians': {
-      id: '/_app/guardians'
-      path: '/guardians'
-      fullPath: '/guardians'
-      preLoaderRoute: typeof AppGuardiansRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/leaderboard': {
@@ -384,7 +365,6 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAboutRoute: typeof AppAboutRoute
-  AppGuardiansRoute: typeof AppGuardiansRoute
   AppLeaderboardRoute: typeof AppLeaderboardRoute
   AppMapRoute: typeof AppMapRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
@@ -397,7 +377,6 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAboutRoute: AppAboutRoute,
-  AppGuardiansRoute: AppGuardiansRoute,
   AppLeaderboardRoute: AppLeaderboardRoute,
   AppMapRoute: AppMapRoute,
   AppNotificationsRoute: AppNotificationsRoute,

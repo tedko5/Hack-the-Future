@@ -27,7 +27,6 @@ export const en = {
     messages: 'Messages',
     notifications: 'Notifications',
     leaderboard: 'Leaderboard',
-    guardians: 'Guardians',
   },
   header: {
     logOut: 'Log out',

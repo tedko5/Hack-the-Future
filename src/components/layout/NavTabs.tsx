@@ -1,20 +1,13 @@
 import { Link, linkOptions, useLocation, type LinkProps } from '@tanstack/react-router'
-import { Bell, Map as MapIcon, MessageCircle, Trophy, Users } from 'lucide-react'
+import { Map as MapIcon, MessageCircle, Trophy } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
 import { useT } from '#/i18n/index.ts'
-import type { Guardian } from '#/lib/guardian.ts'
 import { EVERYONE } from '#/lib/message.ts'
 
-type Props = {
-  guardian: Guardian
-  unreadMessages: number
-  unreadNotifications: number
-}
-
 /** A bar at the bottom of the screen on phones, a row under the header on larger screens. */
-export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props) {
+export function NavTabs({ unreadMessages }: { unreadMessages: number }) {
   const t = useT()
   const { pathname } = useLocation()
   const isIn = (section: string) => pathname === section || pathname.startsWith(`${section}/`)
@@ -47,26 +40,11 @@ export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props
         badge={unreadMessages}
       />
       <Tab
-        link={linkOptions({ to: '/notifications' })}
-        icon={Bell}
-        label={t.nav.notifications}
-        isActive={isIn('/notifications')}
-        badge={unreadNotifications}
-      />
-      <Tab
         link={linkOptions({ to: '/leaderboard' })}
         icon={Trophy}
         label={t.nav.leaderboard}
         isActive={isIn('/leaderboard')}
       />
-      {guardian.role === 'commander' && (
-        <Tab
-          link={linkOptions({ to: '/guardians' })}
-          icon={Users}
-          label={t.nav.guardians}
-          isActive={isIn('/guardians')}
-        />
-      )}
     </nav>
   )
 }
@@ -85,7 +63,7 @@ function Tab({ link, icon: Icon, label, isActive, badge = 0 }: TabProps) {
     <Link
       {...link}
       aria-current={isActive ? 'page' : undefined}
-      className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-center text-[.62rem] leading-tight -outline-offset-2 md:min-h-11 md:flex-none md:flex-row md:gap-2.5 md:rounded-lg md:px-4 md:text-sm md:leading-normal ${
+      className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-center text-[.68rem] leading-tight -outline-offset-2 md:min-h-11 md:flex-none md:flex-row md:gap-2.5 md:rounded-lg md:px-4 md:text-sm md:leading-normal ${
         isActive ? 'bg-row font-bold text-highlight' : 'text-muted hover:text-highlight'
       }`}
     >

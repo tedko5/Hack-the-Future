@@ -114,7 +114,7 @@ Q: Kan ik een glitch hacken?
 A: Commanders wel, één keer per glitch, vanaf de kaart. Een geslaagde hack herstelt de glitch. Na een mislukte moet een defender hem herstellen.
 
 Q: Hoe word ik commander?
-A: Een commander kan je commander maken op de pagina Guardians.
+A: Een commander kan je commander maken onderaan mission control.
 
 Q: Wat kan ik doen om te helpen?
 A: Meld echo's, beschrijf ze duidelijk en blijf waakzaam.

@@ -28,12 +28,8 @@ function AppLayout() {
   return (
     <>
       <main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-4 pt-7 pb-38 md:gap-8 md:pt-11 md:pb-20 print:max-w-none print:p-0">
-        <AppHeader guardian={guardian} />
-        <NavTabs
-          guardian={guardian}
-          unreadMessages={inbox.unreadMessages}
-          unreadNotifications={inbox.unreadNotifications}
-        />
+        <AppHeader guardian={guardian} unreadNotifications={inbox.unreadNotifications} />
+        <NavTabs unreadMessages={inbox.unreadMessages} />
         <Outlet />
         <AppFooter onShowShortcuts={() => setIsHelpOpen(true)} />
       </main>

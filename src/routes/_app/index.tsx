@@ -4,18 +4,26 @@ import { useState } from 'react'
 import { EchoList } from '#/components/echoes/EchoList.tsx'
 import { ReportEchoDialog } from '#/components/echoes/ReportEchoDialog.tsx'
 import { GlitchList } from '#/components/glitches/GlitchList.tsx'
+import { GuardianList } from '#/components/guardians/GuardianList.tsx'
 import { HealthPanel } from '#/components/health/HealthPanel.tsx'
 import { useT } from '#/i18n/index.ts'
 import { getDashboard } from '#/lib/dashboard.functions.ts'
+import { listGuardians } from '#/lib/guardians.functions.ts'
 import { useShortcuts } from '#/lib/useShortcuts.ts'
 
 export const Route = createFileRoute('/_app/')({
-  loader: () => getDashboard(),
+  loader: async ({ context }) => {
+    const [dashboard, guardians] = await Promise.all([
+      getDashboard(),
+      context.guardian.role === 'commander' ? listGuardians() : undefined,
+    ])
+    return { ...dashboard, guardians }
+  },
   component: MissionControl,
 })
 
 function MissionControl() {
-  const { magic, glitches, echoes } = Route.useLoaderData()
+  const { magic, glitches, echoes, guardians } = Route.useLoaderData()
   const { guardian } = Route.useRouteContext()
   const t = useT()
   const [isReporting, setIsReporting] = useState(false)
@@ -60,6 +68,7 @@ function MissionControl() {
           </Link>
         }
       />
+      {guardians && <GuardianList guardians={guardians} myId={guardian.guardianId} />}
       {isReporting && <ReportEchoDialog onClose={() => setIsReporting(false)} />}
     </>
   )

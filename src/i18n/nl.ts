@@ -30,7 +30,6 @@ export const nl: Dictionary = {
     messages: 'Berichten',
     notifications: 'Meldingen',
     leaderboard: 'Klassement',
-    guardians: 'Guardians',
   },
   header: {
     logOut: 'Afmelden',

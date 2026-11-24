@@ -118,7 +118,7 @@ Q: Can I hack a glitch?
 A: Commanders can, once per glitch, from the map. A successful hack fixes the glitch. After a failed one, a defender has to fix it.
 
 Q: How do I become a commander?
-A: A commander can make you one on the Guardians page.
+A: A commander can make you one at the bottom of mission control.
 
 Q: What can I do to help?
 A: Report echoes, describe them clearly, and stay vigilant.
