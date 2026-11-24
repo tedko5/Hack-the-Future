@@ -115,6 +115,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
             <span className="text-fg">{echo.reporter.codename}</span>
             <span className="ml-1.5">{echo.reporter.role}</span>
           </span>
+          {echo.newStatus && <span>Set to {STATUS_STYLES[echo.newStatus].label}</span>}
         </p>
       </div>
     </li>

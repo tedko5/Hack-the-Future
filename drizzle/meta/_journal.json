@@ -43,6 +43,13 @@
       "when": 1795514273788,
       "tag": "0005_live_events",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795516156264,
+      "tag": "0006_status_updates",
+      "breakpoints": true
     }
   ]
 }

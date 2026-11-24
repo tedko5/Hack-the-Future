@@ -2,9 +2,10 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { EchoList } from '#/components/echoes/EchoList.tsx'
 import { ReportEchoDialog } from '#/components/echoes/ReportEchoDialog.tsx'
-import { GlitchControls } from '#/components/glitches/GlitchControls.tsx'
+import { AssignDefender, TakeOrRelease } from '#/components/glitches/GlitchAssignment.tsx'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
 import { formatDateTime } from '#/lib/formatDate.ts'
+import { canChangeStatus } from '#/lib/glitch.ts'
 import { getGlitch } from '#/lib/glitches.functions.ts'
 import { listGuardians } from '#/lib/guardians.functions.ts'
 
@@ -23,6 +24,7 @@ export const Route = createFileRoute('/_app/glitches/$glitchId')({
 
 function GlitchPage() {
   const { glitch, guardians } = Route.useLoaderData()
+  const { guardian } = Route.useRouteContext()
   const [isReporting, setIsReporting] = useState(false)
 
   return (
@@ -39,11 +41,19 @@ function GlitchPage() {
           <time dateTime={glitch.timestamp}>{formatDateTime(glitch.timestamp)}</time>
         </p>
         {/* Keyed so an error on one glitch is not shown on the next. */}
-        {guardians && <GlitchControls key={glitch.glitchId} glitch={glitch} guardians={guardians} />}
+        {guardians ? (
+          <AssignDefender key={glitch.glitchId} glitch={glitch} guardians={guardians} />
+        ) : (
+          <TakeOrRelease key={glitch.glitchId} glitch={glitch} guardian={guardian} />
+        )}
       </section>
       <EchoList echoes={glitch.echoes} reportLabel="Add update" onReport={() => setIsReporting(true)} />
       {isReporting && (
-        <ReportEchoDialog glitchId={glitch.glitchId} onClose={() => setIsReporting(false)} />
+        <ReportEchoDialog
+          glitch={glitch}
+          canChangeStatus={canChangeStatus(guardian, glitch)}
+          onClose={() => setIsReporting(false)}
+        />
       )}
     </>
   )

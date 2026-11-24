@@ -1,0 +1,1 @@
+ALTER TABLE "echoes" ADD COLUMN "new_status" text;

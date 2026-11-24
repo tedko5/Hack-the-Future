@@ -6,11 +6,11 @@ import { createEcho } from '#/server/echoes.server.ts'
 
 /**
  * Without a glitchId this opens a new glitch; with one it adds an update to that
- * glitch. The time and the reporter are set by the server.
+ * glitch, which may also change its status. The time and the reporter are set by the server.
  */
 export const reportEcho = createServerFn({ method: 'POST' })
   .middleware([guardianMiddleware])
   .validator(validate(reportEchoSchema))
   .handler(({ data, context }) =>
-    createEcho({ ...data, reportingGuardianId: context.guardian.guardianId }),
+    createEcho({ ...data, reporter: context.guardian }),
   )
