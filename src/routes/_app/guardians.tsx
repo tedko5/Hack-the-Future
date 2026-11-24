@@ -1,8 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
+import { useState } from 'react'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
+import { SearchInput } from '#/components/ui/SearchInput.tsx'
 import type { GuardianRole } from '#/lib/guardian.ts'
 import { listGuardians, setGuardianRole } from '#/lib/guardians.functions.ts'
+import { matchesSearch } from '#/lib/search.ts'
 
 export const Route = createFileRoute('/_app/guardians')({
   beforeLoad: ({ context }) => {
@@ -16,6 +19,8 @@ function GuardiansPage() {
   const guardians = Route.useLoaderData()
   const { guardian: me } = Route.useRouteContext()
   const router = useRouter()
+  const [query, setQuery] = useState('')
+  const found = guardians.filter(({ codename, role }) => matchesSearch(query, codename, role))
   const changeRole = useMutation({
     mutationFn: (data: { guardianId: string; role: GuardianRole }) => setGuardianRole({ data }),
     onSettled: () => router.invalidate(),
@@ -24,6 +29,7 @@ function GuardiansPage() {
   return (
     <div className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
       <h2 className="font-display text-[1.6rem] font-bold">Guardians</h2>
+      <SearchInput label="Search guardians" value={query} onChange={setQuery} />
       {changeRole.isError && <p className="text-magenta">{changeRole.error.message}</p>}
       <table className="w-full text-left">
         <thead>
@@ -34,7 +40,7 @@ function GuardiansPage() {
           </tr>
         </thead>
         <tbody className="text-fg">
-          {guardians.map((guardian) => {
+          {found.map((guardian) => {
             const nextRole = guardian.role === 'commander' ? 'defender' : 'commander'
             return (
               <tr key={guardian.guardianId}>
@@ -59,6 +65,7 @@ function GuardiansPage() {
           })}
         </tbody>
       </table>
+      {found.length === 0 && <p className="px-5 text-muted">No guardians match your search.</p>}
     </div>
   )
 }

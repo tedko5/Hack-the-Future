@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, inArray, isNull, ne, or, sql } from 'drizzle-orm'
+import { and, desc, eq, gt, ilike, inArray, isNull, ne, or, sql } from 'drizzle-orm'
 import { alias } from 'drizzle-orm/pg-core'
 import { db } from '#/db/index.ts'
 import {
@@ -54,8 +54,21 @@ function visibleTo(guardianId: string) {
 const quoted = alias(messages, 'quoted')
 const quotedSender = alias(guardians, 'quoted_sender')
 
-/** The latest messages, oldest first. */
-export async function listMessages(guardianId: string, conversationId: string): Promise<Message[]> {
+/** Every word must appear in the text. Wildcards in the query are taken literally. */
+function containsWords(query: string) {
+  return and(
+    ...query
+      .split(/\s+/)
+      .map((word) => ilike(messages.body, `%${word.replace(/[\\%_]/g, '\\$&')}%`)),
+  )
+}
+
+/** The latest messages, optionally only those matching a search, oldest first. */
+export async function listMessages(
+  guardianId: string,
+  conversationId: string,
+  query?: string,
+): Promise<Message[]> {
   const rows = await db
     .select({
       messageId: messages.messageId,
@@ -75,7 +88,7 @@ export async function listMessages(guardianId: string, conversationId: string): 
     .leftJoin(messageImages, eq(messageImages.messageId, messages.messageId))
     .leftJoin(quoted, eq(quoted.messageId, messages.replyToId))
     .leftJoin(quotedSender, eq(quotedSender.guardianId, quoted.senderId))
-    .where(inConversation(guardianId, conversationId))
+    .where(and(inConversation(guardianId, conversationId), query ? containsWords(query) : undefined))
     .orderBy(desc(messages.messageId))
     .limit(PAGE_SIZE)
 

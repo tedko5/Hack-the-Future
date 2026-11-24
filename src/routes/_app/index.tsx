@@ -39,6 +39,7 @@ function MissionControl() {
         glitches={glitches}
         emptyMessage="No glitches. Magic is safe."
         storageKey="glitches"
+        isSearchable
       />
       {isReporting && <ReportEchoDialog onClose={() => setIsReporting(false)} />}
     </>

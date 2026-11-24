@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import {
   conversationSchema,
   markReadSchema,
+  searchMessagesSchema,
   sendMessageSchema,
   toggleReactionSchema,
 } from '#/lib/message.ts'
@@ -32,6 +33,16 @@ export const getConversation = createServerFn({ method: 'GET' })
       current,
       messages: await messages.listMessages(guardianId, data.conversationId),
     }
+  })
+
+/** Also finds messages older than the ones getConversation returns. POST keeps the text out of URLs. */
+export const searchMessages = createServerFn({ method: 'POST' })
+  .middleware([guardianMiddleware])
+  .validator(validate(searchMessagesSchema))
+  .handler(async ({ data, context }) => {
+    const { guardianId } = context.guardian
+    await messages.requireConversation(guardianId, data.conversationId)
+    return messages.listMessages(guardianId, data.conversationId, data.query)
   })
 
 export const sendMessage = createServerFn({ method: 'POST' })

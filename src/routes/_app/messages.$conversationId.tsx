@@ -1,10 +1,13 @@
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { ConversationList } from '#/components/messages/ConversationList.tsx'
 import { MessageForm } from '#/components/messages/MessageForm.tsx'
 import { MessageThread } from '#/components/messages/MessageThread.tsx'
-import type { Message } from '#/lib/message.ts'
-import { getConversation, markRead } from '#/lib/messages.functions.ts'
+import { SearchInput } from '#/components/ui/SearchInput.tsx'
+import { SEARCH_MAX_LENGTH, type Message } from '#/lib/message.ts'
+import { getConversation, markRead, searchMessages } from '#/lib/messages.functions.ts'
+import { useDebounced } from '#/lib/useDebounced.ts'
 
 export const Route = createFileRoute('/_app/messages/$conversationId')({
   loader: ({ params }) => getConversation({ data: params }),
@@ -61,15 +64,52 @@ type ChatProps = {
 
 function Chat({ conversationId, title, messages, guardianId }: ChatProps) {
   const [replyTo, setReplyTo] = useState<Message | null>(null)
+  const [query, setQuery] = useState('')
+  const search = useDebounced(query.trim())
+  const results = useQuery({
+    // Includes the loaded messages, so results follow new messages and reactions.
+    queryKey: ['message-search', conversationId, search, messages],
+    queryFn: () => searchMessages({ data: { conversationId, query: search } }),
+    enabled: search !== '',
+    placeholderData: keepPreviousData,
+    gcTime: 0,
+  })
+  const isSearching = search !== ''
 
   return (
     <>
-      <MessageThread messages={messages} guardianId={guardianId} onReply={setReplyTo} />
+      <SearchInput
+        label="Search this chat"
+        value={query}
+        onChange={(value) => setQuery(value.slice(0, SEARCH_MAX_LENGTH))}
+      />
+      {results.isError && isSearching && (
+        <p role="alert" className="text-magenta">
+          {results.error.message}
+        </p>
+      )}
+      <MessageThread
+        messages={isSearching ? (results.data ?? []) : messages}
+        emptyMessage={
+          !isSearching
+            ? 'No messages yet.'
+            : results.isPending
+              ? 'Searching…'
+              : 'No messages match your search.'
+        }
+        guardianId={guardianId}
+        onReply={setReplyTo}
+      />
       <MessageForm
         conversationId={conversationId}
         title={title}
         replyTo={replyTo}
-        onReplyDone={() => setReplyTo(null)}
+        onCancelReply={() => setReplyTo(null)}
+        onSent={() => {
+          setReplyTo(null)
+          // Back to the whole chat, where the new message is.
+          setQuery('')
+        }}
       />
     </>
   )

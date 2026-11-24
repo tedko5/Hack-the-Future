@@ -1,24 +1,47 @@
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
+import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
+import { SearchInput } from '#/components/ui/SearchInput.tsx'
 import { formatDateTime } from '#/lib/formatDate.ts'
 import type { Glitch } from '#/lib/glitch.ts'
+import { matchesSearch } from '#/lib/search.ts'
 
 type Props = {
   title: string
   glitches: Glitch[]
   emptyMessage: string
   storageKey: string
+  isSearchable?: boolean
 }
 
-export function GlitchList({ title, glitches, emptyMessage, storageKey }: Props) {
+export function GlitchList({ title, glitches, emptyMessage, storageKey, isSearchable = false }: Props) {
+  const [query, setQuery] = useState('')
+  const found = glitches.filter((glitch) =>
+    matchesSearch(
+      query,
+      glitch.glitchId,
+      glitch.description,
+      STATUS_STYLES[glitch.status].label,
+      glitch.assignedCodename ?? 'Unassigned',
+    ),
+  )
+
   return (
     <CollapsibleSection title={title} count={glitches.length} storageKey={storageKey}>
-      {glitches.length === 0 ? (
-        <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">{emptyMessage}</p>
+      {isSearchable && glitches.length > 0 && (
+        <div className="mb-4">
+          <SearchInput label="Search glitches" value={query} onChange={setQuery} />
+        </div>
+      )}
+      {found.length === 0 ? (
+        <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">
+          {glitches.length === 0 ? emptyMessage : 'No glitches match your search.'}
+        </p>
       ) : (
         <ul className="divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
-          {glitches.map((glitch) => (
+          {found.map((glitch) => (
             <li key={glitch.glitchId}>
               <Link
                 to="/glitches/$glitchId"

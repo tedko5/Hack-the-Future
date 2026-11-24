@@ -59,6 +59,17 @@ const messageIdSchema = z.int32('Invalid message').positive('Invalid message')
 
 export const conversationSchema = z.object({ conversationId: conversationIdSchema })
 
+export const SEARCH_MAX_LENGTH = 100
+
+export const searchMessagesSchema = z.object({
+  conversationId: conversationIdSchema,
+  query: z
+    .string('Invalid search')
+    .trim()
+    .min(1, 'Invalid search')
+    .max(SEARCH_MAX_LENGTH, `Search for up to ${SEARCH_MAX_LENGTH} characters`),
+})
+
 export const markReadSchema = z.object({
   conversationId: conversationIdSchema,
   messageId: messageIdSchema,

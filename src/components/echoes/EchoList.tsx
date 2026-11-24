@@ -1,10 +1,13 @@
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
+import { SearchInput } from '#/components/ui/SearchInput.tsx'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import type { Echo } from '#/lib/echo.ts'
 import { TIME_ZONE } from '#/lib/formatDate.ts'
+import { matchesSearch } from '#/lib/search.ts'
 
 const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE })
 const dayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TIME_ZONE })
@@ -20,6 +23,17 @@ type Props = {
 }
 
 export function EchoList({ echoes, storageKey, onReport, reportLabel = 'Report echo' }: Props) {
+  const [query, setQuery] = useState('')
+  const found = echoes.filter((echo) =>
+    matchesSearch(
+      query,
+      echo.description,
+      echo.glitch.glitchId,
+      STATUS_STYLES[echo.status].label,
+      echo.reporter.codename,
+      echo.reporter.role,
+    ),
+  )
   const reportButton = (
     <button
       type="button"
@@ -32,12 +46,19 @@ export function EchoList({ echoes, storageKey, onReport, reportLabel = 'Report e
 
   return (
     <CollapsibleSection title="Echoes" count={echoes.length} storageKey={storageKey} action={reportButton}>
+      {echoes.length > 0 && (
+        <div className="mb-4">
+          <SearchInput label="Search echoes" value={query} onChange={setQuery} />
+        </div>
+      )}
       <div className="rounded-xl border-2 border-edge bg-well px-3 py-4 sm:px-6 sm:py-5">
-        {echoes.length === 0 ? (
-          <p className="text-muted">No echoes reported yet.</p>
+        {found.length === 0 ? (
+          <p className="text-muted">
+            {echoes.length === 0 ? 'No echoes reported yet.' : 'No echoes match your search.'}
+          </p>
         ) : (
           <ol>
-            {groupByDay(echoes).map(({ day, items }) => (
+            {groupByDay(found).map(({ day, items }) => (
               <li key={day}>
                 <DayMarker day={day} />
                 <ol>

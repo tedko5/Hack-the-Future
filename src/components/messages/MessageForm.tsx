@@ -10,10 +10,11 @@ type Props = {
   conversationId: string
   title: string
   replyTo: Message | null
-  onReplyDone: () => void
+  onCancelReply: () => void
+  onSent: () => void
 }
 
-export function MessageForm({ conversationId, title, replyTo, onReplyDone }: Props) {
+export function MessageForm({ conversationId, title, replyTo, onCancelReply, onSent }: Props) {
   const router = useRouter()
   const [body, setBody] = useState('')
   const [image, setImage] = useState<File | null>(null)
@@ -33,7 +34,7 @@ export function MessageForm({ conversationId, title, replyTo, onReplyDone }: Pro
     onSuccess: () => {
       setBody('')
       setImage(null)
-      onReplyDone()
+      onSent()
       return router.invalidate()
     },
   })
@@ -63,7 +64,7 @@ export function MessageForm({ conversationId, title, replyTo, onReplyDone }: Pro
       }}
     >
       {replyTo && (
-        <Attachment label="Cancel reply" onRemove={onReplyDone}>
+        <Attachment label="Cancel reply" onRemove={onCancelReply}>
           <p className="min-w-0 truncate">
             Replying to <b>{replyTo.senderCodename}</b>: {quoteText(replyTo)}
           </p>
