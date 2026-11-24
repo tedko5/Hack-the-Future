@@ -188,3 +188,9 @@ select:focus {
     text-decoration-color: currentColor;
   }
 }
+
+/* Only the report is meant for paper. */
+@media print {
+  @page { margin: 16mm; }
+  :root { --app: #fff; color-scheme: light; }
+}

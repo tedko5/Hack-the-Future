@@ -1,11 +1,12 @@
 import { Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
-import { SearchInput } from '#/components/ui/SearchInput.tsx'
+import { ListControls } from '#/components/ui/ListControls.tsx'
 import { formatDateTime } from '#/lib/formatDate.ts'
 import type { Glitch } from '#/lib/glitch.ts'
+import { GLITCH_SORTS, sortGlitches, type GlitchSort } from '#/lib/glitchSort.ts'
 import { matchesSearch } from '#/lib/search.ts'
 
 type Props = {
@@ -14,11 +15,20 @@ type Props = {
   emptyMessage: string
   storageKey: string
   isSearchable?: boolean
+  action?: ReactNode
 }
 
-export function GlitchList({ title, glitches, emptyMessage, storageKey, isSearchable = false }: Props) {
+export function GlitchList({
+  title,
+  glitches,
+  emptyMessage,
+  storageKey,
+  isSearchable = false,
+  action,
+}: Props) {
   const [query, setQuery] = useState('')
-  const found = glitches.filter((glitch) =>
+  const [sort, setSort] = useState<GlitchSort>('newest')
+  const found = sortGlitches(glitches, sort).filter((glitch) =>
     matchesSearch(
       query,
       glitch.glitchId,
@@ -29,10 +39,17 @@ export function GlitchList({ title, glitches, emptyMessage, storageKey, isSearch
   )
 
   return (
-    <CollapsibleSection title={title} count={glitches.length} storageKey={storageKey}>
+    <CollapsibleSection title={title} count={glitches.length} storageKey={storageKey} action={action}>
       {isSearchable && glitches.length > 0 && (
         <div className="mb-4">
-          <SearchInput label="Search glitches" value={query} onChange={setQuery} />
+          <ListControls
+            searchLabel="Search glitches"
+            query={query}
+            onQueryChange={setQuery}
+            sorts={GLITCH_SORTS}
+            sort={sort}
+            onSortChange={setSort}
+          />
         </div>
       )}
       {found.length === 0 ? (

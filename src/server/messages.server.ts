@@ -19,7 +19,7 @@ import {
 } from '#/lib/message.ts'
 import { getAvatars } from '#/server/avatars.server.ts'
 import { findGuardian, listGuardians } from '#/server/guardians.server.ts'
-import { detectImageType } from '#/server/imageType.server.ts'
+import type { StoredImage } from '#/server/images.server.ts'
 import { withNotifications } from '#/server/notifications/notify.server.ts'
 
 const PAGE_SIZE = 100
@@ -141,14 +141,11 @@ type NewMessage = {
   conversationId: string
   body: string
   replyToId?: number
-  image?: Buffer
+  image?: StoredImage
 }
 
 export async function createMessage(message: NewMessage) {
   const { senderId, conversationId, body, replyToId, image } = message
-  const type = image && detectImageType(image)
-  if (image && !type) throw new Error('Use a JPEG, PNG, WebP or GIF image')
-
   let repliedToId: string | undefined
   if (replyToId !== undefined) {
     // Within the same conversation, so a reply never quotes a message its readers cannot see.
@@ -166,7 +163,7 @@ export async function createMessage(message: NewMessage) {
       .insert(messages)
       .values({ senderId, recipientId, body, replyToId })
       .returning({ messageId: messages.messageId })
-    if (image && type) await tx.insert(messageImages).values({ messageId, type, data: image })
+    if (image) await tx.insert(messageImages).values({ messageId, ...image })
 
     const about = { actorId: senderId, messageId }
     if (recipientId) {

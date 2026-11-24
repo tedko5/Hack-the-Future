@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { glitchIdSchema, glitchStatusSchema, type Glitch, type GlitchStatus } from './glitch.ts'
 import type { Guardian } from './guardian.ts'
+import { imageSchema } from './image.ts'
 
 export const ECHO_MAX_LENGTH = 1000
 
@@ -14,6 +15,7 @@ export type Echo = {
   status: GlitchStatus
   /** The status this echo gave the glitch, or null if it left it alone. */
   newStatus: GlitchStatus | null
+  hasImage: boolean
   reporter: Guardian
   glitch: Pick<Glitch, 'glitchId' | 'status'>
 }
@@ -23,16 +25,29 @@ export type GlitchDetails = Glitch & { echoes: Echo[] }
 
 const descriptionMessage = `Describe the echo in 1 to ${ECHO_MAX_LENGTH} characters`
 
-export const reportEchoSchema = z
-  .object({
-    description: z
-      .string(descriptionMessage)
-      .trim()
-      .min(1, descriptionMessage)
-      .max(ECHO_MAX_LENGTH, descriptionMessage),
-    /** Leave out to open a new glitch. */
-    glitchId: glitchIdSchema.optional(),
-    /** Changes the glitch's status along with the update. */
-    status: glitchStatusSchema.optional(),
-  })
-  .refine(({ glitchId, status }) => glitchId || !status, 'A new glitch always starts as leaked')
+/** Sent as a form, because it can carry an image. */
+export const reportEchoSchema = z.preprocess(
+  (input) =>
+    input instanceof FormData
+      ? {
+          description: input.get('description'),
+          glitchId: input.get('glitchId') ?? undefined,
+          status: input.get('status') ?? undefined,
+          image: input.get('image') ?? undefined,
+        }
+      : input,
+  z
+    .object({
+      description: z
+        .string(descriptionMessage)
+        .trim()
+        .min(1, descriptionMessage)
+        .max(ECHO_MAX_LENGTH, descriptionMessage),
+      /** Leave out to open a new glitch. */
+      glitchId: glitchIdSchema.optional(),
+      /** Changes the glitch's status along with the update. */
+      status: glitchStatusSchema.optional(),
+      image: imageSchema.optional(),
+    })
+    .refine(({ glitchId, status }) => glitchId || !status, 'A new glitch always starts as leaked'),
+)

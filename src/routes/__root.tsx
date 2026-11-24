@@ -30,7 +30,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootLayout() {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
-      <RiftBackground />
+      <div className="print:hidden">
+        <RiftBackground />
+      </div>
       <div className="relative z-10">
         <Outlet />
       </div>

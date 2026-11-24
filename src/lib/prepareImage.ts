@@ -1,4 +1,4 @@
-import { IMAGE_MAX_BYTES } from './message.ts'
+import { IMAGE_MAX_BYTES } from './image.ts'
 
 const MAX_SIDE = 1600
 

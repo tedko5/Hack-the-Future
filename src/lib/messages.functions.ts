@@ -9,6 +9,7 @@ import {
 } from '#/lib/message.ts'
 import { validate } from '#/lib/validate.ts'
 import { guardianMiddleware } from '#/middleware/auth.ts'
+import { readImage } from '#/server/images.server.ts'
 import * as messages from '#/server/messages.server.ts'
 import { markConversationNotificationsRead } from '#/server/notifications/notifications.server.ts'
 
@@ -48,7 +49,7 @@ export const sendMessage = createServerFn({ method: 'POST' })
   .handler(async ({ data, context }) => {
     const senderId = context.guardian.guardianId
     await messages.requireConversation(senderId, data.conversationId)
-    const image = data.image && Buffer.from(await data.image.arrayBuffer())
+    const image = data.image && (await readImage(data.image))
     await messages.createMessage({ ...data, senderId, image })
   })
 

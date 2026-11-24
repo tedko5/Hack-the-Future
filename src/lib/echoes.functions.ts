@@ -3,6 +3,7 @@ import { reportEchoSchema } from '#/lib/echo.ts'
 import { validate } from '#/lib/validate.ts'
 import { guardianMiddleware } from '#/middleware/auth.ts'
 import { createEcho } from '#/server/echoes.server.ts'
+import { readImage } from '#/server/images.server.ts'
 
 /**
  * Without a glitchId this opens a new glitch; with one it adds an update to that
@@ -10,7 +11,11 @@ import { createEcho } from '#/server/echoes.server.ts'
  */
 export const reportEcho = createServerFn({ method: 'POST' })
   .middleware([guardianMiddleware])
-  .validator(validate(reportEchoSchema))
-  .handler(({ data, context }) =>
-    createEcho({ ...data, reporter: context.guardian }),
+  .validator((form: FormData) => validate(reportEchoSchema)(form))
+  .handler(async ({ data, context }) =>
+    createEcho({
+      ...data,
+      image: data.image && (await readImage(data.image)),
+      reporter: context.guardian,
+    }),
   )

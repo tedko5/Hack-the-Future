@@ -7,7 +7,7 @@ export function AppHeader({ guardian }: { guardian: Guardian }) {
   const { signOut } = useClerk()
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-5">
+    <header className="flex flex-wrap items-center justify-between gap-5 print:hidden">
       <h1 className="title-engraved font-display text-[clamp(2.3rem,6vw,3.8rem)] leading-none font-bold">
         <Link to="/">Achrona Mission Control</Link>
       </h1>

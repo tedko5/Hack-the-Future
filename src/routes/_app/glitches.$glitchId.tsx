@@ -9,6 +9,7 @@ import { formatDateTime } from '#/lib/formatDate.ts'
 import { canChangeStatus } from '#/lib/glitch.ts'
 import { getGlitch } from '#/lib/glitches.functions.ts'
 import { listGuardians } from '#/lib/guardians.functions.ts'
+import { useShortcuts } from '#/lib/useShortcuts.ts'
 
 export const Route = createFileRoute('/_app/glitches/$glitchId')({
   loader: async ({ params, context }) => {
@@ -27,6 +28,7 @@ function GlitchPage() {
   const { glitch, guardians } = Route.useLoaderData()
   const { guardian } = Route.useRouteContext()
   const [isReporting, setIsReporting] = useState(false)
+  useShortcuts({ r: () => setIsReporting(true) })
 
   return (
     <>

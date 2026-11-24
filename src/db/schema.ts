@@ -15,7 +15,8 @@ import {
 // Relative import: drizzle-kit loads this file and doesn't resolve the `#/` alias.
 import { GLITCH_STATUSES } from '../lib/glitch.ts'
 import { GUARDIAN_ROLES } from '../lib/guardian.ts'
-import { IMAGE_TYPES, REACTIONS } from '../lib/message.ts'
+import { IMAGE_TYPES } from '../lib/image.ts'
+import { REACTIONS } from '../lib/message.ts'
 import { NOTIFICATION_TYPES } from '../lib/notification.ts'
 
 const bytea = customType<{ data: Buffer }>({ dataType: () => 'bytea' })
@@ -65,6 +66,13 @@ export const echoes = pgTable(
   },
   (table) => [index('echoes_glitch_id').on(table.glitchId)],
 )
+
+/** Kept apart from echoes, so listing them never loads the bytes. */
+export const echoImages = pgTable('echo_images', {
+  echoId: integer('echo_id').primaryKey().references(() => echoes.echoId),
+  type: text('type', { enum: IMAGE_TYPES }).notNull(),
+  data: bytea('data').notNull(),
+})
 
 export const messages = pgTable(
   'messages',

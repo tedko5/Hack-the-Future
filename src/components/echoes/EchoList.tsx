@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
-import { SearchInput } from '#/components/ui/SearchInput.tsx'
+import { ListControls } from '#/components/ui/ListControls.tsx'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import type { Echo } from '#/lib/echo.ts'
 import { TIME_ZONE, isToday } from '#/lib/formatDate.ts'
@@ -16,7 +16,10 @@ const dayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'nume
 /** Grid shared by day markers and echoes: time | ley line | content. */
 const ROW = 'relative grid grid-cols-[3rem_1.5rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[3.5rem_1.5rem_minmax(0,1fr)] sm:gap-x-4'
 
+const ECHO_SORTS = { newest: 'Newest first', oldest: 'Oldest first' }
+
 type Props = {
+  /** Newest first. */
   echoes: Echo[]
   storageKey: string
   onReport: () => void
@@ -36,7 +39,9 @@ export function EchoList({
   const isTodayOnly = canFilterToday && wantsToday
   const echoes = isTodayOnly ? allEchoes.filter((echo) => isToday(echo.timestamp)) : allEchoes
   const [query, setQuery] = useState('')
-  const found = echoes.filter((echo) =>
+  const [sort, setSort] = useState<keyof typeof ECHO_SORTS>('newest')
+  const sorted = sort === 'newest' ? echoes : echoes.toReversed()
+  const found = sorted.filter((echo) =>
     matchesSearch(
       query,
       echo.description,
@@ -86,7 +91,14 @@ export function EchoList({
     >
       {echoes.length > 0 && (
         <div className="mb-4">
-          <SearchInput label="Search echoes" value={query} onChange={setQuery} />
+          <ListControls
+            searchLabel="Search echoes"
+            query={query}
+            onQueryChange={setQuery}
+            sorts={ECHO_SORTS}
+            sort={sort}
+            onSortChange={setSort}
+          />
         </div>
       )}
       <div className="rounded-xl border-2 border-edge bg-well px-3 py-4 sm:px-6 sm:py-5">
@@ -158,6 +170,22 @@ function EchoEntry({ echo }: { echo: Echo }) {
       </span>
       <div className="min-w-0 pb-6">
         <p className="leading-snug">{echo.description}</p>
+        {echo.hasImage && (
+          <a
+            href={`/api/echo-images/${echo.echoId}`}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 block w-fit"
+          >
+            {/* Fixed height, so the timeline does not jump when the image loads. */}
+            <img
+              src={`/api/echo-images/${echo.echoId}`}
+              alt={`Sent by ${echo.reporter.codename}`}
+              loading="lazy"
+              className="h-40 max-w-full rounded-lg object-contain"
+            />
+          </a>
+        )}
         <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[.85rem] text-muted">
           <span className="font-medium" style={{ color: status.color }}>
             {status.label}

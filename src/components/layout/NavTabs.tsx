@@ -1,5 +1,5 @@
 import { Link, linkOptions, useLocation, type LinkProps } from '@tanstack/react-router'
-import { Bell, MessageCircle, Users } from 'lucide-react'
+import { Bell, MessageCircle, Trophy, Users } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
@@ -20,13 +20,13 @@ export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-30 flex border-t-2 border-edge bg-panel md:static md:gap-2 md:self-start md:rounded-xl md:border-0 md:p-1.5"
+      className="fixed inset-x-0 bottom-0 z-30 flex border-t-2 border-edge bg-panel md:static md:gap-2 md:self-start md:rounded-xl md:border-0 md:p-1.5 print:hidden"
     >
       <Tab
         link={linkOptions({ to: '/' })}
         icon={CrystalIcon}
         label="Mission control"
-        isActive={pathname === '/' || isIn('/glitches')}
+        isActive={pathname === '/' || isIn('/glitches') || isIn('/report')}
       />
       <Tab
         link={linkOptions({
@@ -44,6 +44,12 @@ export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props
         label="Notifications"
         isActive={isIn('/notifications')}
         badge={unreadNotifications}
+      />
+      <Tab
+        link={linkOptions({ to: '/leaderboard' })}
+        icon={Trophy}
+        label="Leaderboard"
+        isActive={isIn('/leaderboard')}
       />
       {guardian.role === 'commander' && (
         <Tab
@@ -71,7 +77,7 @@ function Tab({ link, icon: Icon, label, isActive, badge = 0 }: TabProps) {
     <Link
       {...link}
       aria-current={isActive ? 'page' : undefined}
-      className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-xs -outline-offset-2 md:min-h-11 md:flex-none md:flex-row md:gap-2.5 md:rounded-lg md:px-4 md:text-sm ${
+      className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-center text-[.68rem] leading-tight -outline-offset-2 md:min-h-11 md:flex-none md:flex-row md:gap-2.5 md:rounded-lg md:px-4 md:text-sm md:leading-normal ${
         isActive ? 'bg-row font-bold text-cyan' : 'text-muted hover:text-cyan'
       }`}
     >

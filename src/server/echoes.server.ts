@@ -1,10 +1,11 @@
 import { asc, desc, eq, sql } from 'drizzle-orm'
 import { db, type Transaction } from '#/db/index.ts'
-import { echoes, glitches, guardians } from '#/db/schema.ts'
+import { echoImages, echoes, glitches, guardians } from '#/db/schema.ts'
 import type { Echo } from '#/lib/echo.ts'
 import { canChangeStatus, type GlitchStatus } from '#/lib/glitch.ts'
 import type { Guardian } from '#/lib/guardian.ts'
 import { listCommanderIds } from '#/server/guardians.server.ts'
+import type { StoredImage } from '#/server/images.server.ts'
 import { withNotifications } from '#/server/notifications/notify.server.ts'
 
 type NewEcho = {
@@ -14,6 +15,7 @@ type NewEcho = {
   glitchId?: string
   /** Changes the status of the existing glitch. */
   status?: GlitchStatus
+  image?: StoredImage
 }
 
 const selectEchoes = () =>
@@ -24,6 +26,7 @@ const selectEchoes = () =>
       timestamp: echoes.timestamp,
       status: sql<GlitchStatus>`coalesce(${echoes.status}, ${glitches.status})`,
       newStatus: echoes.newStatus,
+      hasImage: sql<boolean>`${echoImages.echoId} is not null`,
       reporter: {
         guardianId: guardians.guardianId,
         codename: guardians.codename,
@@ -34,6 +37,7 @@ const selectEchoes = () =>
     .from(echoes)
     .innerJoin(guardians, eq(guardians.guardianId, echoes.reportingGuardianId))
     .innerJoin(glitches, eq(glitches.glitchId, echoes.glitchId))
+    .leftJoin(echoImages, eq(echoImages.echoId, echoes.echoId))
 
 type EchoRow = Awaited<ReturnType<typeof selectEchoes>>[number]
 
@@ -52,8 +56,16 @@ export async function listGlitchEchoes(glitchId: string): Promise<Echo[]> {
   return rows.map(toEcho)
 }
 
+export async function findEchoImage(echoId: number): Promise<StoredImage | undefined> {
+  const [image] = await db
+    .select({ type: echoImages.type, data: echoImages.data })
+    .from(echoImages)
+    .where(eq(echoImages.echoId, echoId))
+  return image
+}
+
 /** One transaction, so a glitch never exists without its first echo, nor a status without its update. */
-export function createEcho({ description, reporter, glitchId, status }: NewEcho) {
+export function createEcho({ description, reporter, glitchId, status, image }: NewEcho) {
   const timestamp = new Date()
 
   return withNotifications(async (tx, notify) => {
@@ -80,6 +92,7 @@ export function createEcho({ description, reporter, glitchId, status }: NewEcho)
       .insert(echoes)
       .values({ ...target, description, timestamp, reportingGuardianId: reporter.guardianId })
       .returning({ echoId: echoes.echoId })
+    if (image) await tx.insert(echoImages).values({ echoId, ...image })
     return { echoId, glitchId: target.glitchId }
   })
 }

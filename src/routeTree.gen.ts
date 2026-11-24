@@ -13,7 +13,9 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppGuardiansRouteImport } from './routes/_app/guardians'
+import { Route as AppLeaderboardRouteImport } from './routes/_app/leaderboard'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
+import { Route as AppReportRouteImport } from './routes/_app/report'
 import { Route as AppStatusRouteImport } from './routes/_app/status'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
@@ -21,6 +23,7 @@ import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
 import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
 import { Route as AppGlitchesGlitchIdRouteImport } from './routes/_app/glitches.$glitchId'
 import { Route as AppMessagesConversationIdRouteImport } from './routes/_app/messages.$conversationId'
+import { Route as ApiEchoImagesEchoIdRouteImport } from './routes/api/echo-images.$echoId'
 import { Route as ApiMessageImagesMessageIdRouteImport } from './routes/api/message-images.$messageId'
 
 const AppRoute = AppRouteImport.update({
@@ -42,9 +45,19 @@ const AppGuardiansRoute = AppGuardiansRouteImport.update({
   path: '/guardians',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLeaderboardRoute = AppLeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportRoute = AppReportRouteImport.update({
+  id: '/report',
+  path: '/report',
   getParentRoute: () => AppRoute,
 } as any)
 const AppStatusRoute = AppStatusRouteImport.update({
@@ -83,6 +96,11 @@ const AppMessagesConversationIdRoute =
     path: '/messages/$conversationId',
     getParentRoute: () => AppRoute,
   } as any)
+const ApiEchoImagesEchoIdRoute = ApiEchoImagesEchoIdRouteImport.update({
+  id: '/api/echo-images/$echoId',
+  path: '/api/echo-images/$echoId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMessageImagesMessageIdRoute =
   ApiMessageImagesMessageIdRouteImport.update({
     id: '/api/message-images/$messageId',
@@ -94,7 +112,9 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
+  '/leaderboard': typeof AppLeaderboardRoute
   '/notifications': typeof AppNotificationsRoute
+  '/report': typeof AppReportRoute
   '/status': typeof AppStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
@@ -102,12 +122,15 @@ export interface FileRoutesByFullPath {
   '/sign-up/$': typeof SignUpSplatRoute
   '/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
   '/messages/$conversationId': typeof AppMessagesConversationIdRoute
+  '/api/echo-images/$echoId': typeof ApiEchoImagesEchoIdRoute
   '/api/message-images/$messageId': typeof ApiMessageImagesMessageIdRoute
 }
 export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
+  '/leaderboard': typeof AppLeaderboardRoute
   '/notifications': typeof AppNotificationsRoute
+  '/report': typeof AppReportRoute
   '/status': typeof AppStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
@@ -116,6 +139,7 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
   '/messages/$conversationId': typeof AppMessagesConversationIdRoute
+  '/api/echo-images/$echoId': typeof ApiEchoImagesEchoIdRoute
   '/api/message-images/$messageId': typeof ApiMessageImagesMessageIdRoute
 }
 export interface FileRoutesById {
@@ -123,7 +147,9 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/welcome': typeof WelcomeRoute
   '/_app/guardians': typeof AppGuardiansRoute
+  '/_app/leaderboard': typeof AppLeaderboardRoute
   '/_app/notifications': typeof AppNotificationsRoute
+  '/_app/report': typeof AppReportRoute
   '/_app/status': typeof AppStatusRoute
   '/api/events': typeof ApiEventsRoute
   '/api/health': typeof ApiHealthRoute
@@ -132,6 +158,7 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/_app/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
   '/_app/messages/$conversationId': typeof AppMessagesConversationIdRoute
+  '/api/echo-images/$echoId': typeof ApiEchoImagesEchoIdRoute
   '/api/message-images/$messageId': typeof ApiMessageImagesMessageIdRoute
 }
 export interface FileRouteTypes {
@@ -140,7 +167,9 @@ export interface FileRouteTypes {
     | '/'
     | '/welcome'
     | '/guardians'
+    | '/leaderboard'
     | '/notifications'
+    | '/report'
     | '/status'
     | '/api/events'
     | '/api/health'
@@ -148,12 +177,15 @@ export interface FileRouteTypes {
     | '/sign-up/$'
     | '/glitches/$glitchId'
     | '/messages/$conversationId'
+    | '/api/echo-images/$echoId'
     | '/api/message-images/$messageId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/welcome'
     | '/guardians'
+    | '/leaderboard'
     | '/notifications'
+    | '/report'
     | '/status'
     | '/api/events'
     | '/api/health'
@@ -162,13 +194,16 @@ export interface FileRouteTypes {
     | '/'
     | '/glitches/$glitchId'
     | '/messages/$conversationId'
+    | '/api/echo-images/$echoId'
     | '/api/message-images/$messageId'
   id:
     | '__root__'
     | '/_app'
     | '/welcome'
     | '/_app/guardians'
+    | '/_app/leaderboard'
     | '/_app/notifications'
+    | '/_app/report'
     | '/_app/status'
     | '/api/events'
     | '/api/health'
@@ -177,6 +212,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/_app/glitches/$glitchId'
     | '/_app/messages/$conversationId'
+    | '/api/echo-images/$echoId'
     | '/api/message-images/$messageId'
   fileRoutesById: FileRoutesById
 }
@@ -187,6 +223,7 @@ export interface RootRouteChildren {
   ApiHealthRoute: typeof ApiHealthRoute
   SignInSplatRoute: typeof SignInSplatRoute
   SignUpSplatRoute: typeof SignUpSplatRoute
+  ApiEchoImagesEchoIdRoute: typeof ApiEchoImagesEchoIdRoute
   ApiMessageImagesMessageIdRoute: typeof ApiMessageImagesMessageIdRoute
 }
 
@@ -220,11 +257,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGuardiansRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/leaderboard': {
+      id: '/_app/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof AppLeaderboardRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/notifications': {
       id: '/_app/notifications'
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/report': {
+      id: '/_app/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof AppReportRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/status': {
@@ -276,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMessagesConversationIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/echo-images/$echoId': {
+      id: '/api/echo-images/$echoId'
+      path: '/api/echo-images/$echoId'
+      fullPath: '/api/echo-images/$echoId'
+      preLoaderRoute: typeof ApiEchoImagesEchoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/message-images/$messageId': {
       id: '/api/message-images/$messageId'
       path: '/api/message-images/$messageId'
@@ -288,7 +346,9 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppGuardiansRoute: typeof AppGuardiansRoute
+  AppLeaderboardRoute: typeof AppLeaderboardRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
+  AppReportRoute: typeof AppReportRoute
   AppStatusRoute: typeof AppStatusRoute
   AppIndexRoute: typeof AppIndexRoute
   AppGlitchesGlitchIdRoute: typeof AppGlitchesGlitchIdRoute
@@ -297,7 +357,9 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppGuardiansRoute: AppGuardiansRoute,
+  AppLeaderboardRoute: AppLeaderboardRoute,
   AppNotificationsRoute: AppNotificationsRoute,
+  AppReportRoute: AppReportRoute,
   AppStatusRoute: AppStatusRoute,
   AppIndexRoute: AppIndexRoute,
   AppGlitchesGlitchIdRoute: AppGlitchesGlitchIdRoute,
@@ -313,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthRoute: ApiHealthRoute,
   SignInSplatRoute: SignInSplatRoute,
   SignUpSplatRoute: SignUpSplatRoute,
+  ApiEchoImagesEchoIdRoute: ApiEchoImagesEchoIdRoute,
   ApiMessageImagesMessageIdRoute: ApiMessageImagesMessageIdRoute,
 }
 export const routeTree = rootRouteImport

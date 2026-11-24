@@ -1,7 +1,9 @@
 import { Outlet, createFileRoute, useRouter } from '@tanstack/react-router'
+import { useState } from 'react'
 import { OracleChat } from '#/components/chat/OracleChat.tsx'
 import { AppFooter } from '#/components/layout/AppFooter.tsx'
 import { AppHeader } from '#/components/layout/AppHeader.tsx'
+import { KeyboardShortcuts } from '#/components/layout/KeyboardShortcuts.tsx'
 import { NavTabs } from '#/components/layout/NavTabs.tsx'
 import { getCurrentGuardian } from '#/lib/guardians.functions.ts'
 import { NotificationToast } from '#/components/notifications/NotificationToast.tsx'
@@ -19,12 +21,13 @@ function AppLayout() {
   const { guardian } = Route.useRouteContext()
   const inbox = Route.useLoaderData()
   const router = useRouter()
+  const [isHelpOpen, setIsHelpOpen] = useState(false)
   // Keeps every page under _app live.
   useLiveEvents(() => router.invalidate())
 
   return (
     <>
-      <main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-4 pt-7 pb-38 md:gap-8 md:pt-11 md:pb-20">
+      <main className="mx-auto flex max-w-[1120px] flex-col gap-6 px-4 pt-7 pb-38 md:gap-8 md:pt-11 md:pb-20 print:max-w-none print:p-0">
         <AppHeader guardian={guardian} />
         <NavTabs
           guardian={guardian}
@@ -32,10 +35,13 @@ function AppLayout() {
           unreadNotifications={inbox.unreadNotifications}
         />
         <Outlet />
-        <AppFooter />
+        <AppFooter onShowShortcuts={() => setIsHelpOpen(true)} />
       </main>
-      <NotificationToast latest={inbox.latestNotification} />
-      <OracleChat />
+      <KeyboardShortcuts isHelpOpen={isHelpOpen} onHelpChange={setIsHelpOpen} />
+      <div className="print:hidden">
+        <NotificationToast latest={inbox.latestNotification} />
+        <OracleChat />
+      </div>
     </>
   )
 }

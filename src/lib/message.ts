@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { imageSchema } from './image.ts'
 
 /** The conversation all guardians share. Every other conversation ID is the other guardian's ID. */
 export const EVERYONE = 'everyone'
@@ -8,13 +9,6 @@ export const MESSAGE_MAX_LENGTH = 1000
 export const REACTIONS = ['👍', '❤️', '😂', '😮', '🔥', '✅'] as const
 
 export type ReactionEmoji = (typeof REACTIONS)[number]
-
-/** SVG is left out on purpose: it can contain scripts. */
-export const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'] as const
-
-export type ImageType = (typeof IMAGE_TYPES)[number]
-
-export const IMAGE_MAX_BYTES = 3 * 1024 * 1024
 
 export type Reaction = {
   emoji: ReactionEmoji
@@ -100,7 +94,7 @@ export const sendMessageSchema = z.preprocess(
       conversationId: conversationIdSchema,
       body: z.string(bodyMessage).trim().max(MESSAGE_MAX_LENGTH, bodyMessage),
       replyToId: messageIdSchema.optional(),
-      image: z.file('Invalid image').max(IMAGE_MAX_BYTES, 'Images can be up to 3 MB').optional(),
+      image: imageSchema.optional(),
     })
     .refine(({ body, image }) => body !== '' || image, bodyMessage),
 )
