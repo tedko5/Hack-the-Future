@@ -1,17 +1,9 @@
 import { UserButton, useClerk } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
-import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
+import { LogOut } from 'lucide-react'
 import type { Guardian } from '#/lib/guardian.ts'
-import { EVERYONE } from '#/lib/message.ts'
 
-const linkClass = 'flex min-h-11 items-center px-2 text-sm text-muted hover:text-cyan'
-
-type Props = {
-  guardian: Guardian
-  unreadMessages: number
-}
-
-export function AppHeader({ guardian, unreadMessages }: Props) {
+export function AppHeader({ guardian }: { guardian: Guardian }) {
   const { signOut } = useClerk()
 
   return (
@@ -27,20 +19,12 @@ export function AppHeader({ guardian, unreadMessages }: Props) {
         <span className="rounded-lg bg-copper px-3 py-2 text-sm font-bold text-app">
           {guardian.role}
         </span>
-        <Link
-          to="/messages/$conversationId"
-          params={{ conversationId: EVERYONE }}
-          className={`${linkClass} gap-2`}
+        <button
+          type="button"
+          className="flex min-h-11 cursor-pointer items-center gap-2 px-2 text-sm text-muted hover:text-cyan"
+          onClick={() => signOut()}
         >
-          Messages
-          <UnreadBadge count={unreadMessages} />
-        </Link>
-        {guardian.role === 'commander' && (
-          <Link to="/guardians" className={linkClass}>
-            Guardians
-          </Link>
-        )}
-        <button type="button" className={`${linkClass} cursor-pointer`} onClick={() => signOut()}>
+          <LogOut size={18} aria-hidden="true" />
           Log out
         </button>
         {/* Opens Clerk's account settings. */}

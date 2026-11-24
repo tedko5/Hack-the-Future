@@ -61,7 +61,7 @@ export function OracleChat() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed right-4 bottom-4 z-40 flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border-2 border-edge bg-panel py-1.5 pr-5 pl-2.5 font-display text-lg font-bold shadow-[0_8px_24px_rgb(0_0_0/0.45)] hover:border-[#7d6ad6]"
+        className="fixed right-4 bottom-20 z-40 md:bottom-4 flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border-2 border-edge bg-panel py-1.5 pr-5 pl-2.5 font-display text-lg font-bold shadow-[0_8px_24px_rgb(0_0_0/0.45)] hover:border-[#7d6ad6]"
       >
         <OracleSigil size={34} />
         Ask the Oracle
@@ -75,7 +75,7 @@ export function OracleChat() {
     <section
       aria-label="Oracle chat"
       onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
-      className="fixed inset-x-4 bottom-4 z-40 flex max-h-[min(70vh,560px)] flex-col gap-3 rounded-[18px] border-2 border-edge bg-panel p-3 shadow-[0_12px_40px_rgb(0_0_0/0.55)] sm:left-auto sm:w-[400px]"
+      className="fixed inset-x-4 bottom-20 z-40 md:bottom-4 flex max-h-[min(70vh,560px)] flex-col gap-3 rounded-[18px] border-2 border-edge bg-panel p-3 shadow-[0_12px_40px_rgb(0_0_0/0.55)] sm:left-auto sm:w-[400px]"
     >
       <header className="flex items-center justify-between gap-3 pl-1">
         <h2 className="flex items-center gap-2.5 font-display text-[1.6rem] leading-none font-bold">

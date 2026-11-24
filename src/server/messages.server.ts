@@ -86,7 +86,8 @@ export async function listMessages(guardianId: string, conversationId: string): 
   return rows.reverse().map(({ replyTo, createdAt, ...row }) => ({
     ...row,
     createdAt: createdAt.toISOString(),
-    replyTo: replyTo as MessageQuote | null,
+    // The joins fill every field with null when there is no quoted message.
+    replyTo: replyTo.messageId === null ? null : (replyTo as MessageQuote),
     reactions: reactions.get(row.messageId) ?? [],
   }))
 }
