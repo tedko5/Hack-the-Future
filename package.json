@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
-    "start": "node .output/server/index.mjs",
+    "start": "drizzle-kit migrate && node .output/server/index.mjs",
     "typecheck": "tsc --noEmit",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",

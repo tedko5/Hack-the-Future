@@ -33,4 +33,4 @@ GitHub Actions typechecks, builds, migrates a throwaway Postgres and checks `/ap
 3. App service, Variables: `DATABASE_URL` = `${{Postgres.DATABASE_URL}}` (the name before the dot is the database service's name).
 4. App service, Settings: under Networking generate a domain, and under Source turn on "Wait for CI".
 
-`railway.json` holds the build, migration, start and health check settings. Railway deploys every push to `main`.
+`pnpm start` applies pending migrations before it starts the server. `railway.json` holds the build, start and health check settings. Railway deploys every push to `main`.
