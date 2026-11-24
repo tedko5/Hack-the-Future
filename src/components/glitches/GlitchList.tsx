@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
-import { useId } from 'react'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
+import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { formatDateTime } from '#/lib/formatDate.ts'
 import type { Glitch } from '#/lib/glitch.ts'
 
@@ -8,18 +8,12 @@ type Props = {
   title: string
   glitches: Glitch[]
   emptyMessage: string
+  storageKey: string
 }
 
-export function GlitchList({ title, glitches, emptyMessage }: Props) {
-  const titleId = useId()
-
+export function GlitchList({ title, glitches, emptyMessage, storageKey }: Props) {
   return (
-    <section aria-labelledby={titleId} className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
-      <h2 id={titleId} className="font-display text-[1.6rem] font-bold">
-        {title}
-        <span className="ml-2 font-sans text-base font-normal text-muted tabular-nums">{glitches.length}</span>
-      </h2>
-
+    <CollapsibleSection title={title} count={glitches.length} storageKey={storageKey}>
       {glitches.length === 0 ? (
         <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">{emptyMessage}</p>
       ) : (
@@ -45,6 +39,6 @@ export function GlitchList({ title, glitches, emptyMessage }: Props) {
           ))}
         </ul>
       )}
-    </section>
+    </CollapsibleSection>
   )
 }

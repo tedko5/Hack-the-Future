@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { STATUS_STYLES } from '#/components/glitches/status.ts'
+import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import type { Echo } from '#/lib/echo.ts'
 import { TIME_ZONE } from '#/lib/formatDate.ts'
@@ -12,27 +13,24 @@ const ROW = 'relative grid grid-cols-[3rem_1.5rem_minmax(0,1fr)] gap-x-3 sm:grid
 
 type Props = {
   echoes: Echo[]
+  storageKey: string
   onReport: () => void
   reportLabel?: string
 }
 
-export function EchoList({ echoes, onReport, reportLabel = 'Report echo' }: Props) {
-  return (
-    <section aria-labelledby="echoes-title" className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="echoes-title" className="font-display text-[1.6rem] font-bold">
-          Echoes
-          <span className="ml-2 font-sans text-base font-normal text-muted tabular-nums">{echoes.length}</span>
-        </h2>
-        <button
-          type="button"
-          onClick={onReport}
-          className="min-h-12 w-full cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110 sm:w-auto"
-        >
-          {reportLabel}
-        </button>
-      </div>
+export function EchoList({ echoes, storageKey, onReport, reportLabel = 'Report echo' }: Props) {
+  const reportButton = (
+    <button
+      type="button"
+      onClick={onReport}
+      className="min-h-12 w-full cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110 sm:w-auto"
+    >
+      {reportLabel}
+    </button>
+  )
 
+  return (
+    <CollapsibleSection title="Echoes" count={echoes.length} storageKey={storageKey} action={reportButton}>
       <div className="rounded-xl border-2 border-edge bg-well px-3 py-4 sm:px-6 sm:py-5">
         {echoes.length === 0 ? (
           <p className="text-muted">No echoes reported yet.</p>
@@ -51,7 +49,7 @@ export function EchoList({ echoes, onReport, reportLabel = 'Report echo' }: Prop
           </ol>
         )}
       </div>
-    </section>
+    </CollapsibleSection>
   )
 }
 

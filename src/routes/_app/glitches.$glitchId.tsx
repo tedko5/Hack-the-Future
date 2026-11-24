@@ -47,7 +47,12 @@ function GlitchPage() {
           <TakeOrRelease key={glitch.glitchId} glitch={glitch} guardian={guardian} />
         )}
       </section>
-      <EchoList echoes={glitch.echoes} reportLabel="Add update" onReport={() => setIsReporting(true)} />
+      <EchoList
+        echoes={glitch.echoes}
+        storageKey="glitch-echoes"
+        reportLabel="Add update"
+        onReport={() => setIsReporting(true)}
+      />
       {isReporting && (
         <ReportEchoDialog
           glitch={glitch}

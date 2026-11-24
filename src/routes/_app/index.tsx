@@ -30,10 +30,16 @@ function MissionControl() {
           title="Assigned to you"
           glitches={mine}
           emptyMessage="Nothing assigned to you right now."
+          storageKey="assigned"
         />
       )}
-      <EchoList echoes={echoes} onReport={() => setIsReporting(true)} />
-      <GlitchList title="Glitches" glitches={glitches} emptyMessage="No glitches. Magic is safe." />
+      <EchoList echoes={echoes} storageKey="echoes" onReport={() => setIsReporting(true)} />
+      <GlitchList
+        title="Glitches"
+        glitches={glitches}
+        emptyMessage="No glitches. Magic is safe."
+        storageKey="glitches"
+      />
       {isReporting && <ReportEchoDialog onClose={() => setIsReporting(false)} />}
     </>
   )
