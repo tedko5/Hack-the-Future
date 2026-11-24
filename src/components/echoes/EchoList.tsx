@@ -46,11 +46,13 @@ export function EchoList({
       echo.reporter.role,
     ),
   )
+  // Without the filter, as on a glitch page, there is nothing to tell apart.
+  const title = !canFilterToday ? 'Echoes' : isTodayOnly ? 'Echoes of today' : 'All Echoes'
   const emptyMessage =
     echoes.length > 0
       ? 'No echoes match your search.'
       : isTodayOnly
-        ? 'No whispers yet today.'
+        ? 'No echoes yet today.'
         : 'No echoes reported yet.'
   const actions = (
     <div className="flex w-full items-center gap-5 sm:w-auto">
@@ -77,7 +79,7 @@ export function EchoList({
 
   return (
     <CollapsibleSection
-      title={isTodayOnly ? 'Whispers of today' : 'Echoes'}
+      title={title}
       count={echoes.length}
       storageKey={storageKey}
       action={actions}
