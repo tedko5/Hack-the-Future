@@ -1,4 +1,10 @@
-/** Fixed backdrop: grain plus the purple cracks in the top-left and bottom-right corners. */
+import type { CSSProperties } from 'react'
+import { cogPath, cornerCogs, pitchRadius } from '#/lib/cog.ts'
+
+/**
+ * Fixed backdrop: grain plus corner art in the top-left and bottom-right corners.
+ * Dark theme: purple rift branches. Light theme: brass cogs (see styles.css).
+ */
 export function RiftBackground() {
   return (
     <>
@@ -10,7 +16,7 @@ export function RiftBackground() {
         <rect width="100%" height="100%" filter="url(#grain-filter)" />
       </svg>
 
-      <svg className="rift rift--tl" viewBox="0 0 600 600" aria-hidden="true">
+      <svg className="rift rift--tl theme-dark-only" viewBox="0 0 600 600" aria-hidden="true">
         <defs>
           <linearGradient id="rift-gradient" x1="0" y1="1" x2="1" y2="0">
             <stop offset="0" stopColor="#6a1bc4" />
@@ -56,9 +62,41 @@ export function RiftBackground() {
         </defs>
         <use href="#rift" />
       </svg>
-      <svg className="rift rift--br" viewBox="0 0 600 600" aria-hidden="true">
+      <svg className="rift rift--br theme-dark-only" viewBox="0 0 600 600" aria-hidden="true">
         <use href="#rift" />
       </svg>
+
+      <CogCluster corner="tl" />
+      <CogCluster corner="br" />
     </>
+  )
+}
+
+const COGS = cornerCogs()
+/** Seconds per turn for each tooth: meshing gears then turn at matching speeds. */
+const SECONDS_PER_TOOTH = 5
+
+/** Light theme: brass gears turning in a corner, in place of the rift branches. */
+function CogCluster({ corner }: { corner: 'tl' | 'br' }) {
+  return (
+    <svg className={`cogs cogs--${corner} theme-light-only`} viewBox="0 0 520 520" aria-hidden="true" opacity=".3">
+      {COGS.map(({ cx, cy, teeth, phase, reverse }) => {
+        const p = pitchRadius(teeth)
+        const spin = {
+          '--spin': `${teeth * SECONDS_PER_TOOTH}s`,
+          transformBox: 'view-box',
+          transformOrigin: `${cx}px ${cy}px`,
+        } as CSSProperties
+        return (
+          <g key={teeth} transform={`rotate(${phase} ${cx} ${cy})`}>
+            <g className={reverse ? 'anim-cog-rev' : 'anim-cog'} style={spin}>
+              <path d={cogPath(cx, cy, teeth)} fillRule="evenodd" fill="#c4964a" stroke="#6e4c1a" strokeWidth="1" />
+              <circle cx={cx} cy={cy} r={p * 0.82} fill="none" stroke="#6e4c1a" strokeWidth="2" opacity=".45" />
+              <circle cx={cx} cy={cy} r={p * 0.3} fill="none" stroke="#6e4c1a" strokeWidth="2" opacity=".6" />
+            </g>
+          </g>
+        )
+      })}
+    </svg>
   )
 }

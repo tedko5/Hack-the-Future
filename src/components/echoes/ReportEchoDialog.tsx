@@ -96,7 +96,7 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
           </button>
           <button
             type="submit"
-            className="min-h-12 cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-[#1a0f08] hover:brightness-110 disabled:opacity-50"
+            className="min-h-12 cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-on-copper hover:brightness-110 disabled:opacity-50"
             disabled={report.isPending}
           >
             {glitch ? 'Add update' : 'Report'}

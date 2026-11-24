@@ -41,7 +41,7 @@ function WelcomePage() {
         {register.isError && <p className="text-magenta">{register.error.message}</p>}
         <button
           type="submit"
-          className="min-h-12 cursor-pointer rounded-xl bg-copper px-4 py-2 font-bold text-[#1a0f08] disabled:opacity-50"
+          className="min-h-12 cursor-pointer rounded-xl bg-copper px-4 py-2 font-bold text-on-copper disabled:opacity-50"
           disabled={register.isPending}
         >
           Continue

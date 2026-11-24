@@ -17,7 +17,7 @@ export function GlitchList({ title, glitches, emptyMessage, storageKey }: Props)
       {glitches.length === 0 ? (
         <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">{emptyMessage}</p>
       ) : (
-        <ul className="divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
+        <ul className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
           {glitches.map((glitch) => (
             <li key={glitch.glitchId}>
               <Link

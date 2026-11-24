@@ -1,11 +1,13 @@
 import { SignIn } from '@clerk/tanstack-react-start'
 import { createFileRoute } from '@tanstack/react-router'
+import { ThemeToggle } from '#/components/layout/ThemeToggle.tsx'
 
 export const Route = createFileRoute('/sign-in/$')({ component: SignInPage })
 
 function SignInPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center p-6">
+    <main className="relative flex min-h-screen items-center justify-center p-6">
+      <ThemeToggle className="absolute top-4 right-4 bg-panel" />
       <SignIn />
     </main>
   )
