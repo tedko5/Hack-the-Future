@@ -12,15 +12,16 @@ export type Dashboard = {
 
 // TODO(backend): replace the sample data below with real queries once the
 // guardians/echoes tables and auth exist. The UI only depends on `Dashboard`.
-export const getDashboard = createServerFn({ method: 'GET' }).handler(
-  async (): Promise<Dashboard> => {
-    return {
-      guardian: { guardianId: 'g-1', codename: 'Nightwarden', role: 'commander' },
-      magic: 68,
-      echoes: sampleEchoes(),
-    }
-  },
-)
+export const getDashboard = createServerFn({ method: 'GET' }).handler(() => loadDashboard())
+
+/** Plain server-side loader, also used by the chatbot so it sees what the dashboard shows. */
+export async function loadDashboard(): Promise<Dashboard> {
+  return {
+    guardian: { guardianId: 'g-1', codename: 'Nightwarden', role: 'commander' },
+    magic: 68,
+    echoes: sampleEchoes(),
+  }
+}
 
 function sampleEchoes(): Echo[] {
   const rows: [string, string, string, Echo['reporter']['role'], string, Echo['glitch']['status']][] = [
