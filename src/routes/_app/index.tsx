@@ -2,7 +2,7 @@ import {createFileRoute} from '@tanstack/react-router'
 import {GlitchesTable} from '#/components/GlitchesTable.tsx'
 import {getGlitches} from '#/lib/glitches.functions.ts'
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_app/')({
   loader: () => getGlitches(),
   component: OverviewPage,
 })

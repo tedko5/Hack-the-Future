@@ -1,15 +1,19 @@
-import {Link} from '@tanstack/react-router'
-import {Activity, LayoutGrid, User, type LucideIcon} from 'lucide-react'
+import { UserButton } from '@clerk/tanstack-react-start'
+import { Link } from '@tanstack/react-router'
+import { Activity, LayoutGrid, Users, type LucideIcon } from 'lucide-react'
+import type { Guardian } from '#/lib/guardian.ts'
 
 type NavItem = {
   label: string
   icon: LucideIcon
   /** Only set for pages that already have a route. */
-  to?: '/'
+  to?: '/' | '/guardians'
+  commanderOnly?: boolean
 }
 
 const navItems: NavItem[] = [
   { label: 'Overview', icon: LayoutGrid, to: '/' },
+  { label: 'Guardians', icon: Users, to: '/guardians', commanderOnly: true },
 ]
 
 // Icon-only items: the label lives in aria-label/title for screen readers and hover.
@@ -17,7 +21,9 @@ const itemClass =
   'flex size-12 items-center justify-center rounded-lg text-white/70 transition-colors hover:bg-white/10 hover:text-white'
 const activeClass = 'bg-white/10 text-white'
 
-export function Sidebar() {
+export function Sidebar({ guardian }: { guardian: Guardian }) {
+  const items = navItems.filter((item) => !item.commanderOnly || guardian.role === 'commander')
+
   return (
     <aside className="sticky top-0 flex h-screen w-20 shrink-0 flex-col items-center bg-sidebar py-5">
       <div className="mb-6 flex size-12 items-center justify-center rounded-xl bg-linear-to-br from-accent-from to-accent-to text-white shadow-md shadow-black/30">
@@ -25,7 +31,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex w-full flex-1 flex-col items-center gap-1">
-        {navItems.map(({ label, icon: Icon, to }) => {
+        {items.map(({ label, icon: Icon, to }) => {
           const icon = <Icon className="size-6" strokeWidth={1.5} />
           return to ? (
             <Link
@@ -48,14 +54,7 @@ export function Sidebar() {
       </nav>
 
       <div className="flex w-full flex-col items-center gap-4">
-        <button
-          type="button"
-          aria-label="User menu"
-          title="User menu"
-          className="flex size-10 items-center justify-center rounded-full border border-line bg-white text-fg transition-colors hover:bg-subtle"
-        >
-          <User className="size-5" strokeWidth={1.75} />
-        </button>
+        <UserButton />
       </div>
     </aside>
   )

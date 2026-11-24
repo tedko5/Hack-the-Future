@@ -1,12 +1,11 @@
+import { ClerkProvider } from '@clerk/tanstack-react-start'
 import {
   HeadContent,
-  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { Sidebar } from '#/components/layout/Sidebar'
 
 import type { QueryClient } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
@@ -22,19 +21,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   shellComponent: RootDocument,
-  component: AppLayout,
 })
-
-function AppLayout() {
-  return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <main className="min-w-0 flex-1 px-16 py-10">
-        <Outlet />
-      </main>
-    </div>
-  )
-}
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
@@ -43,7 +30,15 @@ function RootDocument({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body className="bg-app font-sans antialiased">
-        {children}
+        <ClerkProvider
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
+          signInFallbackRedirectUrl="/"
+          signUpFallbackRedirectUrl="/"
+          afterSignOutUrl="/sign-in"
+        >
+          {children}
+        </ClerkProvider>
         <TanStackDevtools
           config={{ position: 'bottom-right' }}
           plugins={[

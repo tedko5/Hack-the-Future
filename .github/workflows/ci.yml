@@ -22,6 +22,9 @@ jobs:
     env:
       # Throwaway database inside this job, not a secret.
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hackthefuture
+      # Placeholder Clerk keys: enough to build and to check that pages are protected.
+      VITE_CLERK_PUBLISHABLE_KEY: pk_test_ZmFrZS5jbGVyay5hY2NvdW50cy5kZXYk
+      CLERK_SECRET_KEY: sk_test_placeholder
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -37,4 +40,5 @@ jobs:
         run: |
           pnpm start > server.log 2>&1 &
           curl --fail --silent --show-error --retry 15 --retry-delay 1 --retry-all-errors http://localhost:3000/api/health || { cat server.log; exit 1; }
-          curl --fail --silent --show-error http://localhost:3000/ | grep -q GL-0142 || { cat server.log; exit 1; }
+          # Signed out, the overview must redirect to the sign-in page.
+          curl --silent --show-error --output /dev/null --write-out '%{redirect_url}' http://localhost:3000/ | grep -q '/sign-in' || { cat server.log; exit 1; }

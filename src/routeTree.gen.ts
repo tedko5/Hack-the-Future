@@ -9,71 +9,159 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as StatusRouteImport } from './routes/status'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppGuardiansRouteImport } from './routes/_app/guardians'
+import { Route as AppStatusRouteImport } from './routes/_app/status'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
+import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StatusRoute = StatusRouteImport.update({
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGuardiansRoute = AppGuardiansRouteImport.update({
+  id: '/guardians',
+  path: '/guardians',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStatusRoute = AppStatusRouteImport.update({
   id: '/status',
   path: '/status',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
 } as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
   id: '/api/health',
   path: '/api/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignInSplatRoute = SignInSplatRouteImport.update({
+  id: '/sign-in/$',
+  path: '/sign-in/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpSplatRoute = SignUpSplatRouteImport.update({
+  id: '/sign-up/$',
+  path: '/sign-up/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/status': typeof StatusRoute
+  '/': typeof AppIndexRoute
+  '/welcome': typeof WelcomeRoute
+  '/guardians': typeof AppGuardiansRoute
+  '/status': typeof AppStatusRoute
   '/api/health': typeof ApiHealthRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/status': typeof StatusRoute
+  '/welcome': typeof WelcomeRoute
+  '/guardians': typeof AppGuardiansRoute
+  '/status': typeof AppStatusRoute
   '/api/health': typeof ApiHealthRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/status': typeof StatusRoute
+  '/_app': typeof AppRouteWithChildren
+  '/welcome': typeof WelcomeRoute
+  '/_app/guardians': typeof AppGuardiansRoute
+  '/_app/status': typeof AppStatusRoute
   '/api/health': typeof ApiHealthRoute
+  '/sign-in/$': typeof SignInSplatRoute
+  '/sign-up/$': typeof SignUpSplatRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/status' | '/api/health'
+  fullPaths:
+    | '/'
+    | '/welcome'
+    | '/guardians'
+    | '/status'
+    | '/api/health'
+    | '/sign-in/$'
+    | '/sign-up/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/status' | '/api/health'
-  id: '__root__' | '/' | '/status' | '/api/health'
+  to:
+    | '/welcome'
+    | '/guardians'
+    | '/status'
+    | '/api/health'
+    | '/sign-in/$'
+    | '/sign-up/$'
+    | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/welcome'
+    | '/_app/guardians'
+    | '/_app/status'
+    | '/api/health'
+    | '/sign-in/$'
+    | '/sign-up/$'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  StatusRoute: typeof StatusRoute
+  AppRoute: typeof AppRouteWithChildren
+  WelcomeRoute: typeof WelcomeRoute
   ApiHealthRoute: typeof ApiHealthRoute
+  SignInSplatRoute: typeof SignInSplatRoute
+  SignUpSplatRoute: typeof SignUpSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/status': {
-      id: '/status'
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/guardians': {
+      id: '/_app/guardians'
+      path: '/guardians'
+      fullPath: '/guardians'
+      preLoaderRoute: typeof AppGuardiansRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/status': {
+      id: '/_app/status'
       path: '/status'
       fullPath: '/status'
-      preLoaderRoute: typeof StatusRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppStatusRouteImport
+      parentRoute: typeof AppRoute
     }
     '/api/health': {
       id: '/api/health'
@@ -82,23 +170,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sign-in/$': {
+      id: '/sign-in/$'
+      path: '/sign-in/$'
+      fullPath: '/sign-in/$'
+      preLoaderRoute: typeof SignInSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up/$': {
+      id: '/sign-up/$'
+      path: '/sign-up/$'
+      fullPath: '/sign-up/$'
+      preLoaderRoute: typeof SignUpSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppGuardiansRoute: typeof AppGuardiansRoute
+  AppStatusRoute: typeof AppStatusRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppGuardiansRoute: AppGuardiansRoute,
+  AppStatusRoute: AppStatusRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  StatusRoute: StatusRoute,
+  AppRoute: AppRouteWithChildren,
+  WelcomeRoute: WelcomeRoute,
   ApiHealthRoute: ApiHealthRoute,
+  SignInSplatRoute: SignInSplatRoute,
+  SignUpSplatRoute: SignUpSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

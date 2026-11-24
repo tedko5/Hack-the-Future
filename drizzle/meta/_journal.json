@@ -15,6 +15,13 @@
       "when": 1795509145212,
       "tag": "0001_glitches",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795511913392,
+      "tag": "0002_guardians",
+      "breakpoints": true
     }
   ]
 }

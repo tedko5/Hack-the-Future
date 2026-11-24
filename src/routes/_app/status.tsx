@@ -8,7 +8,7 @@ const healthQuery = queryOptions({
   refetchInterval: 5000,
 })
 
-export const Route = createFileRoute('/status')({
+export const Route = createFileRoute('/_app/status')({
   loader: ({ context }) => context.queryClient.ensureQueryData(healthQuery),
   component: StatusPage,
 })
