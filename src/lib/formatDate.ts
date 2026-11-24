@@ -12,3 +12,10 @@ const dateTimeFormat = new Intl.DateTimeFormat('en-GB', {
 export function formatDateTime(isoTimestamp: string) {
   return dateTimeFormat.format(new Date(isoTimestamp))
 }
+
+const dateFormat = new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeZone: TIME_ZONE })
+
+/** Whether the moment is today in Achrona. */
+export function isToday(isoTimestamp: string) {
+  return dateFormat.format(new Date(isoTimestamp)) === dateFormat.format(new Date())
+}

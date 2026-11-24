@@ -6,8 +6,9 @@ import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { SearchInput } from '#/components/ui/SearchInput.tsx'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import type { Echo } from '#/lib/echo.ts'
-import { TIME_ZONE } from '#/lib/formatDate.ts'
+import { TIME_ZONE, isToday } from '#/lib/formatDate.ts'
 import { matchesSearch } from '#/lib/search.ts'
+import { useStoredFlag } from '#/lib/useStoredFlag.ts'
 
 const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE })
 const dayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TIME_ZONE })
@@ -20,9 +21,20 @@ type Props = {
   storageKey: string
   onReport: () => void
   reportLabel?: string
+  /** Offers to show only today's echoes. */
+  canFilterToday?: boolean
 }
 
-export function EchoList({ echoes, storageKey, onReport, reportLabel = 'Report echo' }: Props) {
+export function EchoList({
+  echoes: allEchoes,
+  storageKey,
+  onReport,
+  reportLabel = 'Report echo',
+  canFilterToday = false,
+}: Props) {
+  const [wantsToday, setWantsToday] = useStoredFlag(`today-only:${storageKey}`)
+  const isTodayOnly = canFilterToday && wantsToday
+  const echoes = isTodayOnly ? allEchoes.filter((echo) => isToday(echo.timestamp)) : allEchoes
   const [query, setQuery] = useState('')
   const found = echoes.filter((echo) =>
     matchesSearch(
@@ -34,6 +46,12 @@ export function EchoList({ echoes, storageKey, onReport, reportLabel = 'Report e
       echo.reporter.role,
     ),
   )
+  const emptyMessage =
+    echoes.length > 0
+      ? 'No echoes match your search.'
+      : isTodayOnly
+        ? 'No whispers yet today.'
+        : 'No echoes reported yet.'
   const reportButton = (
     <button
       type="button"
@@ -45,7 +63,18 @@ export function EchoList({ echoes, storageKey, onReport, reportLabel = 'Report e
   )
 
   return (
-    <CollapsibleSection title="Echoes" count={echoes.length} storageKey={storageKey} action={reportButton}>
+    <CollapsibleSection title={isTodayOnly ? 'Whispers of today' : 'Echoes'} count={echoes.length} storageKey={storageKey} action={reportButton}>
+      {canFilterToday && (
+        <label className="mb-2 flex min-h-11 w-fit cursor-pointer items-center gap-2.5 text-sm text-muted hover:text-fg">
+          <input
+            type="checkbox"
+            className="size-4.5 cursor-pointer accent-violet"
+            checked={wantsToday}
+            onChange={(event) => setWantsToday(event.target.checked)}
+          />
+          Only today
+        </label>
+      )}
       {echoes.length > 0 && (
         <div className="mb-4">
           <SearchInput label="Search echoes" value={query} onChange={setQuery} />
@@ -54,7 +83,7 @@ export function EchoList({ echoes, storageKey, onReport, reportLabel = 'Report e
       <div className="rounded-xl border-2 border-edge bg-well px-3 py-4 sm:px-6 sm:py-5">
         {found.length === 0 ? (
           <p className="text-muted">
-            {echoes.length === 0 ? 'No echoes reported yet.' : 'No echoes match your search.'}
+            {emptyMessage}
           </p>
         ) : (
           <ol>

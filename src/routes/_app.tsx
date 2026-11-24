@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute, useRouter } from '@tanstack/react-router'
 import { OracleChat } from '#/components/chat/OracleChat.tsx'
+import { AppFooter } from '#/components/layout/AppFooter.tsx'
 import { AppHeader } from '#/components/layout/AppHeader.tsx'
 import { NavTabs } from '#/components/layout/NavTabs.tsx'
 import { getCurrentGuardian } from '#/lib/guardians.functions.ts'
@@ -31,6 +32,7 @@ function AppLayout() {
           unreadNotifications={inbox.unreadNotifications}
         />
         <Outlet />
+        <AppFooter />
       </main>
       <NotificationToast latest={inbox.latestNotification} />
       <OracleChat />

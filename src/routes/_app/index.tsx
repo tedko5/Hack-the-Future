@@ -33,7 +33,12 @@ function MissionControl() {
           storageKey="assigned"
         />
       )}
-      <EchoList echoes={echoes} storageKey="echoes" onReport={() => setIsReporting(true)} />
+      <EchoList
+        echoes={echoes}
+        storageKey="echoes"
+        onReport={() => setIsReporting(true)}
+        canFilterToday
+      />
       <GlitchList
         title="Glitches"
         glitches={glitches}
