@@ -1,5 +1,5 @@
 import { Link, linkOptions, useLocation, type LinkProps } from '@tanstack/react-router'
-import { Bell, MessageCircle, Trophy, Users } from 'lucide-react'
+import { Bell, Map as MapIcon, MessageCircle, Trophy, Users } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
@@ -29,6 +29,12 @@ export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props
         icon={CrystalIcon}
         label={t.nav.missionControl}
         isActive={pathname === '/' || isIn('/glitches') || isIn('/report')}
+      />
+      <Tab
+        link={linkOptions({ to: '/map' })}
+        icon={MapIcon}
+        label={t.nav.map}
+        isActive={isIn('/map')}
       />
       <Tab
         link={linkOptions({
@@ -79,7 +85,7 @@ function Tab({ link, icon: Icon, label, isActive, badge = 0 }: TabProps) {
     <Link
       {...link}
       aria-current={isActive ? 'page' : undefined}
-      className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-center text-[.68rem] leading-tight -outline-offset-2 md:min-h-11 md:flex-none md:flex-row md:gap-2.5 md:rounded-lg md:px-4 md:text-sm md:leading-normal ${
+      className={`relative flex min-h-16 flex-1 flex-col items-center justify-center gap-1 text-center text-[.62rem] leading-tight -outline-offset-2 md:min-h-11 md:flex-none md:flex-row md:gap-2.5 md:rounded-lg md:px-4 md:text-sm md:leading-normal ${
         isActive ? 'bg-row font-bold text-highlight' : 'text-muted hover:text-highlight'
       }`}
     >

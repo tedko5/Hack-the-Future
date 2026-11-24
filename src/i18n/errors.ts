@@ -29,6 +29,7 @@ const DUTCH: Record<string, string> = {
   'That glitch is not assigned to you': 'Die glitch is niet aan jou toegewezen',
   'Only the assigned defender or a commander can change the status':
     'Enkel de toegewezen defender of een commander kan de status wijzigen',
+  'This glitch cannot be hacked anymore': 'Deze glitch kan niet meer gehackt worden',
   'That conversation does not exist': 'Dat gesprek bestaat niet',
   'That message does not exist': 'Dat bericht bestaat niet',
   'That message does not exist or is not yours': 'Dat bericht bestaat niet of is niet van jou',

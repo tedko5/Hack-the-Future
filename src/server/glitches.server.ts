@@ -1,7 +1,11 @@
-import { and, desc, eq, inArray, isNull } from 'drizzle-orm'
+import { and, desc, eq, inArray, isNull, ne } from 'drizzle-orm'
 import { db } from '#/db/index.ts'
 import { echoImages, echoes, glitches, guardians, notifications } from '#/db/schema.ts'
-import type { Glitch } from '#/lib/glitch.ts'
+import { dictionaries } from '#/i18n/index.ts'
+import { getLanguage } from '#/i18n/currentLanguage.ts'
+import { HACK_SUCCESS_CHANCE, type Glitch, type HackResult } from '#/lib/glitch.ts'
+import type { Guardian } from '#/lib/guardian.ts'
+import { writeEcho } from '#/server/echoes.server.ts'
 import { listCommanderIds } from '#/server/guardians.server.ts'
 import { withNotifications } from '#/server/notifications/notify.server.ts'
 
@@ -14,6 +18,7 @@ const selectGlitches = () =>
       timestamp: glitches.timestamp,
       assignedGuardianId: glitches.assignedGuardianId,
       assignedCodename: guardians.codename,
+      hackResult: glitches.hackResult,
     })
     .from(glitches)
     .leftJoin(guardians, eq(guardians.guardianId, glitches.assignedGuardianId))
@@ -105,5 +110,35 @@ export async function removeGlitch(glitchId: string) {
     await tx.delete(echoes).where(eq(echoes.glitchId, glitchId))
     await tx.delete(notifications).where(eq(notifications.glitchId, glitchId))
     await tx.delete(glitches).where(eq(glitches.glitchId, glitchId))
+  })
+}
+
+/**
+ * A commander's one attempt to fix a glitch from afar. The result is claimed in the update
+ * itself, so two commanders can never both try, and it is logged as an echo.
+ */
+export function hackGlitch(glitchId: string, commander: Guardian) {
+  return withNotifications(async (tx, notify) => {
+    const result: HackResult = Math.random() < HACK_SUCCESS_CHANCE ? 'SUCCESS' : 'FAILED'
+    const claimed = await tx
+      .update(glitches)
+      .set({ hackResult: result })
+      .where(
+        and(
+          eq(glitches.glitchId, glitchId),
+          isNull(glitches.hackResult),
+          ne(glitches.status, 'FIXED'),
+        ),
+      )
+      .returning({ glitchId: glitches.glitchId })
+    if (claimed.length === 0) throw new Error('This glitch cannot be hacked anymore')
+
+    await writeEcho(tx, notify, {
+      glitchId,
+      reporter: commander,
+      description: dictionaries[getLanguage()].hack.echoes[result],
+      status: result === 'SUCCESS' ? 'FIXED' : undefined,
+    })
+    return result
   })
 }

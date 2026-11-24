@@ -13,7 +13,7 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/pg-core'
 // Relative import: drizzle-kit loads this file and doesn't resolve the `#/` alias.
-import { GLITCH_STATUSES } from '../lib/glitch.ts'
+import { GLITCH_STATUSES, HACK_RESULTS } from '../lib/glitch.ts'
 import { GUARDIAN_ROLES } from '../lib/guardian.ts'
 import { IMAGE_TYPES } from '../lib/image.ts'
 import { REACTIONS } from '../lib/message.ts'
@@ -34,6 +34,8 @@ export const glitches = pgTable('glitches', {
   timestamp: timestamp('timestamp', { withTimezone: true }).notNull(),
   /** The defender working on it, if any. */
   assignedGuardianId: text('assigned_guardian_id').references(() => guardians.guardianId),
+  /** A commander gets one hack attempt per glitch. Null until it is used. */
+  hackResult: text('hack_result', { enum: HACK_RESULTS }),
 })
 
 export const guardians = pgTable(

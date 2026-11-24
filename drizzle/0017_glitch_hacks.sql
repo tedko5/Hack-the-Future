@@ -1,0 +1,1 @@
+ALTER TABLE "glitches" ADD COLUMN "hack_result" text;

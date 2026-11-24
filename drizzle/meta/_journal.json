@@ -120,6 +120,13 @@
       "when": 1795524474542,
       "tag": "0016_message_update_events",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1795525877512,
+      "tag": "0017_glitch_hacks",
+      "breakpoints": true
     }
   ]
 }

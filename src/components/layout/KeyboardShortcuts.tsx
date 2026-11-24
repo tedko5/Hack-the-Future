@@ -31,6 +31,7 @@ export function KeyboardShortcuts({ isHelpOpen, onHelpChange }: Props) {
     k: () => void openGlitch(-1),
     '/': focusSearch,
     h: () => void navigate({ to: '/' }),
+    g: () => void navigate({ to: '/map' }),
     m: () =>
       void navigate({ to: '/messages/$conversationId', params: { conversationId: EVERYONE } }),
     n: () => void navigate({ to: '/notifications' }),
@@ -58,6 +59,7 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
     ['r', t.shortcuts.report],
     ['/', t.shortcuts.search],
     ['h', t.nav.missionControl],
+    ['g', t.map.title],
     ['m', t.nav.messages],
     ['n', t.nav.notifications],
     ['l', t.nav.leaderboard],
