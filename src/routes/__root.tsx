@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { OracleChat } from '#/components/chat/OracleChat.tsx'
 import { RiftBackground } from '#/components/layout/RiftBackground.tsx'
 
 import type { QueryClient } from '@tanstack/react-query'
@@ -33,6 +34,7 @@ function RootLayout() {
       <div className="relative z-10">
         <Outlet />
       </div>
+      <OracleChat />
     </div>
   )
 }
@@ -54,7 +56,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           {children}
         </ClerkProvider>
         <TanStackDevtools
-          config={{ position: 'bottom-right' }}
+          config={{ position: 'bottom-left' }}
           plugins={[
             {
               name: 'Tanstack Router',
