@@ -301,6 +301,8 @@ export const nl: Dictionary = {
     title: 'Over ons',
     intro:
       'Wij zijn Teodor en Vivian, team Clown Car. We bouwden Achrona Mission Control op één dag voor Guardians of the Grid, een uitdaging van de Hack the Future-hackathon.',
+    visit: 'Scan om het zelf te proberen',
+    qrCode: 'QR-code die deze website opent',
     technologies: {
       title: 'Waarmee we het bouwden',
       items: [

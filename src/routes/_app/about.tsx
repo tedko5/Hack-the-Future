@@ -3,17 +3,32 @@ import { useT } from '#/i18n/index.ts'
 
 export const Route = createFileRoute('/_app/about')({ component: AboutPage })
 
+/** The same address is in public/site-qr.svg. */
+const SITE_URL = 'https://hack-the-future-production.up.railway.app'
+
 const sectionClass = 'flex flex-col gap-4 rounded-[18px] bg-panel p-4 md:p-6'
 const headingClass = 'font-display text-[1.6rem] font-bold'
 
 function AboutPage() {
-  const { title, intro, technologies, features } = useT().about
+  const { title, intro, visit, qrCode, technologies, features } = useT().about
 
   return (
     <>
       <section className={sectionClass}>
         <h2 className={headingClass}>{title}</h2>
-        <p className="max-w-prose leading-relaxed">{intro}</p>
+        <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <p className="max-w-prose leading-relaxed">{intro}</p>
+          <figure className="flex shrink-0 flex-col items-center gap-2 text-center text-sm">
+            {/* White around it in both themes, or phones cannot read it. */}
+            <img src="/site-qr.svg" alt={qrCode} width={176} height={176} className="rounded-xl border-2 border-edge" />
+            <figcaption>
+              <span className="block text-muted">{visit}</span>
+              <a href={SITE_URL} className="clickable">
+                {new URL(SITE_URL).host}
+              </a>
+            </figcaption>
+          </figure>
+        </div>
       </section>
       <section className={sectionClass}>
         <h2 className={headingClass}>{technologies.title}</h2>
