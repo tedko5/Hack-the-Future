@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties } from 'react'
 import { DesyncWell } from '#/components/health/DesyncWell.tsx'
 import { ShapePath, type ShapeKind } from '#/components/ui/Shape.tsx'
 import { DESYNC_STYLES, desyncStateFor, type DesyncState } from '#/lib/desync.ts'
@@ -9,13 +9,7 @@ const STATE_SHAPE: Record<DesyncState, ShapeKind> = {
   critical: 'square',
 }
 
-type Props = {
-  magic: number
-  openGlitches: number
-  echoesToday: number
-}
-
-export function HealthPanel({ magic, openGlitches, echoesToday }: Props) {
+export function HealthPanel({ magic }: { magic: number }) {
   const state = desyncStateFor(magic)
   const st = DESYNC_STYLES[state]
   const vars = { '--st': st.color, '--st-soft': `${st.glow}66` } as CSSProperties
@@ -31,7 +25,7 @@ export function HealthPanel({ magic, openGlitches, echoesToday }: Props) {
 
       <div
         style={vars}
-        className="readout relative isolate flex flex-col justify-center gap-4.5 overflow-hidden rounded-xl border-2 border-edge p-5 md:p-6"
+        className="readout relative isolate flex flex-col items-center justify-center gap-4.5 text-center overflow-hidden rounded-xl border-2 border-edge p-5 md:p-6"
       >
         <ArcaneCircle />
         <Motes />
@@ -43,7 +37,7 @@ export function HealthPanel({ magic, openGlitches, echoesToday }: Props) {
           {magic}
           <span className="ml-1 text-[.45em] text-muted [text-shadow:none]">%</span>
         </p>
-        <p className="readout-glow relative inline-flex items-center gap-3 self-start font-display text-xl font-bold">
+        <p className="readout-glow relative inline-flex items-center gap-3 font-display text-xl font-bold">
           <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true" className="readout-icon shrink-0 overflow-visible">
             <g className="anim-spin-sigil" fill="none" stroke="currentColor">
               <circle cx="20" cy="20" r="18" strokeWidth="1.5" strokeDasharray="7 3 1 3" />
@@ -54,46 +48,11 @@ export function HealthPanel({ magic, openGlitches, echoesToday }: Props) {
             </g>
           </svg>
           {st.label}
-        </p>
-
-        <div className="relative grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-3">
-          <Fact value={openGlitches} label="Open glitches" icon={<GlitchGlyph />} />
-          <Fact value={echoesToday} label="Echoes today" icon={<EchoGlyph />} />
-        </div>
-      </div>
+        </p>      </div>
     </section>
   )
 }
 
-function Fact({ value, label, icon }: { value: number; label: string; icon: ReactNode }) {
-  return (
-    <div className="stone grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1 px-4 py-3.5">
-      <span className="readout-icon row-span-2">{icon}</span>
-      <b className="font-display text-[2rem] leading-none [text-shadow:0_0_14px_var(--st-soft)]">{value}</b>
-      <span className="text-sm whitespace-nowrap text-[#b9c0e6]">{label}</span>
-    </div>
-  )
-}
-
-const GlitchGlyph = () => (
-  <svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true">
-    <path d="M13 1 L21 9 L17 15 L23 21 L13 29 L5 21 L10 15 L3 9 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="bevel" />
-    <path d="M13 7 L11 14 L15 17 L12 23" fill="none" stroke="currentColor" strokeWidth="1.6" />
-  </svg>
-)
-
-const EchoGlyph = () => (
-  <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
-    <circle cx="15" cy="15" r="3" fill="currentColor" />
-    <path
-      d="M9 9 A8.5 8.5 0 0 0 9 21 M21 9 A8.5 8.5 0 0 1 21 21 M5 5 A14 14 0 0 0 5 25 M25 5 A14 14 0 0 1 25 25"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
-)
 
 const TICKS = Array.from({ length: 36 }, (_, i) => {
   const a = (i * 10 * Math.PI) / 180
@@ -109,7 +68,7 @@ function ArcaneCircle() {
     <svg
       viewBox="0 0 320 320"
       aria-hidden="true"
-      className="pointer-events-none absolute -top-28 -right-28 -z-10 size-80 text-(--st) opacity-20"
+      className="pointer-events-none absolute top-1/2 left-1/2 -z-10 size-80 -translate-x-1/2 -translate-y-1/2 text-(--st) opacity-20"
     >
       <g className="anim-spin-slow" fill="none" stroke="currentColor">
         <circle cx="160" cy="160" r="150" strokeWidth="2" />

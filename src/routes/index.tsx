@@ -10,12 +10,12 @@ export const Route = createFileRoute('/')({
 })
 
 function MissionControl() {
-  const { guardian, magic, openGlitches, echoesToday, echoes } = Route.useLoaderData()
+  const { guardian, magic, echoes } = Route.useLoaderData()
 
   return (
     <div className="flex flex-col gap-6 md:gap-8">
       <AppHeader guardian={guardian} />
-      <HealthPanel magic={magic} openGlitches={openGlitches} echoesToday={echoesToday} />
+      <HealthPanel magic={magic} />
       {/* TODO: open the report-echo form once it exists */}
       <EchoList echoes={echoes} />
     </div>

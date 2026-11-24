@@ -11,7 +11,7 @@ export function AppHeader({ guardian }: { guardian: Guardian }) {
           <b className="block text-[0.95rem]">{guardian.codename}</b>
           <span className="text-[0.8rem] text-muted">Guardian</span>
         </div>
-        <span className="rounded-lg bg-copper px-3 py-2 font-mono text-xs font-bold text-app">
+        <span className="rounded-lg bg-copper px-3 py-2 text-sm font-bold text-app">
           {guardian.role}
         </span>
         {/* TODO(auth): wire up once login exists */}

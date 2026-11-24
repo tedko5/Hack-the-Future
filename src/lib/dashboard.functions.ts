@@ -6,8 +6,6 @@ export type Dashboard = {
   guardian: Guardian
   /** Percentage of magic left in Achrona, 0–100. */
   magic: number
-  openGlitches: number
-  echoesToday: number
   /** Newest first. */
   echoes: Echo[]
 }
@@ -16,15 +14,10 @@ export type Dashboard = {
 // guardians/echoes tables and auth exist. The UI only depends on `Dashboard`.
 export const getDashboard = createServerFn({ method: 'GET' }).handler(
   async (): Promise<Dashboard> => {
-    const echoes = sampleEchoes()
     return {
       guardian: { guardianId: 'g-1', codename: 'Nightwarden', role: 'commander' },
       magic: 68,
-      openGlitches: new Set(
-        echoes.filter((e) => e.glitch.status !== 'FIXED').map((e) => e.glitch.glitchId),
-      ).size,
-      echoesToday: echoes.length,
-      echoes,
+      echoes: sampleEchoes(),
     }
   },
 )

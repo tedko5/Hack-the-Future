@@ -1,20 +1,21 @@
-import { Shape, type ShapeKind } from '#/components/ui/Shape.tsx'
+import type { ShapeKind } from '#/components/ui/Shape.tsx'
 import type { Echo } from '#/lib/echo.ts'
 import type { GlitchStatus } from '#/lib/glitch.ts'
 
-const STATUS: Record<GlitchStatus, { label: string; shape: ShapeKind; color: string; pill: string }> = {
-  LEAKED: { label: 'Leaked', shape: 'square', color: '#ff3df0', pill: 'bg-[#2a1330] text-[#ff8af5]' },
-  ASSESSING: { label: 'Assessing', shape: 'diamond', color: '#a77bff', pill: 'bg-[#251a52] text-[#c9b3ff]' },
-  CONTAINING: { label: 'Containing', shape: 'triangle', color: '#d9803f', pill: 'bg-[#3a2414] text-[#f0a868]' },
-  FIXED: { label: 'Fixed', shape: 'circle', color: '#4df3ff', pill: 'bg-[#0f2f45] text-cyan' },
+const STATUS: Record<GlitchStatus, { label: string; shape: ShapeKind; color: string }> = {
+  LEAKED: { label: 'Leaked', shape: 'square', color: '#ff6af3' },
+  ASSESSING: { label: 'Assessing', shape: 'diamond', color: '#b892ff' },
+  CONTAINING: { label: 'Containing', shape: 'triangle', color: '#e8954f' },
+  FIXED: { label: 'Fixed', shape: 'circle', color: '#4df3ff' },
 }
 
-const timeFormat = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  hour: '2-digit',
-  minute: '2-digit',
-})
+// Pinned to Achrona's (Antwerp's) time zone so server and browser group days the same way.
+const TIME_ZONE = 'Europe/Brussels'
+const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE })
+const dayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TIME_ZONE })
+
+/** Grid shared by day markers and echoes: time | ley line | content. */
+const ROW = 'relative grid grid-cols-[3rem_1.5rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[3.5rem_1.5rem_minmax(0,1fr)] sm:gap-x-4'
 
 type Props = {
   echoes: Echo[]
@@ -27,7 +28,7 @@ export function EchoList({ echoes, onReport }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="echoes-title" className="font-display text-[1.6rem] font-bold">
           Echoes
-          <span className="ml-2 font-mono text-[.95rem] font-normal text-muted">{echoes.length}</span>
+          <span className="ml-2 font-sans text-base font-normal text-muted tabular-nums">{echoes.length}</span>
         </h2>
         <button
           type="button"
@@ -38,47 +39,117 @@ export function EchoList({ echoes, onReport }: Props) {
         </button>
       </div>
 
-      {echoes.length === 0 ? (
-        <p className="rounded-xl border-2 border-edge bg-well p-6 text-muted">No echoes reported yet.</p>
-      ) : (
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,330px),1fr))] gap-2.5 rounded-xl border-2 border-edge bg-well p-2.5 md:p-3.5">
-          {echoes.map((echo) => (
-            <EchoCard key={echo.echoId} echo={echo} />
-          ))}
-        </ul>
-      )}
+      <div className="rounded-xl border-2 border-edge bg-well px-3 py-4 sm:px-6 sm:py-5">
+        {echoes.length === 0 ? (
+          <p className="text-muted">No echoes reported yet.</p>
+        ) : (
+          <ol>
+            {groupByDay(echoes).map(({ day, items }) => (
+              <li key={day}>
+                <DayMarker day={day} />
+                <ol>
+                  {items.map((echo) => (
+                    <EchoEntry key={echo.echoId} echo={echo} />
+                  ))}
+                </ol>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
     </section>
   )
 }
 
-function EchoCard({ echo }: { echo: Echo }) {
+function groupByDay(echoes: Echo[]) {
+  const days: { day: string; items: Echo[] }[] = []
+  for (const echo of echoes) {
+    const day = dayFormat.format(new Date(echo.timestamp))
+    const last = days.at(-1)
+    if (last?.day === day) last.items.push(echo)
+    else days.push({ day, items: [echo] })
+  }
+  return days
+}
+
+/** The ley line itself: one segment per row, so the rows join into one unbroken line. */
+function LeyLine() {
+  return <span aria-hidden="true" className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-[#4a3a9e]" />
+}
+
+function DayMarker({ day }: { day: string }) {
+  return (
+    <div className={ROW}>
+      <span />
+      <span className="relative flex justify-center pt-1">
+        <LeyLine />
+        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="relative">
+          <rect x="2" y="2" width="10" height="10" transform="rotate(45 7 7)" fill="#141527" stroke="#7d6ad6" strokeWidth="1.5" />
+        </svg>
+      </span>
+      <h3 className="pb-3 font-display text-lg font-bold text-[#b9c0e6]">{day}</h3>
+    </div>
+  )
+}
+
+function EchoEntry({ echo }: { echo: Echo }) {
   const status = STATUS[echo.glitch.status]
-  const leaked = echo.glitch.status === 'LEAKED'
 
   return (
-    <li
-      className={`flex flex-col gap-2.5 rounded-[10px] p-3.5 ${
-        leaked ? 'bg-[#241433] shadow-[inset_0_0_0_1px_rgb(255_61_240/0.45)]' : 'bg-row'
-      }`}
-    >
-      <div className="flex items-center justify-between gap-2">
-        <span className={`inline-flex items-center gap-2 rounded-full py-0.5 pr-3 pl-2.5 text-[.8rem] font-bold ${status.pill}`}>
-          <Shape kind={status.shape} color={status.color} />
-          {status.label}
-        </span>
-        {/* Server and browser time zones can differ; the browser's wins. */}
-        <time dateTime={echo.timestamp} suppressHydrationWarning className="font-mono text-[.8rem] text-muted">
-          {timeFormat.format(new Date(echo.timestamp))}
-        </time>
-      </div>
-      <p className="leading-snug">{echo.description}</p>
-      <div className="flex flex-wrap items-center justify-between gap-2 text-[.82rem] text-muted">
-        <span>
-          <b className="font-medium text-fg">{echo.reporter.codename}</b>
-          <span className="ml-1.5 rounded-md bg-panel px-1.5 py-0.5 font-mono text-[.7rem]">{echo.reporter.role}</span>
-        </span>
-        <code className="font-mono text-[.78rem]">{echo.glitch.glitchId}</code>
+    <li className={ROW}>
+      <time dateTime={echo.timestamp} className="pt-0.5 text-right text-sm text-muted tabular-nums">
+        {timeFormat.format(new Date(echo.timestamp))}
+      </time>
+      <span className="relative flex justify-center">
+        <LeyLine />
+        <Rune kind={status.shape} color={status.color} />
+      </span>
+      <div className="min-w-0 pb-6">
+        <p className="leading-snug">{echo.description}</p>
+        <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[.85rem] text-muted">
+          <span className="font-medium" style={{ color: status.color }}>
+            {status.label}
+          </span>
+          <span className="tabular-nums">{echo.glitch.glitchId}</span>
+          <span>
+            <span className="text-fg">{echo.reporter.codename}</span>
+            <span className="ml-1.5">{echo.reporter.role}</span>
+          </span>
+        </p>
       </div>
     </li>
+  )
+}
+
+/** Carved rune where an echo joins the ley line: the status shape, outlined with a solid core. */
+function Rune({ kind, color }: { kind: ShapeKind; color: string }) {
+  const outer = { fill: '#141527', stroke: color, strokeWidth: 1.75, strokeLinejoin: 'round' as const }
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" className="relative mt-px">
+      {kind === 'circle' && (
+        <>
+          <circle cx="11" cy="11" r="9" {...outer} />
+          <circle cx="11" cy="11" r="4" fill={color} />
+        </>
+      )}
+      {kind === 'diamond' && (
+        <>
+          <polygon points="11,1.5 20.5,11 11,20.5 1.5,11" {...outer} />
+          <polygon points="11,6.5 15.5,11 11,15.5 6.5,11" fill={color} />
+        </>
+      )}
+      {kind === 'square' && (
+        <>
+          <rect x="2.5" y="2.5" width="17" height="17" rx="2" {...outer} />
+          <rect x="7.5" y="7.5" width="7" height="7" rx="1" fill={color} />
+        </>
+      )}
+      {kind === 'triangle' && (
+        <>
+          <polygon points="11,2 20.5,19 1.5,19" {...outer} />
+          <polygon points="11,9 14.5,15.5 7.5,15.5" fill={color} />
+        </>
+      )}
+    </svg>
   )
 }
