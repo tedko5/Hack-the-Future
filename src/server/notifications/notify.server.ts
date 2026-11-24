@@ -16,7 +16,7 @@ export type NewNotification = {
   detail?: string
 }
 
-type Notify = (notification: NewNotification) => void
+export type Notify = (notification: NewNotification) => void
 
 /** A chat can produce many of these, so only the newest unread one per sender is kept. */
 const COLLAPSED: NotificationType[] = ['message_received', 'message_reacted']

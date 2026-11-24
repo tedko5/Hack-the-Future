@@ -48,3 +48,9 @@ export const releaseGlitch = createServerFn({ method: 'POST' })
   .handler(({ data, context }) =>
     glitches.releaseGlitch(data.glitchId, context.guardian.guardianId),
   )
+
+/** One random attempt to fix the glitch. On failure it needs manual intervention. */
+export const hackGlitch = createServerFn({ method: 'POST' })
+  .middleware([commanderMiddleware])
+  .validator(validate(glitchRefSchema))
+  .handler(({ data, context }) => glitches.hackGlitch(data.glitchId, context.guardian))

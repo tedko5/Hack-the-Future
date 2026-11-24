@@ -6,7 +6,7 @@ import { canChangeStatus, type GlitchStatus } from '#/lib/glitch.ts'
 import type { Guardian } from '#/lib/guardian.ts'
 import { listCommanderIds } from '#/server/guardians.server.ts'
 import type { StoredImage } from '#/server/images.server.ts'
-import { withNotifications } from '#/server/notifications/notify.server.ts'
+import { type Notify, withNotifications } from '#/server/notifications/notify.server.ts'
 
 type NewEcho = {
   description: string
@@ -65,36 +65,42 @@ export async function findEchoImage(echoId: number): Promise<StoredImage | undef
 }
 
 /** One transaction, so a glitch never exists without its first echo, nor a status without its update. */
-export function createEcho({ description, reporter, glitchId, status, image }: NewEcho) {
+export function createEcho(echo: NewEcho) {
+  return withNotifications((tx, notify) => writeEcho(tx, notify, echo))
+}
+
+/** createEcho inside a transaction that is already open, for changes that come with an echo. */
+export async function writeEcho(
+  tx: Transaction,
+  notify: Notify,
+  { description, reporter, glitchId, status, image }: NewEcho,
+) {
   const timestamp = new Date()
+  const target = glitchId
+    ? await updateGlitch(tx, glitchId, reporter, status)
+    : await openGlitch(tx, description, timestamp)
+  const about = { actorId: reporter.guardianId, glitchId: target.glitchId }
 
-  return withNotifications(async (tx, notify) => {
-    const target = glitchId
-      ? await updateGlitch(tx, glitchId, reporter, status)
-      : await openGlitch(tx, description, timestamp)
-    const about = { actorId: reporter.guardianId, glitchId: target.glitchId }
-
-    if (!glitchId) {
-      for (const guardianId of await listCommanderIds(tx)) {
-        notify({ ...about, guardianId, type: 'glitch_reported' })
-      }
-    } else {
-      for (const guardianId of await listInvolvedIds(tx, glitchId)) {
-        notify(
-          target.newStatus
-            ? { ...about, guardianId, type: 'glitch_status_changed', detail: target.newStatus }
-            : { ...about, guardianId, type: 'glitch_updated' },
-        )
-      }
+  if (!glitchId) {
+    for (const guardianId of await listCommanderIds(tx)) {
+      notify({ ...about, guardianId, type: 'glitch_reported' })
     }
+  } else {
+    for (const guardianId of await listInvolvedIds(tx, glitchId)) {
+      notify(
+        target.newStatus
+          ? { ...about, guardianId, type: 'glitch_status_changed', detail: target.newStatus }
+          : { ...about, guardianId, type: 'glitch_updated' },
+      )
+    }
+  }
 
-    const [{ echoId }] = await tx
-      .insert(echoes)
-      .values({ ...target, description, timestamp, reportingGuardianId: reporter.guardianId })
-      .returning({ echoId: echoes.echoId })
-    if (image) await tx.insert(echoImages).values({ echoId, ...image })
-    return { echoId, glitchId: target.glitchId }
-  })
+  const [{ echoId }] = await tx
+    .insert(echoes)
+    .values({ ...target, description, timestamp, reportingGuardianId: reporter.guardianId })
+    .returning({ echoId: echoes.echoId })
+  if (image) await tx.insert(echoImages).values({ echoId, ...image })
+  return { echoId, glitchId: target.glitchId }
 }
 
 /** The assigned defender and whoever reported the glitch first. */

@@ -1,5 +1,5 @@
 import { Link, linkOptions, useLocation, type LinkProps } from '@tanstack/react-router'
-import { Bell, MessageCircle, Trophy, Users } from 'lucide-react'
+import { Bell, Map as MapIcon, MessageCircle, Trophy, Users } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
@@ -27,6 +27,12 @@ export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props
         icon={CrystalIcon}
         label="Mission control"
         isActive={pathname === '/' || isIn('/glitches') || isIn('/report')}
+      />
+      <Tab
+        link={linkOptions({ to: '/map' })}
+        icon={MapIcon}
+        label="Map"
+        isActive={isIn('/map')}
       />
       <Tab
         link={linkOptions({

@@ -14,6 +14,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppGuardiansRouteImport } from './routes/_app/guardians'
 import { Route as AppLeaderboardRouteImport } from './routes/_app/leaderboard'
+import { Route as AppMapRouteImport } from './routes/_app/map'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
 import { Route as AppReportRouteImport } from './routes/_app/report'
 import { Route as AppStatusRouteImport } from './routes/_app/status'
@@ -48,6 +49,11 @@ const AppGuardiansRoute = AppGuardiansRouteImport.update({
 const AppLeaderboardRoute = AppLeaderboardRouteImport.update({
   id: '/leaderboard',
   path: '/leaderboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMapRoute = AppMapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
   '/leaderboard': typeof AppLeaderboardRoute
+  '/map': typeof AppMapRoute
   '/notifications': typeof AppNotificationsRoute
   '/report': typeof AppReportRoute
   '/status': typeof AppStatusRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
   '/guardians': typeof AppGuardiansRoute
   '/leaderboard': typeof AppLeaderboardRoute
+  '/map': typeof AppMapRoute
   '/notifications': typeof AppNotificationsRoute
   '/report': typeof AppReportRoute
   '/status': typeof AppStatusRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/welcome': typeof WelcomeRoute
   '/_app/guardians': typeof AppGuardiansRoute
   '/_app/leaderboard': typeof AppLeaderboardRoute
+  '/_app/map': typeof AppMapRoute
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/report': typeof AppReportRoute
   '/_app/status': typeof AppStatusRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/guardians'
     | '/leaderboard'
+    | '/map'
     | '/notifications'
     | '/report'
     | '/status'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/guardians'
     | '/leaderboard'
+    | '/map'
     | '/notifications'
     | '/report'
     | '/status'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/welcome'
     | '/_app/guardians'
     | '/_app/leaderboard'
+    | '/_app/map'
     | '/_app/notifications'
     | '/_app/report'
     | '/_app/status'
@@ -262,6 +274,13 @@ declare module '@tanstack/react-router' {
       path: '/leaderboard'
       fullPath: '/leaderboard'
       preLoaderRoute: typeof AppLeaderboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/map': {
+      id: '/_app/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof AppMapRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/notifications': {
@@ -347,6 +366,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppGuardiansRoute: typeof AppGuardiansRoute
   AppLeaderboardRoute: typeof AppLeaderboardRoute
+  AppMapRoute: typeof AppMapRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppReportRoute: typeof AppReportRoute
   AppStatusRoute: typeof AppStatusRoute
@@ -358,6 +378,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppGuardiansRoute: AppGuardiansRoute,
   AppLeaderboardRoute: AppLeaderboardRoute,
+  AppMapRoute: AppMapRoute,
   AppNotificationsRoute: AppNotificationsRoute,
   AppReportRoute: AppReportRoute,
   AppStatusRoute: AppStatusRoute,

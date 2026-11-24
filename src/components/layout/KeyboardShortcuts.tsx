@@ -10,6 +10,7 @@ const HELP = [
   ['r', 'Report an echo, or add an update on a glitch page'],
   ['/', 'Search'],
   ['h', 'Mission control'],
+  ['g', 'Map of Achrona'],
   ['m', 'Messages'],
   ['n', 'Notifications'],
   ['l', 'Leaderboard'],
@@ -43,6 +44,7 @@ export function KeyboardShortcuts({ isHelpOpen, onHelpChange }: Props) {
     k: () => void openGlitch(-1),
     '/': focusSearch,
     h: () => void navigate({ to: '/' }),
+    g: () => void navigate({ to: '/map' }),
     m: () =>
       void navigate({ to: '/messages/$conversationId', params: { conversationId: EVERYONE } }),
     n: () => void navigate({ to: '/notifications' }),
