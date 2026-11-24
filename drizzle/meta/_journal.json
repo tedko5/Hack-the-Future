@@ -57,6 +57,20 @@
       "when": 1795516835382,
       "tag": "0007_echo_status",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795517794295,
+      "tag": "0008_messages",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1795517794755,
+      "tag": "0009_message_events",
+      "breakpoints": true
     }
   ]
 }

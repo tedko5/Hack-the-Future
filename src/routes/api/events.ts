@@ -17,7 +17,7 @@ export const Route = createFileRoute('/api/events')({
           return new Response('Unavailable', { status: 503 })
         }
 
-        return new Response(createLiveEventStream(request.signal), {
+        return new Response(createLiveEventStream(userId, request.signal), {
           headers: {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache, no-transform',

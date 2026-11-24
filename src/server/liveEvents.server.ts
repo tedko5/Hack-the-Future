@@ -5,10 +5,24 @@ const HEARTBEAT_MS = 20_000
 // The browser reconnects after this, so access is checked again regularly.
 const MAX_STREAM_MS = 5 * 60_000
 
-type Listener = (event: LiveEvent) => void
+/** What the database sends. Private messages name their participants, who are the only ones told. */
+type ServerEvent =
+  | Exclude<LiveEvent, { type: 'message' }>
+  | { type: 'message'; senderId: string; recipientId: string | null }
+
+type Listener = (event: ServerEvent) => void
+
+/** The event as this guardian may see it, or undefined if it is not theirs. */
+function eventFor(guardianId: string, event: ServerEvent): LiveEvent | undefined {
+  if (event.type !== 'message') return event
+  const { senderId, recipientId } = event
+  const isParticipant =
+    recipientId === null || recipientId === guardianId || senderId === guardianId
+  return isParticipant ? { type: 'message' } : undefined
+}
 
 /** Server-sent events, until the client disconnects or the stream expires. */
-export function createLiveEventStream(signal: AbortSignal) {
+export function createLiveEventStream(guardianId: string, signal: AbortSignal) {
   let close = () => {}
 
   return new ReadableStream<Uint8Array>({
@@ -18,9 +32,10 @@ export function createLiveEventStream(signal: AbortSignal) {
       const send = (text: string) => {
         if (open) controller.enqueue(encoder.encode(text))
       }
-      const unsubscribe = liveEvents.subscribe((event) =>
-        send(`data: ${JSON.stringify(event)}\n\n`),
-      )
+      const unsubscribe = liveEvents.subscribe((event) => {
+        const visible = eventFor(guardianId, event)
+        if (visible) send(`data: ${JSON.stringify(visible)}\n\n`)
+      })
       const heartbeat = setInterval(() => send(': keep-alive\n\n'), HEARTBEAT_MS)
       const expiry = setTimeout(() => {
         close()
@@ -40,8 +55,8 @@ export function createLiveEventStream(signal: AbortSignal) {
   })
 }
 
-// One Postgres connection listens for the whole server; triggers on the glitches
-// and echoes tables send the notifications. Kept on globalThis so a dev reload
+// One Postgres connection listens for the whole server; triggers on the glitches,
+// echoes and messages tables send the notifications. Kept on globalThis so a dev reload
 // does not open a second connection.
 const store = globalThis as typeof globalThis & { __liveEvents?: LiveEvents }
 
@@ -60,7 +75,7 @@ class LiveEvents {
     }
   }
 
-  private emit(event: LiveEvent) {
+  private emit(event: ServerEvent) {
     for (const listener of this.listeners) listener(event)
   }
 
@@ -81,7 +96,7 @@ class LiveEvents {
     client.on('error', retry)
     client.on('end', () => retry())
     client.on('notification', ({ payload }) => {
-      if (payload) this.emit(JSON.parse(payload) as LiveEvent)
+      if (payload) this.emit(JSON.parse(payload) as ServerEvent)
     })
     try {
       await client.connect()

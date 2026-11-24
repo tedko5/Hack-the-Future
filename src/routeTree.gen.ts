@@ -19,6 +19,7 @@ import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as SignInSplatRouteImport } from './routes/sign-in.$'
 import { Route as SignUpSplatRouteImport } from './routes/sign-up.$'
 import { Route as AppGlitchesGlitchIdRouteImport } from './routes/_app/glitches.$glitchId'
+import { Route as AppMessagesConversationIdRouteImport } from './routes/_app/messages.$conversationId'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -69,6 +70,12 @@ const AppGlitchesGlitchIdRoute = AppGlitchesGlitchIdRouteImport.update({
   path: '/glitches/$glitchId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMessagesConversationIdRoute =
+  AppMessagesConversationIdRouteImport.update({
+    id: '/messages/$conversationId',
+    path: '/messages/$conversationId',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/sign-in/$': typeof SignInSplatRoute
   '/sign-up/$': typeof SignUpSplatRoute
   '/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
+  '/messages/$conversationId': typeof AppMessagesConversationIdRoute
 }
 export interface FileRoutesByTo {
   '/welcome': typeof WelcomeRoute
@@ -91,6 +99,7 @@ export interface FileRoutesByTo {
   '/sign-up/$': typeof SignUpSplatRoute
   '/': typeof AppIndexRoute
   '/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
+  '/messages/$conversationId': typeof AppMessagesConversationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,6 +113,7 @@ export interface FileRoutesById {
   '/sign-up/$': typeof SignUpSplatRoute
   '/_app/': typeof AppIndexRoute
   '/_app/glitches/$glitchId': typeof AppGlitchesGlitchIdRoute
+  '/_app/messages/$conversationId': typeof AppMessagesConversationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/sign-in/$'
     | '/sign-up/$'
     | '/glitches/$glitchId'
+    | '/messages/$conversationId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/welcome'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/sign-up/$'
     | '/'
     | '/glitches/$glitchId'
+    | '/messages/$conversationId'
   id:
     | '__root__'
     | '/_app'
@@ -140,6 +152,7 @@ export interface FileRouteTypes {
     | '/sign-up/$'
     | '/_app/'
     | '/_app/glitches/$glitchId'
+    | '/_app/messages/$conversationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGlitchesGlitchIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/messages/$conversationId': {
+      id: '/_app/messages/$conversationId'
+      path: '/messages/$conversationId'
+      fullPath: '/messages/$conversationId'
+      preLoaderRoute: typeof AppMessagesConversationIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -231,6 +251,7 @@ interface AppRouteChildren {
   AppStatusRoute: typeof AppStatusRoute
   AppIndexRoute: typeof AppIndexRoute
   AppGlitchesGlitchIdRoute: typeof AppGlitchesGlitchIdRoute
+  AppMessagesConversationIdRoute: typeof AppMessagesConversationIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -238,6 +259,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppStatusRoute: AppStatusRoute,
   AppIndexRoute: AppIndexRoute,
   AppGlitchesGlitchIdRoute: AppGlitchesGlitchIdRoute,
+  AppMessagesConversationIdRoute: AppMessagesConversationIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

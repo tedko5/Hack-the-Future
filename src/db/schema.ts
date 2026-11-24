@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { index, pgSequence, pgTable, serial, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
+import { index, integer, pgSequence, pgTable, primaryKey, serial, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 // Relative import: drizzle-kit loads this file and doesn't resolve the `#/` alias.
 import { GLITCH_STATUSES } from '../lib/glitch.ts'
 import { GUARDIAN_ROLES } from '../lib/guardian.ts'
@@ -48,4 +48,29 @@ export const echoes = pgTable(
     reportingGuardianId: text('reporting_guardian_id').notNull().references(() => guardians.guardianId),
   },
   (table) => [index('echoes_glitch_id').on(table.glitchId)],
+)
+
+export const messages = pgTable(
+  'messages',
+  {
+    messageId: serial('message_id').primaryKey(),
+    senderId: text('sender_id').notNull().references(() => guardians.guardianId),
+    /** Null for messages to everyone. */
+    recipientId: text('recipient_id').references(() => guardians.guardianId),
+    body: text('body').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index('messages_participants').on(table.recipientId, table.senderId, table.messageId)],
+)
+
+/** How far a guardian has read each conversation. */
+export const conversationReads = pgTable(
+  'conversation_reads',
+  {
+    guardianId: text('guardian_id').notNull().references(() => guardians.guardianId),
+    /** EVERYONE, or the other guardian's ID. */
+    conversationId: text('conversation_id').notNull(),
+    lastReadMessageId: integer('last_read_message_id').notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.guardianId, table.conversationId] })],
 )

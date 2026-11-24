@@ -1,10 +1,17 @@
 import { UserButton, useClerk } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
+import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import type { Guardian } from '#/lib/guardian.ts'
+import { EVERYONE } from '#/lib/message.ts'
 
 const linkClass = 'flex min-h-11 items-center px-2 text-sm text-muted hover:text-cyan'
 
-export function AppHeader({ guardian }: { guardian: Guardian }) {
+type Props = {
+  guardian: Guardian
+  unreadMessages: number
+}
+
+export function AppHeader({ guardian, unreadMessages }: Props) {
   const { signOut } = useClerk()
 
   return (
@@ -20,6 +27,14 @@ export function AppHeader({ guardian }: { guardian: Guardian }) {
         <span className="rounded-lg bg-copper px-3 py-2 text-sm font-bold text-app">
           {guardian.role}
         </span>
+        <Link
+          to="/messages/$conversationId"
+          params={{ conversationId: EVERYONE }}
+          className={`${linkClass} gap-2`}
+        >
+          Messages
+          <UnreadBadge count={unreadMessages} />
+        </Link>
         {guardian.role === 'commander' && (
           <Link to="/guardians" className={linkClass}>
             Guardians
