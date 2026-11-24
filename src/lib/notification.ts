@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import type { Dictionary } from '../i18n/en.ts'
+import type { GlitchStatus } from './glitch.ts'
 import { EVERYONE } from './message.ts'
 
 export const NOTIFICATION_TYPES = [
@@ -38,41 +40,46 @@ export type NotificationText = {
 }
 
 /** The wording of a notification. Used in the app, and meant for push and email too. */
-export function describeNotification(notification: Notification): NotificationText {
+export function describeNotification(notification: Notification, t: Dictionary): NotificationText {
   return {
-    title: titleOf(notification),
+    title: titleOf(notification, t),
     body: notification.glitch?.description ?? null,
     path: pathOf(notification),
   }
 }
 
-function titleOf({ type, actorCodename, glitch, conversationId, detail }: Notification) {
-  const glitchId = glitch?.glitchId ?? 'a glitch'
+function titleOf(notification: Notification, t: Dictionary) {
+  const { type, actorCodename: who, conversationId } = notification
+  const glitch = notification.glitch?.glitchId ?? ''
+  const detail = notification.detail ?? ''
   switch (type) {
     case 'glitch_reported':
-      return `${actorCodename} reported ${glitchId}`
+      return t.notifications.glitchReported(who, glitch)
     case 'glitch_assigned':
-      return `${actorCodename} assigned ${glitchId} to you`
+      return t.notifications.glitchAssigned(who, glitch)
     case 'glitch_unassigned':
-      return `${actorCodename} took you off ${glitchId}`
+      return t.notifications.glitchUnassigned(who, glitch)
     case 'glitch_released':
-      return `${actorCodename} released ${glitchId}`
+      return t.notifications.glitchReleased(who, glitch)
     case 'glitch_updated':
-      return `${actorCodename} added an update to ${glitchId}`
+      return t.notifications.glitchUpdated(who, glitch)
     case 'glitch_status_changed':
-      return `${actorCodename} changed ${glitchId} to ${(detail ?? '').toLowerCase()}`
+      return t.notifications.glitchStatusChanged(who, glitch, t.status[detail as GlitchStatus] ?? detail)
     case 'message_received':
-      return `${actorCodename} sent you a message`
+      return t.notifications.messageReceived(who)
     case 'message_replied':
-      return `${actorCodename} replied to you${conversationId === EVERYONE ? ' in All guardians' : ''}`
+      return conversationId === EVERYONE
+        ? t.notifications.messageRepliedInEveryone(who)
+        : t.notifications.messageReplied(who)
     case 'message_reacted':
-      return `${actorCodename} reacted ${detail ?? ''} to your message`
+      return t.notifications.messageReacted(who, detail)
     case 'role_changed':
-      return `${actorCodename} made you a ${detail ?? 'guardian'}`
+      return t.notifications.roleChanged(who, detail)
   }
 }
 
-function pathOf({ glitch, conversationId }: Notification) {
+/** Where a notification leads, in any language. */
+export function pathOf({ glitch, conversationId }: Notification) {
   if (glitch) return `/glitches/${encodeURIComponent(glitch.glitchId)}`
   if (conversationId) return `/messages/${encodeURIComponent(conversationId)}`
   return null

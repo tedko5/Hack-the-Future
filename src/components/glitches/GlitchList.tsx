@@ -1,12 +1,11 @@
 import { Link } from '@tanstack/react-router'
 import { useState, type ReactNode } from 'react'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
-import { STATUS_STYLES } from '#/components/glitches/status.ts'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
-import { formatDateTime } from '#/lib/formatDate.ts'
+import { useFormat, useT } from '#/i18n/index.ts'
 import type { Glitch } from '#/lib/glitch.ts'
-import { GLITCH_SORTS, sortGlitches, type GlitchSort } from '#/lib/glitchSort.ts'
+import { sortGlitches, type GlitchSort } from '#/lib/glitchSort.ts'
 import { matchesSearch } from '#/lib/search.ts'
 
 type Props = {
@@ -26,6 +25,8 @@ export function GlitchList({
   isSearchable = false,
   action,
 }: Props) {
+  const t = useT()
+  const format = useFormat()
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<GlitchSort>('newest')
   const found = sortGlitches(glitches, sort).filter((glitch) =>
@@ -33,8 +34,8 @@ export function GlitchList({
       query,
       glitch.glitchId,
       glitch.description,
-      STATUS_STYLES[glitch.status].label,
-      glitch.assignedCodename ?? 'Unassigned',
+      t.status[glitch.status],
+      glitch.assignedCodename ?? t.common.unassigned,
     ),
   )
 
@@ -43,10 +44,10 @@ export function GlitchList({
       {isSearchable && glitches.length > 0 && (
         <div className="mb-4">
           <ListControls
-            searchLabel="Search glitches"
+            searchLabel={t.glitches.search}
             query={query}
             onQueryChange={setQuery}
-            sorts={GLITCH_SORTS}
+            sorts={t.glitches.sorts}
             sort={sort}
             onSortChange={setSort}
           />
@@ -54,7 +55,7 @@ export function GlitchList({
       )}
       {found.length === 0 ? (
         <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">
-          {glitches.length === 0 ? emptyMessage : 'No glitches match your search.'}
+          {glitches.length === 0 ? emptyMessage : t.glitches.noMatch}
         </p>
       ) : (
         <ul className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
@@ -69,9 +70,9 @@ export function GlitchList({
                 <span className="min-w-0 leading-snug break-words">{glitch.description}</span>
                 <span className="text-[.85rem] text-muted tabular-nums sm:text-right">
                   <span className="clickable text-fg">{glitch.glitchId}</span>
-                  <span className="ml-3 sm:ml-0 sm:block">{glitch.assignedCodename ?? 'Unassigned'}</span>
+                  <span className="ml-3 sm:ml-0 sm:block">{glitch.assignedCodename ?? t.common.unassigned}</span>
                   <time dateTime={glitch.timestamp} className="ml-3 sm:ml-0 sm:block">
-                    {formatDateTime(glitch.timestamp)}
+                    {format.dateTime(glitch.timestamp)}
                   </time>
                 </span>
               </Link>

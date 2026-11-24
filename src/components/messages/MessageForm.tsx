@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Attachment, ImageAttachment } from '#/components/images/Attachment.tsx'
 import { ImageButton } from '#/components/images/ImageButton.tsx'
 import { useImageAttachment } from '#/components/images/useImageAttachment.ts'
-import { MESSAGE_MAX_LENGTH, quoteText, type Message } from '#/lib/message.ts'
+import { useFormat, useT } from '#/i18n/index.ts'
+import { MESSAGE_MAX_LENGTH, type Message } from '#/lib/message.ts'
 import { sendMessage } from '#/lib/messages.functions.ts'
 
 type Props = {
@@ -17,6 +18,8 @@ type Props = {
 }
 
 export function MessageForm({ conversationId, title, replyTo, onCancelReply, onSent }: Props) {
+  const t = useT()
+  const format = useFormat()
   const router = useRouter()
   const [body, setBody] = useState('')
   const textInput = useRef<HTMLInputElement>(null)
@@ -56,24 +59,25 @@ export function MessageForm({ conversationId, title, replyTo, onCancelReply, onS
       }}
     >
       {replyTo && (
-        <Attachment label="Cancel reply" onRemove={onCancelReply}>
+        <Attachment label={t.messages.cancelReply} onRemove={onCancelReply}>
           <p className="min-w-0 truncate">
-            Replying to <b>{replyTo.senderCodename}</b>: {quoteText(replyTo)}
+            {t.messages.replyingTo} <b>{replyTo.senderCodename}</b>:{' '}
+            {replyTo.body || t.messages.image}
           </p>
         </Attachment>
       )}
       {image && <ImageAttachment image={image} onRemove={removeImage} />}
       {error && (
         <p role="alert" className="text-magenta">
-          {error.message}
+          {format.error(error)}
         </p>
       )}
       <div className="flex gap-2">
         <ImageButton disabled={isBusy} onPick={pickImage} />
         <input
           ref={textInput}
-          aria-label={`Message to ${title}`}
-          placeholder={`Message ${title}`}
+          aria-label={t.messages.inputLabel(title)}
+          placeholder={t.messages.placeholder(title)}
           className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-edge bg-well px-3.5 text-fg placeholder:text-muted"
           value={body}
           onChange={(event) => setBody(event.target.value)}
@@ -83,7 +87,7 @@ export function MessageForm({ conversationId, title, replyTo, onCancelReply, onS
         />
         <button
           type="submit"
-          aria-label="Send message"
+          aria-label={t.messages.send}
           className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-copper text-on-copper hover:brightness-110 disabled:cursor-default disabled:opacity-50"
           disabled={!canSend}
         >

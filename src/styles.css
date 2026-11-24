@@ -129,11 +129,11 @@
 
   /* Match the well's gems: jade, topaz, ruby. */
   --desync-stable: #1f7f74;
-  --desync-stable-soft: rgb(31 127 116 / 0.25);
+  --desync-stable-soft: rgb(53 224 196 / 0.55);
   --desync-unstable: #9a5f0a;
-  --desync-unstable-soft: rgb(154 95 10 / 0.25);
+  --desync-unstable-soft: rgb(255 181 46 / 0.6);
   --desync-critical: #a3244f;
-  --desync-critical-soft: rgb(163 36 79 / 0.25);
+  --desync-critical-soft: rgb(255 77 132 / 0.5);
 
   /* Flat brass in light: no gradients on the card border or the button. */
   --card-border-from: var(--edge);
@@ -352,26 +352,42 @@ select:focus {
   background: var(--well);
 }
 :root[data-theme="light"] .readout-pct {
-  text-shadow: none;
+  text-shadow: 0 0 22px var(--st-soft);
+}
+:root[data-theme="light"] .gauge-sweep {
+  filter: drop-shadow(0 0 5px var(--st-soft)) drop-shadow(0 0 14px var(--st-soft));
 }
 .readout-icon { color: var(--st); filter: drop-shadow(0 0 6px var(--st-soft)); }
 
 /* ---------- Desync Well, light theme ----------
    The SVG carries the dark colours as attributes; these rules (which beat attributes)
-   turn it into sandstone, brass-teal water and flat gemstones. No glows, no gradients. */
+   turn it into sandstone, brass-teal water and glowing gemstones. */
 :root[data-theme="light"] .desync-well {
   --gem: #2f9e8f;
+  --glow: #35e0c4;
   --gem-body: #1d5f57;
 }
 :root[data-theme="light"] .desync-well--unstable {
   --gem: #d49a2a;
+  --glow: #ffb52e;
   --gem-body: #7a4f0c;
 }
 :root[data-theme="light"] .desync-well--critical {
   --gem: #b8325a;
+  --glow: #ff4d84;
   --gem-body: #6e1638;
 }
-:root[data-theme="light"] .desync-well .dw-glow { display: none; }
+/* The same glow as in dark, in the colours of the gems. */
+:root[data-theme="light"] .desync-well .dw-glow { fill: var(--glow); }
+:root[data-theme="light"] .desync-well .dw-glow path { stroke: #22d8e2; }
+:root[data-theme="light"] .desync-well .dw-glow .dw-gem { fill: var(--glow); }
+/* Light swallows a soft blur, so the bright parts get a tighter halo of their own. */
+:root[data-theme="light"] .desync-well .dw-gem-body {
+  filter: drop-shadow(0 0 8px var(--glow)) drop-shadow(0 0 22px var(--glow));
+}
+:root[data-theme="light"] .desync-well .dw-ring { filter: drop-shadow(0 0 5px #17dbe6) drop-shadow(0 0 12px #17dbe6); }
+:root[data-theme="light"] .desync-well .dw-water-4 { filter: drop-shadow(0 0 16px #d9fffc); }
+:root[data-theme="light"] .desync-well .dw-sparkle { filter: drop-shadow(0 0 5px #fff); }
 :root[data-theme="light"] .desync-well .dw-gem { fill: var(--gem); }
 :root[data-theme="light"] .desync-well .dw-gem-body { fill: var(--gem-body); }
 :root[data-theme="light"] .desync-well .dw-gem-crack { stroke: #2a1f14; }

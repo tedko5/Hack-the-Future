@@ -18,7 +18,7 @@ export const Route = createFileRoute('/_app')({
 })
 
 function AppLayout() {
-  const { guardian } = Route.useRouteContext()
+  const { guardian, language } = Route.useRouteContext()
   const inbox = Route.useLoaderData()
   const router = useRouter()
   const [isHelpOpen, setIsHelpOpen] = useState(false)
@@ -40,7 +40,7 @@ function AppLayout() {
       <KeyboardShortcuts isHelpOpen={isHelpOpen} onHelpChange={setIsHelpOpen} />
       <div className="print:hidden">
         <NotificationToast latest={inbox.latestNotification} />
-        <OracleChat />
+        <OracleChat key={language} language={language} />
       </div>
     </>
   )

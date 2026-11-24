@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { Link, useRouter, type LinkProps } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import { describeNotification, type Notification } from '#/lib/notification.ts'
+import { pathOf, type Notification } from '#/lib/notification.ts'
 import { markNotificationRead } from '#/lib/notifications.functions.ts'
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 /** Marks the notification read and opens where it came from, if there is such a place. */
 export function NotificationLink({ notification, className, onOpen, children }: Props) {
   const router = useRouter()
-  const { path } = describeNotification(notification)
+  const path = pathOf(notification)
   const markRead = useMutation({
     mutationFn: () => markNotificationRead({ data: { notificationId: notification.notificationId } }),
     onSettled: () => router.invalidate(),

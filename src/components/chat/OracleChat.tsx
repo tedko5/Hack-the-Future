@@ -1,5 +1,7 @@
 import { X, SendHorizontal } from 'lucide-react'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import type { Language } from '#/i18n/language.ts'
+import { useT } from '#/i18n/index.ts'
 import { askCodex, SUGGESTED_QUESTIONS } from '#/lib/chat.ts'
 
 type Message = {
@@ -9,22 +11,17 @@ type Message = {
   related?: string[]
 }
 
-const GREETING: Message = {
-  role: 'assistant',
-  content: 'Greetings, guardian. I am the Oracle. Ask me about the Desync, echoes, glitches or your role.',
-  related: SUGGESTED_QUESTIONS,
-}
-
-const UNKNOWN = 'The Codex holds no answer to that.'
-
 // Theme variables (styles.css); used as CSS `color` so they switch with the theme.
 const ORACLE_COLOR = 'var(--oracle)'
 const GUARDIAN_COLOR = 'var(--guardian)'
 
 /** Floating chat with the Oracle. Answers come from the knowledge base, in the browser. */
-export function OracleChat() {
+export function OracleChat({ language }: { language: Language }) {
+  const t = useT()
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([GREETING])
+  const [messages, setMessages] = useState<Message[]>([
+    { role: 'assistant', content: t.oracle.greeting, related: SUGGESTED_QUESTIONS[language] },
+  ])
   const [draft, setDraft] = useState('')
   const listRef = useRef<HTMLOListElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -40,13 +37,13 @@ export function OracleChat() {
   function send(text: string) {
     const content = text.trim()
     if (!content) return
-    const { answer, related } = askCodex(content)
+    const { answer, related } = askCodex(content, language)
     const reply: Message = answer
       ? { role: 'assistant', content: answer }
       : {
           role: 'assistant',
-          content: related.length ? `${UNKNOWN} Perhaps you meant one of these?` : `${UNKNOWN} Try one of these questions.`,
-          related: related.length ? related : SUGGESTED_QUESTIONS,
+          content: `${t.oracle.unknown} ${related.length ? t.oracle.perhaps : t.oracle.tryThese}`,
+          related: related.length ? related : SUGGESTED_QUESTIONS[language],
         }
     setMessages((m) => [...m, { role: 'user', content }, reply])
     setDraft('')
@@ -65,7 +62,7 @@ export function OracleChat() {
         className="fixed right-4 bottom-20 z-40 md:bottom-4 flex min-h-12 cursor-pointer items-center gap-2.5 rounded-xl border-2 border-edge bg-panel py-1.5 pr-5 pl-2.5 font-display text-lg font-bold shadow-[0_8px_24px_rgb(0_0_0/0.45)] hover:border-edge-hover"
       >
         <OracleSigil size={34} />
-        Ask the Oracle
+        {t.oracle.open}
       </button>
     )
   }
@@ -74,19 +71,19 @@ export function OracleChat() {
 
   return (
     <section
-      aria-label="Oracle chat"
+      aria-label={t.oracle.label}
       onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
       className="fixed inset-x-4 bottom-20 z-40 md:bottom-4 flex max-h-[min(70vh,560px)] flex-col gap-3 rounded-[18px] border-2 border-edge bg-panel p-3 shadow-[0_12px_40px_rgb(0_0_0/0.55)] sm:left-auto sm:w-[400px]"
     >
       <header className="flex items-center justify-between gap-3 pl-1">
         <h2 className="flex items-center gap-2.5 font-display text-[1.6rem] leading-none font-bold">
           <OracleSigil size={36} />
-          The Oracle
+          {t.oracle.name}
         </h2>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          aria-label="Close chat"
+          aria-label={t.oracle.close}
           className="flex size-11 cursor-pointer items-center justify-center rounded-lg text-muted hover:text-fg"
         >
           <X size={20} />
@@ -105,7 +102,7 @@ export function OracleChat() {
               </span>
               <div className="min-w-0 pb-5">
                 <p className="font-display text-[.95rem] leading-tight font-bold" style={{ color: oracle ? ORACLE_COLOR : GUARDIAN_COLOR }}>
-                  {oracle ? 'The Oracle' : 'You'}
+                  {oracle ? t.oracle.name : t.common.you}
                 </p>
                 <p className={`mt-1 leading-snug ${oracle ? 'text-fg' : 'text-soft'}`}>{m.content}</p>
 
@@ -136,7 +133,7 @@ export function OracleChat() {
 
       <form onSubmit={onSubmit} className="flex gap-2">
         <label htmlFor="oracle-input" className="sr-only">
-          Your question
+          {t.oracle.question}
         </label>
         <input
           id="oracle-input"
@@ -145,13 +142,13 @@ export function OracleChat() {
           onChange={(e) => setDraft(e.target.value)}
           maxLength={500}
           autoComplete="off"
-          placeholder="Ask about the Desync…"
+          placeholder={t.oracle.placeholder}
           className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-edge bg-well px-3.5 text-fg placeholder:text-muted"
         />
         <button
           type="submit"
           disabled={!draft.trim()}
-          aria-label="Send"
+          aria-label={t.common.send}
           className="flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-copper text-on-copper hover:brightness-110 disabled:cursor-default disabled:opacity-50"
         >
           <SendHorizontal size={20} />

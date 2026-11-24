@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
+import { useFormat, useT } from '#/i18n/index.ts'
 import type { Glitch } from '#/lib/glitch.ts'
 import { assignGlitch, releaseGlitch, takeGlitch } from '#/lib/glitches.functions.ts'
 import type { Guardian } from '#/lib/guardian.ts'
@@ -13,6 +14,7 @@ type CommanderProps = {
 
 /** For commanders: assign the glitch to any defender. */
 export function AssignDefender({ glitch, guardians }: CommanderProps) {
+  const t = useT()
   const router = useRouter()
   const assign = useMutation({
     mutationFn: (guardianId: string | null) =>
@@ -28,14 +30,14 @@ export function AssignDefender({ glitch, guardians }: CommanderProps) {
   return (
     <div className="flex flex-col gap-3">
       <label className="flex flex-col gap-2 text-muted sm:max-w-xs">
-        Assigned defender
+        {t.glitches.assignedDefender}
         <select
           className="min-h-12 rounded-xl border-2 border-edge bg-well px-3 text-fg disabled:opacity-50"
           value={glitch.assignedGuardianId ?? UNASSIGNED}
           disabled={assign.isPending}
           onChange={(event) => assign.mutate(event.target.value || null)}
         >
-          <option value={UNASSIGNED}>Unassigned</option>
+          <option value={UNASSIGNED}>{t.common.unassigned}</option>
           {assignable.map(({ guardianId, codename }) => (
             <option key={guardianId} value={guardianId}>
               {codename}
@@ -55,6 +57,7 @@ type DefenderProps = {
 
 /** For defenders: take a free glitch, or release their own. */
 export function TakeOrRelease({ glitch, guardian }: DefenderProps) {
+  const t = useT()
   const router = useRouter()
   const isMine = glitch.assignedGuardianId === guardian.guardianId
   const change = useMutation({
@@ -75,7 +78,7 @@ export function TakeOrRelease({ glitch, guardian }: DefenderProps) {
           disabled={change.isPending}
           onClick={() => change.mutate()}
         >
-          {isMine ? 'Release this glitch' : 'Assign to me'}
+          {isMine ? t.glitches.release : t.glitches.assignToMe}
         </button>
       )}
       <ErrorMessage error={change.error} />
@@ -84,10 +87,11 @@ export function TakeOrRelease({ glitch, guardian }: DefenderProps) {
 }
 
 function ErrorMessage({ error }: { error: Error | null }) {
+  const format = useFormat()
   if (!error) return null
   return (
     <p role="alert" className="text-magenta">
-      {error.message}
+      {format.error(error)}
     </p>
   )
 }

@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
+import { useT } from '#/i18n/index.ts'
 import { REACTIONS, type Reaction, type ReactionEmoji } from '#/lib/message.ts'
 import { toggleReaction } from '#/lib/messages.functions.ts'
 
@@ -12,13 +13,14 @@ export function useToggleReaction(messageId: number) {
 }
 
 export function ReactionPicker({ onPick }: { onPick: (emoji: ReactionEmoji) => void }) {
+  const t = useT()
   return (
-    <div role="group" aria-label="Reactions" className="flex flex-wrap rounded-xl bg-panel p-1">
+    <div role="group" aria-label={t.messages.reactions} className="flex flex-wrap rounded-xl bg-panel p-1">
       {REACTIONS.map((emoji) => (
         <button
           key={emoji}
           type="button"
-          aria-label={`React with ${emoji}`}
+          aria-label={t.messages.reactWith(emoji)}
           className="flex size-9 cursor-pointer items-center justify-center rounded-lg hover:bg-row"
           onClick={() => onPick(emoji)}
         >
@@ -35,6 +37,7 @@ type Props = {
 }
 
 export function MessageReactions({ reactions, onToggle }: Props) {
+  const t = useT()
   if (reactions.length === 0) return null
   return (
     <div className="flex flex-wrap gap-1">
@@ -43,7 +46,7 @@ export function MessageReactions({ reactions, onToggle }: Props) {
           key={emoji}
           type="button"
           aria-pressed={isMine}
-          aria-label={`${emoji} from ${codenames.join(', ')}`}
+          aria-label={t.messages.reactionFrom(emoji, codenames.join(', '))}
           title={codenames.join(', ')}
           className={`flex min-h-8 cursor-pointer items-center gap-1.5 rounded-full border px-2.5 text-sm tabular-nums ${isMine ? 'border-cyan bg-row' : 'border-line bg-panel'}`}
           onClick={() => onToggle(emoji)}

@@ -1,6 +1,7 @@
 import { and, eq, isNull } from 'drizzle-orm'
 import { db, type Transaction } from '#/db/index.ts'
 import { notifications } from '#/db/schema.ts'
+import { en } from '#/i18n/en.ts'
 import { describeNotification, type NotificationType } from '#/lib/notification.ts'
 import { channels, type Delivery } from '#/server/notifications/channels.server.ts'
 import { findNotifications } from '#/server/notifications/notifications.server.ts'
@@ -74,7 +75,8 @@ async function deliver(notificationIds: number[]) {
   try {
     const found = await findNotifications(notificationIds)
     const deliveries = found.map(({ guardianId, notification }): Delivery => ({
-      ...describeNotification(notification),
+      // Channels reach people outside the app, where their language is not known.
+      ...describeNotification(notification, en),
       guardianId,
       notification,
     }))

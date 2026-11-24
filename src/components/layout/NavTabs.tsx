@@ -3,6 +3,7 @@ import { Bell, MessageCircle, Trophy, Users } from 'lucide-react'
 import type { ComponentType } from 'react'
 import { UnreadBadge } from '#/components/messages/UnreadBadge.tsx'
 import { CrystalIcon } from '#/components/ui/CrystalIcon.tsx'
+import { useT } from '#/i18n/index.ts'
 import type { Guardian } from '#/lib/guardian.ts'
 import { EVERYONE } from '#/lib/message.ts'
 
@@ -14,18 +15,19 @@ type Props = {
 
 /** A bar at the bottom of the screen on phones, a row under the header on larger screens. */
 export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props) {
+  const t = useT()
   const { pathname } = useLocation()
   const isIn = (section: string) => pathname === section || pathname.startsWith(`${section}/`)
 
   return (
     <nav
-      aria-label="Main"
+      aria-label={t.nav.label}
       className="fixed inset-x-0 bottom-0 z-30 flex border-t-2 border-edge bg-panel md:static md:gap-2 md:self-start md:rounded-xl md:border-0 md:p-1.5 print:hidden"
     >
       <Tab
         link={linkOptions({ to: '/' })}
         icon={CrystalIcon}
-        label="Mission control"
+        label={t.nav.missionControl}
         isActive={pathname === '/' || isIn('/glitches') || isIn('/report')}
       />
       <Tab
@@ -34,28 +36,28 @@ export function NavTabs({ guardian, unreadMessages, unreadNotifications }: Props
           params: { conversationId: EVERYONE },
         })}
         icon={MessageCircle}
-        label="Messages"
+        label={t.nav.messages}
         isActive={isIn('/messages')}
         badge={unreadMessages}
       />
       <Tab
         link={linkOptions({ to: '/notifications' })}
         icon={Bell}
-        label="Notifications"
+        label={t.nav.notifications}
         isActive={isIn('/notifications')}
         badge={unreadNotifications}
       />
       <Tab
         link={linkOptions({ to: '/leaderboard' })}
         icon={Trophy}
-        label="Leaderboard"
+        label={t.nav.leaderboard}
         isActive={isIn('/leaderboard')}
       />
       {guardian.role === 'commander' && (
         <Tab
           link={linkOptions({ to: '/guardians' })}
           icon={Users}
-          label="Guardians"
+          label={t.nav.guardians}
           isActive={isIn('/guardians')}
         />
       )}

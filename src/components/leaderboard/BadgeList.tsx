@@ -1,4 +1,5 @@
 import { Crown, Ear, MessageCircle, ShieldCheck, Sparkles, Zap, type LucideIcon } from 'lucide-react'
+import { useT } from '#/i18n/index.ts'
 import type { Badge } from '#/lib/leaderboard.ts'
 
 const ICONS: Record<Badge['id'], LucideIcon> = {
@@ -11,11 +12,13 @@ const ICONS: Record<Badge['id'], LucideIcon> = {
 }
 
 export function BadgeList({ badges }: { badges: Badge[] }) {
+  const t = useT()
   if (badges.length === 0) return null
   return (
     <ul className="flex flex-wrap gap-1.5">
-      {badges.map(({ id, label, description }) => {
+      {badges.map(({ id }) => {
         const Icon = ICONS[id]
+        const { label, description } = t.leaderboard.badges[id]
         return (
           <li
             key={id}

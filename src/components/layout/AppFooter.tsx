@@ -1,14 +1,18 @@
+import { useT } from '#/i18n/index.ts'
+
 export function AppFooter({ onShowShortcuts }: { onShowShortcuts: () => void }) {
+  const t = useT()
+
   return (
     <footer className="flex flex-col items-center gap-2 text-center text-sm text-muted print:hidden">
-      <p>Developed for the Hack the Future hackathon by Teodor and Vivian (team Clown car)</p>
+      <p>{t.footer.credit}</p>
       {/* Phones have no keyboard to use them with. */}
       <button
         type="button"
         className="clickable hidden cursor-pointer md:inline"
         onClick={onShowShortcuts}
       >
-        Keyboard shortcuts
+        {t.shortcuts.title}
       </button>
     </footer>
   )

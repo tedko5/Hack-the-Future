@@ -1,29 +1,47 @@
+import type { Language } from '#/i18n/language.ts'
 import { KNOWLEDGE } from '#/lib/knowledge.ts'
+import { KNOWLEDGE_NL } from '#/lib/knowledge.nl.ts'
 
 type Entry = { question: string; answer: string; tokens: Set<string> }
 
-const STOP_WORDS = new Set(
-  'a an the is are was were be been do does did i me my we us our you your it its of to in on at for and or but if what who whom which when where why how can could should would will shall there this that these those with from by as about into have has had any some just'.split(
-    ' ',
-  ),
-)
+const words = (text: string) => new Set(text.split(' '))
 
-/** Lowercase, drop punctuation and stop words, and crudely stem plurals so "echos" matches "echoes". */
-export function tokenize(text: string): Set<string> {
-  const words = text
+const STOP_WORDS: Record<Language, Set<string>> = {
+  en: words(
+    'a an the is are was were be been do does did i me my we us our you your it its of to in on at for and or but if what who whom which when where why how can could should would will shall there this that these those with from by as about into have has had any some just',
+  ),
+  nl: words(
+    'een de het is zijn was waren ben bent wordt worden doe doet ik mij me mijn wij we ons onze jij je jou jouw u uw hij zij ze er van te in op aan voor en of maar als wat wie welke wanneer waar waarom hoe kan kunnen kon moet moeten zou zullen zal die dat dit deze met uit door over heb hebt heeft hebben had nog ook al dan om bij naar er gewoon',
+  ),
+}
+
+/** Plural endings, cut off crudely so "echos" matches "echoes". */
+const PLURAL: Record<Language, RegExp> = { en: /(es|s)$/, nl: /(en|s)$/ }
+
+/** Lowercase words without accents, punctuation, stop words and plural endings. */
+export function tokenize(text: string, language: Language): Set<string> {
+  const tokens = text
+    .normalize('NFD')
+    .replace(/[\p{M}'’]/gu, '')
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
-    .filter((w) => w && !STOP_WORDS.has(w))
-    .map((w) => w.replace(/(es|s)$/, ''))
-  return new Set(words)
+    .filter((word) => word && !STOP_WORDS[language].has(word))
+    .map((word) => word.replace(PLURAL[language], ''))
+  return new Set(tokens)
 }
 
-const ENTRIES: Entry[] = [...KNOWLEDGE.matchAll(/^Q: (.+)\nA: (.+)$/gm)].map(([, question, answer]) => ({
-  question,
-  answer,
-  tokens: tokenize(question),
-}))
+const parse = (knowledge: string, language: Language): Entry[] =>
+  [...knowledge.matchAll(/^Q: (.+)\nA: (.+)$/gm)].map(([, question, answer]) => ({
+    question,
+    answer,
+    tokens: tokenize(question, language),
+  }))
+
+const ENTRIES: Record<Language, Entry[]> = {
+  en: parse(KNOWLEDGE, 'en'),
+  nl: parse(KNOWLEDGE_NL, 'nl'),
+}
 
 /** Dice similarity between two token sets: 1 = same words, 0 = nothing in common. */
 function similarity(a: Set<string>, b: Set<string>) {
@@ -42,9 +60,9 @@ export type OracleReply =
   | { answer: null; related: string[] }
 
 /** Answer `question` from the knowledge base, or suggest the closest known questions. */
-export function askCodex(question: string): OracleReply {
-  const tokens = tokenize(question)
-  const ranked = ENTRIES.map((entry) => ({ entry, score: similarity(tokens, entry.tokens) }))
+export function askCodex(question: string, language: Language): OracleReply {
+  const tokens = tokenize(question, language)
+  const ranked = ENTRIES[language].map((entry) => ({ entry, score: similarity(tokens, entry.tokens) }))
     .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score)
 
@@ -54,4 +72,7 @@ export function askCodex(question: string): OracleReply {
 }
 
 /** A few example questions to show as suggestion chips. */
-export const SUGGESTED_QUESTIONS = ['What is the Desync?', 'How do I send an echo?', 'What are the glitch statuses?']
+export const SUGGESTED_QUESTIONS: Record<Language, string[]> = {
+  en: ['What is the Desync?', 'How do I send an echo?', 'What are the glitch statuses?'],
+  nl: ['Wat is de Desync?', 'Hoe meld ik een echo?', 'Wat zijn de statussen van een glitch?'],
+}

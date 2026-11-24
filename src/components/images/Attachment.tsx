@@ -1,5 +1,6 @@
 import { X } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
+import { useT } from '#/i18n/index.ts'
 
 type AttachmentProps = {
   /** What the remove button does. */
@@ -32,6 +33,7 @@ type ImageAttachmentProps = {
 }
 
 export function ImageAttachment({ image, onRemove }: ImageAttachmentProps) {
+  const t = useT()
   const [url, setUrl] = useState<string>()
 
   useEffect(() => {
@@ -41,8 +43,8 @@ export function ImageAttachment({ image, onRemove }: ImageAttachmentProps) {
   }, [image])
 
   return (
-    <Attachment label="Remove image" onRemove={onRemove}>
-      <img src={url} alt="Your attachment" className="h-20 rounded-lg" />
+    <Attachment label={t.images.remove} onRemove={onRemove}>
+      <img src={url} alt={t.images.preview} className="h-20 rounded-lg" />
     </Attachment>
   )
 }

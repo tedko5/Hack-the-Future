@@ -5,18 +5,15 @@ import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { CollapsibleSection } from '#/components/ui/CollapsibleSection.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
 import type { ShapeKind } from '#/components/ui/Shape.tsx'
+import { useFormat, useT } from '#/i18n/index.ts'
 import type { Echo } from '#/lib/echo.ts'
-import { TIME_ZONE, isToday } from '#/lib/formatDate.ts'
+import { isToday } from '#/lib/formatDate.ts'
 import { matchesSearch } from '#/lib/search.ts'
 import { useStoredFlag } from '#/lib/useStoredFlag.ts'
 
-const timeFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TIME_ZONE })
-const dayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: TIME_ZONE })
 
 /** Grid shared by day markers and echoes: time | ley line | content. */
 const ROW = 'relative grid grid-cols-[3rem_1.5rem_minmax(0,1fr)] gap-x-3 sm:grid-cols-[3.5rem_1.5rem_minmax(0,1fr)] sm:gap-x-4'
-
-const ECHO_SORTS = { newest: 'Newest first', oldest: 'Oldest first' }
 
 type Props = {
   /** Newest first. */
@@ -32,33 +29,35 @@ export function EchoList({
   echoes: allEchoes,
   storageKey,
   onReport,
-  reportLabel = 'Report echo',
+  reportLabel,
   canFilterToday = false,
 }: Props) {
+  const t = useT()
+  const format = useFormat()
   const [wantsToday, setWantsToday] = useStoredFlag(`today-only:${storageKey}`, true)
   const isTodayOnly = canFilterToday && wantsToday
   const echoes = isTodayOnly ? allEchoes.filter((echo) => isToday(echo.timestamp)) : allEchoes
   const [query, setQuery] = useState('')
-  const [sort, setSort] = useState<keyof typeof ECHO_SORTS>('newest')
+  const [sort, setSort] = useState<keyof typeof t.echoes.sorts>('newest')
   const sorted = sort === 'newest' ? echoes : echoes.toReversed()
   const found = sorted.filter((echo) =>
     matchesSearch(
       query,
       echo.description,
       echo.glitch.glitchId,
-      STATUS_STYLES[echo.status].label,
+      t.status[echo.status],
       echo.reporter.codename,
       echo.reporter.role,
     ),
   )
   // Without the filter, as on a glitch page, there is nothing to tell apart.
-  const title = !canFilterToday ? 'Echoes' : isTodayOnly ? 'Echoes of today' : 'All Echoes'
+  const title = !canFilterToday ? t.echoes.title : isTodayOnly ? t.echoes.today : t.echoes.all
   const emptyMessage =
     echoes.length > 0
-      ? 'No echoes match your search.'
+      ? t.echoes.noMatch
       : isTodayOnly
-        ? 'No echoes yet today.'
-        : 'No echoes reported yet.'
+        ? t.echoes.noneToday
+        : t.echoes.none
   const actions = (
     <div className="flex w-full items-center gap-5 sm:w-auto">
       {canFilterToday && (
@@ -69,7 +68,7 @@ export function EchoList({
             checked={wantsToday}
             onChange={(event) => setWantsToday(event.target.checked)}
           />
-          Only today
+          {t.echoes.onlyToday}
         </label>
       )}
       <button
@@ -77,7 +76,7 @@ export function EchoList({
         onClick={onReport}
         className="min-h-12 flex-1 cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-on-copper hover:brightness-110 sm:flex-none"
       >
-        {reportLabel}
+        {reportLabel ?? t.echoes.report}
       </button>
     </div>
   )
@@ -92,10 +91,10 @@ export function EchoList({
       {echoes.length > 0 && (
         <div className="mb-4">
           <ListControls
-            searchLabel="Search echoes"
+            searchLabel={t.echoes.search}
             query={query}
             onQueryChange={setQuery}
-            sorts={ECHO_SORTS}
+            sorts={t.echoes.sorts}
             sort={sort}
             onSortChange={setSort}
           />
@@ -108,7 +107,7 @@ export function EchoList({
           </p>
         ) : (
           <ol>
-            {groupByDay(found).map(({ day, items }) => (
+            {groupByDay(found, format.day).map(({ day, items }) => (
               <li key={day}>
                 <DayMarker day={day} />
                 <ol>
@@ -125,10 +124,10 @@ export function EchoList({
   )
 }
 
-function groupByDay(echoes: Echo[]) {
+function groupByDay(echoes: Echo[], formatDay: (isoTimestamp: string) => string) {
   const days: { day: string; items: Echo[] }[] = []
   for (const echo of echoes) {
-    const day = dayFormat.format(new Date(echo.timestamp))
+    const day = formatDay(echo.timestamp)
     const last = days.at(-1)
     if (last?.day === day) last.items.push(echo)
     else days.push({ day, items: [echo] })
@@ -157,12 +156,14 @@ function DayMarker({ day }: { day: string }) {
 }
 
 function EchoEntry({ echo }: { echo: Echo }) {
+  const t = useT()
+  const format = useFormat()
   const status = STATUS_STYLES[echo.status]
 
   return (
     <li className={ROW}>
       <time dateTime={echo.timestamp} className="pt-0.5 text-right text-sm text-muted tabular-nums">
-        {timeFormat.format(new Date(echo.timestamp))}
+        {format.time(echo.timestamp)}
       </time>
       <span className="relative flex justify-center">
         <LeyLine />
@@ -180,7 +181,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
             {/* Fixed height, so the timeline does not jump when the image loads. */}
             <img
               src={`/api/echo-images/${echo.echoId}`}
-              alt={`Sent by ${echo.reporter.codename}`}
+              alt={t.echoes.imageBy(echo.reporter.codename)}
               loading="lazy"
               className="h-40 max-w-full rounded-lg object-contain"
             />
@@ -188,7 +189,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
         )}
         <p className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-[.85rem] text-muted">
           <span className="font-medium" style={{ color: status.color }}>
-            {status.label}
+            {t.status[echo.status]}
           </span>
           <Link
             to="/glitches/$glitchId"
@@ -201,7 +202,7 @@ function EchoEntry({ echo }: { echo: Echo }) {
             <GuardianLink {...echo.reporter} />
             <span className="ml-1.5">{echo.reporter.role}</span>
           </span>
-          {echo.newStatus && <span>Status changed</span>}
+          {echo.newStatus && <span>{t.echoes.statusChanged}</span>}
         </p>
       </div>
     </li>

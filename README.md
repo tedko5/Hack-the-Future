@@ -30,7 +30,8 @@ After changing `src/db/schema.ts`, run `pnpm db:generate` and `pnpm db:migrate`,
 | `src/components` | UI components |
 | `src/lib/*.ts` | Types and Zod schemas, shared by browser and server |
 | `src/lib/*.functions.ts` | Server functions: the API the pages call |
-| `src/middleware` | Login and role checks, and error hiding |
+| `src/i18n` | The texts in English (`en.ts`) and Dutch (`nl.ts`), and the language choice |
+| `src/middleware` | Login and role checks, and error translation and hiding |
 | `src/server/*.server.ts` | Database queries and other server-only code |
 | `src/db` | Connection and table definitions |
 | `drizzle` | Generated migrations, plus the live update triggers |
@@ -44,6 +45,12 @@ To add a server function:
 3. Add it to `src/lib/<entities>.functions.ts` with `guardianMiddleware` or `commanderMiddleware` and `validate(schema)`. Take the user from `context.guardian`, never from the input.
 
 Changes to glitches, echoes, messages and notifications reach every open page under `routes/_app` live, through `useLiveEvents` in `routes/_app.tsx`.
+
+## Languages
+
+Put every text in `src/i18n/en.ts` and `nl.ts`, and use it in a component as `useT().echoes.title`. TypeScript refuses a text that is missing in one of them. Dates go through `useFormat()`.
+
+Server errors are thrown in English and translated by `src/i18n/errors.ts` on their way out. The Oracle's answers are in `src/lib/knowledge.ts` and `knowledge.nl.ts`. The choice is kept in a cookie, and without one the browser's language decides.
 
 ## Notifications
 

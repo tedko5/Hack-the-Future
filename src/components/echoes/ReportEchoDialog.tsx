@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ImageAttachment } from '#/components/images/Attachment.tsx'
 import { ImageButton } from '#/components/images/ImageButton.tsx'
 import { useImageAttachment } from '#/components/images/useImageAttachment.ts'
-import { STATUS_STYLES } from '#/components/glitches/status.ts'
+import { useFormat, useT } from '#/i18n/index.ts'
 import { ECHO_MAX_LENGTH } from '#/lib/echo.ts'
 import { reportEcho } from '#/lib/echoes.functions.ts'
 import { GLITCH_STATUSES, type Glitch, type GlitchStatus } from '#/lib/glitch.ts'
@@ -21,6 +21,8 @@ type Props = {
 
 /** Mount it to open it. Escape, Cancel and a successful report call onClose. */
 export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: Props) {
+  const t = useT()
+  const format = useFormat()
   const router = useRouter()
   const dialog = useRef<HTMLDialogElement>(null)
   const [description, setDescription] = useState('')
@@ -64,10 +66,10 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
         }}
       >
         <h2 id="report-echo-title" className="font-display text-[1.6rem] font-bold">
-          {glitch ? `Update ${glitch.glitchId}` : 'Report echo'}
+          {glitch ? t.echoes.updateTitle(glitch.glitchId) : t.echoes.report}
         </h2>
         <label className="flex flex-col gap-2 text-muted">
-          What did you notice?
+          {t.echoes.question}
           <textarea
             className="min-h-32 rounded-xl border-2 border-edge bg-well p-3 text-fg"
             value={description}
@@ -79,16 +81,16 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
         </label>
         {glitch && canChangeStatus && (
           <label className="flex flex-col gap-2 text-muted">
-            Status
+            {t.common.status}
             <select
               className="min-h-12 rounded-xl border-2 border-edge bg-well px-3 text-fg"
               value={status}
               onChange={(event) => setStatus(event.target.value as typeof status)}
             >
-              <option value={KEEP_STATUS}>Keep as {STATUS_STYLES[glitch.status].label}</option>
+              <option value={KEEP_STATUS}>{t.echoes.keepStatus(t.status[glitch.status])}</option>
               {GLITCH_STATUSES.filter((option) => option !== glitch.status).map((option) => (
                 <option key={option} value={option}>
-                  {STATUS_STYLES[option].label}
+                  {t.status[option]}
                 </option>
               ))}
             </select>
@@ -97,7 +99,7 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
         {image && <ImageAttachment image={image} onRemove={removeImage} />}
         {error && (
           <p role="alert" className="text-magenta">
-            {error.message}
+            {format.error(error)}
           </p>
         )}
         <div className="flex flex-wrap items-center justify-end gap-3">
@@ -109,14 +111,14 @@ export function ReportEchoDialog({ glitch, canChangeStatus = false, onClose }: P
             className="min-h-12 cursor-pointer px-4 text-muted hover:text-cyan"
             onClick={onClose}
           >
-            Cancel
+            {t.common.cancel}
           </button>
           <button
             type="submit"
             className="min-h-12 cursor-pointer rounded-xl bg-copper px-5.5 py-3 font-bold text-on-copper hover:brightness-110 disabled:opacity-50"
             disabled={isBusy}
           >
-            {glitch ? 'Add update' : 'Report'}
+            {glitch ? t.echoes.addUpdate : t.echoes.submit}
           </button>
         </div>
       </form>

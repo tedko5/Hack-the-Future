@@ -1,21 +1,9 @@
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
+import { useT } from '#/i18n/index.ts'
 import { getGlitches } from '#/lib/glitches.functions.ts'
 import { EVERYONE } from '#/lib/message.ts'
 import { useShortcuts } from '#/lib/useShortcuts.ts'
-
-const HELP = [
-  ['j', 'Next glitch'],
-  ['k', 'Previous glitch'],
-  ['r', 'Report an echo, or add an update on a glitch page'],
-  ['/', 'Search'],
-  ['h', 'Mission control'],
-  ['m', 'Messages'],
-  ['n', 'Notifications'],
-  ['l', 'Leaderboard'],
-  ['p', 'Report for the High Council'],
-  ['?', 'Show these shortcuts'],
-] as const
 
 type Props = {
   isHelpOpen: boolean
@@ -63,6 +51,19 @@ function focusSearch() {
 }
 
 function HelpDialog({ onClose }: { onClose: () => void }) {
+  const t = useT()
+  const help = [
+    ['j', t.shortcuts.next],
+    ['k', t.shortcuts.previous],
+    ['r', t.shortcuts.report],
+    ['/', t.shortcuts.search],
+    ['h', t.nav.missionControl],
+    ['m', t.nav.messages],
+    ['n', t.nav.notifications],
+    ['l', t.nav.leaderboard],
+    ['p', t.shortcuts.council],
+    ['?', t.shortcuts.help],
+  ]
   const dialog = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -77,10 +78,10 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
       className="m-auto w-full max-w-md rounded-[18px] border-2 border-edge bg-panel p-6 text-fg backdrop:bg-black/60"
     >
       <h2 id="shortcuts-title" className="font-display text-[1.6rem] font-bold">
-        Keyboard shortcuts
+        {t.shortcuts.title}
       </h2>
       <dl className="mt-4 grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2.5">
-        {HELP.map(([key, description]) => (
+        {help.map(([key, description]) => (
           <div key={key} className="contents">
             <dt>
               <kbd className="inline-flex min-w-8 justify-center rounded-md border border-edge bg-well px-2 py-1 font-sans text-sm">
@@ -96,7 +97,7 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
         className="mt-5 min-h-12 w-full cursor-pointer rounded-xl bg-copper font-bold text-on-copper hover:brightness-110"
         onClick={onClose}
       >
-        Close
+        {t.common.close}
       </button>
     </dialog>
   )

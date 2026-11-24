@@ -1,13 +1,6 @@
 import { GLITCH_STATUSES, type Glitch } from './glitch.ts'
 
-export const GLITCH_SORTS = {
-  newest: 'Newest first',
-  oldest: 'Oldest first',
-  urgent: 'Most urgent first',
-  assignee: 'By defender',
-} as const
-
-export type GlitchSort = keyof typeof GLITCH_SORTS
+export type GlitchSort = 'newest' | 'oldest' | 'urgent' | 'assignee'
 
 const byNewest = (a: Glitch, b: Glitch) => b.timestamp.localeCompare(a.timestamp)
 

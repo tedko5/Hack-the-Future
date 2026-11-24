@@ -1,4 +1,5 @@
 import { SearchInput } from '#/components/ui/SearchInput.tsx'
+import { useT } from '#/i18n/index.ts'
 
 type Props<Sort extends string> = {
   searchLabel: string
@@ -12,6 +13,7 @@ type Props<Sort extends string> = {
 
 /** The search bar of a list, with the order next to it. */
 export function ListControls<Sort extends string>(props: Props<Sort>) {
+  const t = useT()
   const { searchLabel, query, onQueryChange, sorts, sort, onSortChange } = props
 
   return (
@@ -20,7 +22,7 @@ export function ListControls<Sort extends string>(props: Props<Sort>) {
         <SearchInput label={searchLabel} value={query} onChange={onQueryChange} />
       </div>
       <select
-        aria-label="Sort by"
+        aria-label={t.common.sortBy}
         className="min-h-11 rounded-xl border-2 border-edge bg-well px-3 text-fg"
         value={sort}
         onChange={(event) => onSortChange(event.target.value as Sort)}

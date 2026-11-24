@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react'
 import { DesyncWell } from '#/components/health/DesyncWell.tsx'
 import { ShapePath, type ShapeKind } from '#/components/ui/Shape.tsx'
-import { DESYNC_STYLES, desyncStateFor, type DesyncState } from '#/lib/desync.ts'
+import { useT } from '#/i18n/index.ts'
+import { desyncStateFor, type DesyncState } from '#/lib/desync.ts'
 
 const STATE_SHAPE: Record<DesyncState, ShapeKind> = {
   stable: 'circle',
@@ -11,7 +12,7 @@ const STATE_SHAPE: Record<DesyncState, ShapeKind> = {
 
 export function HealthPanel({ magic }: { magic: number }) {
   const state = desyncStateFor(magic)
-  const st = DESYNC_STYLES[state]
+  const t = useT()
   // Per-theme colours for this state, defined in styles.css.
   const vars = { '--st': `var(--desync-${state})`, '--st-soft': `var(--desync-${state}-soft)` } as CSSProperties
 
@@ -34,7 +35,7 @@ export function HealthPanel({ magic }: { magic: number }) {
         <Motes />
 
         <h2 id="health-title" className="relative font-display text-[1.6rem] font-bold">
-          Magic in Achrona
+          {t.magic.title}
         </h2>
         {/* Centred as one visible group; the % sits tight on the digits' baseline. */}
         <p className="readout-pct relative font-display text-[clamp(4rem,10vw,5.6rem)] leading-[.85] font-bold tabular-nums [:root[data-theme=light]_&]:-mt-3">
@@ -56,8 +57,9 @@ export function HealthPanel({ magic }: { magic: number }) {
               <ShapePath kind={STATE_SHAPE[state]} />
             </g>
           </svg>
-          {st.label}
-        </p>      </div>
+          {t.magic.states[state]}
+        </p>
+      </div>
     </section>
   )
 }

@@ -1,10 +1,13 @@
 import { UserButton, useClerk } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { LogOut } from 'lucide-react'
+import { LanguageToggle } from '#/components/layout/LanguageToggle.tsx'
 import { ThemeToggle } from '#/components/layout/ThemeToggle.tsx'
+import { useT } from '#/i18n/index.ts'
 import type { Guardian } from '#/lib/guardian.ts'
 
 export function AppHeader({ guardian }: { guardian: Guardian }) {
+  const t = useT()
   const { signOut } = useClerk()
 
   return (
@@ -20,18 +23,21 @@ export function AppHeader({ guardian }: { guardian: Guardian }) {
         <span className="rounded-lg bg-copper px-3 py-2 text-sm font-bold text-on-copper">
           {guardian.role}
         </span>
-        <ThemeToggle />
-        <button
-          type="button"
-          title="Log out"
-          className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 px-2 text-sm text-muted hover:text-cyan"
-          onClick={() => signOut()}
-        >
-          <LogOut size={18} aria-hidden="true" />
-          <span className="sr-only sm:not-sr-only">Log out</span>
-        </button>
-        {/* Opens Clerk's account settings. */}
-        <UserButton />
+        <div className="flex items-center">
+          <LanguageToggle />
+          <ThemeToggle />
+          <button
+            type="button"
+            title={t.header.logOut}
+            className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 px-2 text-sm text-muted hover:text-cyan"
+            onClick={() => signOut()}
+          >
+            <LogOut size={18} aria-hidden="true" />
+            <span className="sr-only sm:not-sr-only">{t.header.logOut}</span>
+          </button>
+          {/* Opens Clerk's account settings. */}
+          <UserButton />
+        </div>
       </div>
     </header>
   )

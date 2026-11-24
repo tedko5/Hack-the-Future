@@ -3,7 +3,7 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { CheckCheck } from 'lucide-react'
 import { NotificationIcon } from '#/components/notifications/NotificationIcon.tsx'
 import { NotificationLink } from '#/components/notifications/NotificationLink.tsx'
-import { formatDateTime } from '#/lib/formatDate.ts'
+import { useFormat, useT } from '#/i18n/index.ts'
 import { describeNotification, type Notification } from '#/lib/notification.ts'
 import { getNotifications, markAllNotificationsRead } from '#/lib/notifications.functions.ts'
 
@@ -14,6 +14,7 @@ export const Route = createFileRoute('/_app/notifications')({
 
 function NotificationsPage() {
   const notifications = Route.useLoaderData()
+  const t = useT()
   const router = useRouter()
   const markAll = useMutation({
     mutationFn: () => markAllNotificationsRead(),
@@ -27,7 +28,7 @@ function NotificationsPage() {
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="notifications-title" className="font-display text-[1.6rem] font-bold">
-          Notifications
+          {t.notifications.title}
         </h2>
         {notifications.some(({ isRead }) => !isRead) && (
           <button
@@ -37,13 +38,13 @@ function NotificationsPage() {
             onClick={() => markAll.mutate()}
           >
             <CheckCheck size={18} aria-hidden="true" />
-            Mark all as read
+            {t.notifications.markAll}
           </button>
         )}
       </div>
       {notifications.length === 0 ? (
         <p className="rounded-xl border-2 border-edge bg-well p-4 text-muted">
-          Nothing yet. All quiet in Achrona.
+          {t.notifications.none}
         </p>
       ) : (
         <ul className="tech-frame divide-y divide-line overflow-hidden rounded-xl border-2 border-edge bg-well">
@@ -59,7 +60,9 @@ function NotificationsPage() {
 }
 
 function NotificationRow({ notification }: { notification: Notification }) {
-  const { title, body, path } = describeNotification(notification)
+  const t = useT()
+  const format = useFormat()
+  const { title, body, path } = describeNotification(notification, t)
 
   return (
     <NotificationLink
@@ -73,12 +76,12 @@ function NotificationRow({ notification }: { notification: Notification }) {
         </span>
         {body && <span className="block truncate text-[.85rem] text-muted">{body}</span>}
         <time dateTime={notification.createdAt} className="text-[.85rem] text-muted">
-          {formatDateTime(notification.createdAt)}
+          {format.dateTime(notification.createdAt)}
         </time>
       </span>
       {!notification.isRead && (
         <span className="size-2.5 shrink-0 rounded-full bg-copper">
-          <span className="sr-only">Unread</span>
+          <span className="sr-only">{t.notifications.unread}</span>
         </span>
       )}
     </NotificationLink>

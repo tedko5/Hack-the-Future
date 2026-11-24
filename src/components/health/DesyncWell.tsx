@@ -1,3 +1,4 @@
+import { useT } from '#/i18n/index.ts'
 import { DESYNC_STYLES, desyncStateFor } from '#/lib/desync.ts'
 
 type Style = (typeof DESYNC_STYLES)[keyof typeof DESYNC_STYLES]
@@ -22,6 +23,7 @@ const pt = ([x, y]: number[]) => `${x.toFixed(1)} ${y.toFixed(1)}`
  * well for the light theme (CSS wins over SVG presentation attributes).
  */
 export function DesyncWell({ magic }: { magic: number }) {
+  const t = useT()
   const state = desyncStateFor(magic)
   const st = DESYNC_STYLES[state]
   const level = magic / 100
@@ -43,7 +45,7 @@ export function DesyncWell({ magic }: { magic: number }) {
     <svg
       viewBox="60 -190 520 470"
       role="img"
-      aria-label={`Desync Well: ${st.label}, ${cracked.size} of 12 rune segments cracked`}
+      aria-label={t.magic.well(t.magic.states[state], cracked.size)}
       className={`desync-well desync-well--${state} block h-auto w-full max-w-[520px]`}
     >
       <defs>

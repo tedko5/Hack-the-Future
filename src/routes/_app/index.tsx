@@ -5,6 +5,7 @@ import { EchoList } from '#/components/echoes/EchoList.tsx'
 import { ReportEchoDialog } from '#/components/echoes/ReportEchoDialog.tsx'
 import { GlitchList } from '#/components/glitches/GlitchList.tsx'
 import { HealthPanel } from '#/components/health/HealthPanel.tsx'
+import { useT } from '#/i18n/index.ts'
 import { getDashboard } from '#/lib/dashboard.functions.ts'
 import { useShortcuts } from '#/lib/useShortcuts.ts'
 
@@ -16,6 +17,7 @@ export const Route = createFileRoute('/_app/')({
 function MissionControl() {
   const { magic, glitches, echoes } = Route.useLoaderData()
   const { guardian } = Route.useRouteContext()
+  const t = useT()
   const [isReporting, setIsReporting] = useState(false)
   useShortcuts({ r: () => setIsReporting(true) })
 
@@ -30,9 +32,9 @@ function MissionControl() {
       <HealthPanel magic={magic} />
       {showMine && (
         <GlitchList
-          title="Assigned to you"
+          title={t.glitches.assignedToYou}
           glitches={mine}
-          emptyMessage="Nothing assigned to you right now."
+          emptyMessage={t.glitches.noneAssigned}
           storageKey="assigned"
         />
       )}
@@ -43,9 +45,9 @@ function MissionControl() {
         canFilterToday
       />
       <GlitchList
-        title="Glitches"
+        title={t.glitches.title}
         glitches={glitches}
-        emptyMessage="No glitches. Magic is safe."
+        emptyMessage={t.glitches.none}
         storageKey="glitches"
         isSearchable
         action={
@@ -54,7 +56,7 @@ function MissionControl() {
             className="flex min-h-11 items-center gap-2 px-2 text-sm text-muted hover:text-cyan"
           >
             <FileDown size={18} aria-hidden="true" />
-            <span className="clickable">Export as PDF</span>
+            <span className="clickable">{t.glitches.exportPdf}</span>
           </Link>
         }
       />

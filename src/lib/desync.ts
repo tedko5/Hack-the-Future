@@ -1,7 +1,6 @@
 export type DesyncState = 'stable' | 'unstable' | 'critical'
 
 type DesyncStyle = {
-  label: string
   /** Bright tone: text, crystal tops. */
   color: string
   /** Deep tone: crystal bottoms. */
@@ -12,9 +11,9 @@ type DesyncStyle = {
 }
 
 export const DESYNC_STYLES: Record<DesyncState, DesyncStyle> = {
-  stable: { label: 'Stable', color: '#6ff6ff', deep: '#4a5cff', glow: '#4df3ff', body: '#26306a' },
-  unstable: { label: 'Desync spreading', color: '#c9a8ff', deep: '#7a3fe0', glow: '#8a5cff', body: '#2a2060' },
-  critical: { label: 'Critical desync', color: '#ff7af5', deep: '#b01fc4', glow: '#ff3df0', body: '#2a1330' },
+  stable: { color: '#6ff6ff', deep: '#4a5cff', glow: '#4df3ff', body: '#26306a' },
+  unstable: { color: '#c9a8ff', deep: '#7a3fe0', glow: '#8a5cff', body: '#2a2060' },
+  critical: { color: '#ff7af5', deep: '#b01fc4', glow: '#ff3df0', body: '#2a1330' },
 }
 
 /** `magic` is the percentage of magic left in Achrona (100 = all is well). */

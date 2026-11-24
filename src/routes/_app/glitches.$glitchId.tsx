@@ -5,7 +5,7 @@ import { ReportEchoDialog } from '#/components/echoes/ReportEchoDialog.tsx'
 import { AssignDefender, TakeOrRelease } from '#/components/glitches/GlitchAssignment.tsx'
 import { GlitchStatusLabel } from '#/components/glitches/GlitchStatusLabel.tsx'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
-import { formatDateTime } from '#/lib/formatDate.ts'
+import { useFormat, useT } from '#/i18n/index.ts'
 import { canChangeStatus } from '#/lib/glitch.ts'
 import { getGlitch } from '#/lib/glitches.functions.ts'
 import { listGuardians } from '#/lib/guardians.functions.ts'
@@ -21,10 +21,17 @@ export const Route = createFileRoute('/_app/glitches/$glitchId')({
     return { glitch, guardians }
   },
   component: GlitchPage,
-  notFoundComponent: () => <p className="rounded-[18px] bg-panel p-6">That glitch does not exist.</p>,
+  notFoundComponent: GlitchNotFound,
 })
 
+function GlitchNotFound() {
+  const t = useT()
+  return <p className="rounded-[18px] bg-panel p-6">{t.glitches.notFound}</p>
+}
+
 function GlitchPage() {
+  const t = useT()
+  const format = useFormat()
   const { glitch, guardians } = Route.useLoaderData()
   const { guardian } = Route.useRouteContext()
   const [isReporting, setIsReporting] = useState(false)
@@ -34,7 +41,7 @@ function GlitchPage() {
     <>
       <section className="flex flex-col gap-4 rounded-[18px] bg-panel p-4 md:p-6">
         <Link to="/" className="clickable self-start text-sm text-muted">
-          Back to mission control
+          {t.glitches.back}
         </Link>
         <h2 className="font-display text-[1.6rem] font-bold">{glitch.glitchId}</h2>
         <p className="leading-snug break-words">{glitch.description}</p>
@@ -43,9 +50,9 @@ function GlitchPage() {
           {glitch.assignedGuardianId && glitch.assignedCodename ? (
             <GuardianLink guardianId={glitch.assignedGuardianId} codename={glitch.assignedCodename} />
           ) : (
-            <span>Unassigned</span>
+            <span>{t.common.unassigned}</span>
           )}
-          <time dateTime={glitch.timestamp}>{formatDateTime(glitch.timestamp)}</time>
+          <time dateTime={glitch.timestamp}>{format.dateTime(glitch.timestamp)}</time>
         </p>
         {/* Keyed so an error on one glitch is not shown on the next. */}
         {guardians ? (
@@ -57,7 +64,7 @@ function GlitchPage() {
       <EchoList
         echoes={glitch.echoes}
         storageKey="glitch-echoes"
-        reportLabel="Add update"
+        reportLabel={t.echoes.addUpdate}
         onReport={() => setIsReporting(true)}
       />
       {isReporting && (

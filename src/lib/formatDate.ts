@@ -1,17 +1,26 @@
-/** Pinned to Achrona's (Antwerp's) time zone, so server and browser render the same text. */
-export const TIME_ZONE = 'Europe/Brussels'
+import { LOCALES, type Language } from '#/i18n/language.ts'
 
-const dateTimeFormat = new Intl.DateTimeFormat('en-GB', {
+/** Pinned to Achrona's (Antwerp's) time zone, so server and browser render the same text. */
+const TIME_ZONE = 'Europe/Brussels'
+
+function createFormatter(options: Intl.DateTimeFormatOptions) {
+  const create = (language: Language) =>
+    new Intl.DateTimeFormat(LOCALES[language], { ...options, timeZone: TIME_ZONE })
+  const formats: Record<Language, Intl.DateTimeFormat> = { en: create('en'), nl: create('nl') }
+  return (isoTimestamp: string, language: Language) =>
+    formats[language].format(new Date(isoTimestamp))
+}
+
+export const formatDateTime = createFormatter({
   day: 'numeric',
   month: 'short',
   hour: '2-digit',
   minute: '2-digit',
-  timeZone: TIME_ZONE,
 })
 
-export function formatDateTime(isoTimestamp: string) {
-  return dateTimeFormat.format(new Date(isoTimestamp))
-}
+export const formatTime = createFormatter({ hour: '2-digit', minute: '2-digit' })
+
+export const formatDay = createFormatter({ weekday: 'long', day: 'numeric', month: 'long' })
 
 const dateFormat = new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeZone: TIME_ZONE })
 

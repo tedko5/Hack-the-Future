@@ -1,10 +1,11 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { ConversationList } from '#/components/messages/ConversationList.tsx'
+import { ConversationList, titleOf } from '#/components/messages/ConversationList.tsx'
 import { MessageForm } from '#/components/messages/MessageForm.tsx'
 import { MessageThread } from '#/components/messages/MessageThread.tsx'
 import { SearchInput } from '#/components/ui/SearchInput.tsx'
+import { useFormat, useT } from '#/i18n/index.ts'
 import { SEARCH_MAX_LENGTH, type Message } from '#/lib/message.ts'
 import { getConversation, markRead, searchMessages } from '#/lib/messages.functions.ts'
 import { useDebounced } from '#/lib/useDebounced.ts'
@@ -12,16 +13,21 @@ import { useDebounced } from '#/lib/useDebounced.ts'
 export const Route = createFileRoute('/_app/messages/$conversationId')({
   loader: ({ params }) => getConversation({ data: params }),
   component: MessagesPage,
-  notFoundComponent: () => (
-    <p className="rounded-[18px] bg-panel p-6">That conversation does not exist.</p>
-  ),
+  notFoundComponent: ConversationNotFound,
 })
 
+function ConversationNotFound() {
+  const t = useT()
+  return <p className="rounded-[18px] bg-panel p-6">{t.messages.notFound}</p>
+}
+
 function MessagesPage() {
+  const t = useT()
   const { conversations, current, messages } = Route.useLoaderData()
   const { guardian } = Route.useRouteContext()
   const router = useRouter()
-  const { conversationId, title, unread } = current
+  const { conversationId, unread } = current
+  const title = titleOf(current, t)
   const lastId = messages.at(-1)?.messageId
 
   // Reading a conversation marks it read, also when a message arrives while it is open.
@@ -63,6 +69,8 @@ type ChatProps = {
 }
 
 function Chat({ conversationId, title, messages, guardianId }: ChatProps) {
+  const t = useT()
+  const format = useFormat()
   const [replyTo, setReplyTo] = useState<Message | null>(null)
   const [query, setQuery] = useState('')
   const search = useDebounced(query.trim())
@@ -79,23 +87,23 @@ function Chat({ conversationId, title, messages, guardianId }: ChatProps) {
   return (
     <>
       <SearchInput
-        label="Search this chat"
+        label={t.messages.searchChat}
         value={query}
         onChange={(value) => setQuery(value.slice(0, SEARCH_MAX_LENGTH))}
       />
       {results.isError && isSearching && (
         <p role="alert" className="text-magenta">
-          {results.error.message}
+          {format.error(results.error)}
         </p>
       )}
       <MessageThread
         messages={isSearching ? (results.data ?? []) : messages}
         emptyMessage={
           !isSearching
-            ? 'No messages yet.'
+            ? t.messages.none
             : results.isPending
-              ? 'Searching…'
-              : 'No messages match your search.'
+              ? t.messages.searching
+              : t.messages.noMatch
         }
         guardianId={guardianId}
         onReply={setReplyTo}

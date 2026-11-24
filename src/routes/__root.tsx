@@ -8,6 +8,8 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { RiftBackground } from '#/components/layout/RiftBackground.tsx'
+import { clerkLocalizations } from '#/i18n/clerk.ts'
+import { getLanguage } from '#/i18n/currentLanguage.ts'
 import { clerkAppearance } from '#/lib/clerk-appearance.ts'
 import { THEME_INIT_SCRIPT, useThemeVersion } from '#/lib/theme.ts'
 
@@ -16,6 +18,7 @@ import { useMemo, type ReactNode } from 'react'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: () => ({ language: getLanguage() }),
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -44,19 +47,21 @@ function RootLayout() {
 }
 
 function RootDocument({ children }: { children: ReactNode }) {
+  const { language } = Route.useRouteContext()
   // A new object per theme change makes Clerk re-read the theme's colour variables.
   const themeVersion = useThemeVersion()
   const appearance = useMemo(() => ({ ...clerkAppearance }), [themeVersion])
 
   return (
     // The init script may set data-theme before React hydrates.
-    <html lang="en" suppressHydrationWarning>
+    <html lang={language} suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body className="bg-app font-sans antialiased">
         <ClerkProvider
           appearance={appearance}
+          localization={clerkLocalizations[language]}
           signInUrl="/sign-in"
           signUpUrl="/sign-up"
           signInFallbackRedirectUrl="/"

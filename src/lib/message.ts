@@ -44,11 +44,6 @@ export type Conversation = {
   unread: number
 }
 
-/** The text that stands for a message in a quote. */
-export function quoteText({ body }: Pick<MessageQuote, 'body'>) {
-  return body || 'Image'
-}
-
 const conversationIdSchema = z.string('Invalid conversation').min(1, 'Invalid conversation')
 
 const messageIdSchema = z.int32('Invalid message').positive('Invalid message')

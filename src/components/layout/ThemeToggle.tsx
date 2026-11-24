@@ -1,15 +1,17 @@
 import { Cog, MoonStar } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useT } from '#/i18n/index.ts'
 import { getTheme, setTheme, type Theme } from '#/lib/theme.ts'
 
 /** Switches between the dark (rift) and light (brass) themes. */
 export function ThemeToggle({ className = '' }: { className?: string }) {
+  const t = useT()
   // The server can't know the saved theme; read it once mounted.
   const [theme, setThemeState] = useState<Theme | null>(null)
   useEffect(() => setThemeState(getTheme()), [])
 
   const next: Theme = theme === 'light' ? 'dark' : 'light'
-  const label = next === 'light' ? 'Switch to light theme' : 'Switch to dark theme'
+  const label = next === 'light' ? t.header.toLight : t.header.toDark
 
   return (
     <button

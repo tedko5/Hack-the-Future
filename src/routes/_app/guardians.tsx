@@ -3,6 +3,7 @@ import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 import { GuardianLink } from '#/components/guardians/GuardianLink.tsx'
 import { ListControls } from '#/components/ui/ListControls.tsx'
+import { useFormat, useT } from '#/i18n/index.ts'
 import type { GuardianRole } from '#/lib/guardian.ts'
 import { listGuardians, setGuardianRole } from '#/lib/guardians.functions.ts'
 import { matchesSearch } from '#/lib/search.ts'
@@ -15,14 +16,14 @@ export const Route = createFileRoute('/_app/guardians')({
   component: GuardiansPage,
 })
 
-const GUARDIAN_SORTS = { codename: 'By codename', role: 'By role' }
-
 function GuardiansPage() {
   const guardians = Route.useLoaderData()
   const { guardian: me } = Route.useRouteContext()
+  const t = useT()
+  const format = useFormat()
   const router = useRouter()
   const [query, setQuery] = useState('')
-  const [sort, setSort] = useState<keyof typeof GUARDIAN_SORTS>('codename')
+  const [sort, setSort] = useState<keyof typeof t.guardians.sorts>('codename')
   // Listed by codename already, and sorting keeps that order within a role.
   const sorted =
     sort === 'codename' ? guardians : guardians.toSorted((a, b) => a.role.localeCompare(b.role))
@@ -34,22 +35,22 @@ function GuardiansPage() {
 
   return (
     <div className="flex flex-col gap-4 rounded-[18px] bg-panel p-3 md:p-4.5">
-      <h2 className="font-display text-[1.6rem] font-bold">Guardians</h2>
+      <h2 className="font-display text-[1.6rem] font-bold">{t.guardians.title}</h2>
       <ListControls
-        searchLabel="Search guardians"
+        searchLabel={t.guardians.search}
         query={query}
         onQueryChange={setQuery}
-        sorts={GUARDIAN_SORTS}
+        sorts={t.guardians.sorts}
         sort={sort}
         onSortChange={setSort}
       />
-      {changeRole.isError && <p className="text-magenta">{changeRole.error.message}</p>}
+      {changeRole.isError && <p className="text-magenta">{format.error(changeRole.error)}</p>}
       <table className="w-full text-left">
         <thead>
           <tr className="border-b-2 border-line text-muted">
-            <th className="px-5 py-4 font-normal">Codename</th>
-            <th className="px-5 py-4 font-normal">Role</th>
-            <th className="px-5 py-4 font-normal">Action</th>
+            <th className="px-5 py-4 font-normal">{t.common.codename}</th>
+            <th className="px-5 py-4 font-normal">{t.guardians.role}</th>
+            <th className="px-5 py-4 font-normal">{t.guardians.action}</th>
           </tr>
         </thead>
         <tbody className="text-fg">
@@ -69,7 +70,7 @@ function GuardiansPage() {
                       disabled={changeRole.isPending}
                       onClick={() => changeRole.mutate({ guardianId: guardian.guardianId, role: nextRole })}
                     >
-                      Make {nextRole}
+                      {t.guardians.make(nextRole)}
                     </button>
                   )}
                 </td>
@@ -78,7 +79,7 @@ function GuardiansPage() {
           })}
         </tbody>
       </table>
-      {found.length === 0 && <p className="px-5 text-muted">No guardians match your search.</p>}
+      {found.length === 0 && <p className="px-5 text-muted">{t.guardians.noMatch}</p>}
     </div>
   )
 }
